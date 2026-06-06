@@ -690,11 +690,11 @@ const Pricing = () => {
           </div>
           <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-light tracking-[-0.03em] text-white leading-[1.05]">
             Built like a{" "}
-            <span className="italic text-zinc-500">$2,000</span> machine.
+            <span className="italic text-zinc-500">₹1,50,000</span> machine.
             <br />
             Priced like{" "}
             <span className="italic bg-gradient-to-r from-cyan-200 to-cyan-400 bg-clip-text text-transparent">
-              dinner for two.
+              a weekend dinner.
             </span>
           </h2>
           <p className="mt-6 text-zinc-400 max-w-xl mx-auto">
@@ -708,16 +708,16 @@ const Pricing = () => {
             {
               tier: "NavAir Mini",
               size: "Bedroom · 25m²",
-              price: "$199",
-              old: "$349",
+              price: "₹3,499",
+              old: "₹5,999",
               popular: false,
               perks: ["HEPA-13", "App control", "Auto mode"],
             },
             {
               tier: "NavAir 01",
               size: "Living room · 60m²",
-              price: "$299",
-              old: "$549",
+              price: "₹4,999",
+              old: "₹8,499",
               popular: true,
               perks: [
                 "HEPA-13 + Carbon",
@@ -729,8 +729,8 @@ const Pricing = () => {
             {
               tier: "NavAir Pro",
               size: "Open space · 90m²",
-              price: "$449",
-              old: "$799",
+              price: "₹6,999",
+              old: "₹11,999",
               popular: false,
               perks: ["Dual filtration", "Pro sensors", "Thread + Matter"],
             },
