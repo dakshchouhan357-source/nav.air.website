@@ -1007,8 +1007,8 @@ const Pricing = () => {
             {
               tier: "NavAir Mini",
               size: "For personal spaces",
-              price: "₹3,499",
-              old: "₹5,999",
+              price: "₹5,498",
+              old: "₹7,998",
               popular: false,
               perks: [
                 "Premium filtration",
@@ -1019,8 +1019,8 @@ const Pricing = () => {
             {
               tier: "NavAir 01",
               size: "For living spaces",
-              price: "₹4,999",
-              old: "₹8,499",
+              price: "₹6,998",
+              old: "₹10,498",
               popular: true,
               perks: [
                 "Premium multi-stage filtration",
@@ -1032,8 +1032,8 @@ const Pricing = () => {
             {
               tier: "NavAir Pro",
               size: "For larger spaces",
-              price: "₹6,999",
-              old: "₹11,999",
+              price: "₹8,998",
+              old: "₹13,998",
               popular: false,
               perks: [
                 "Advanced filtration system",
