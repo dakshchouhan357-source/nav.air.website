@@ -17,6 +17,7 @@ import {
   Heart,
   X,
   Phone,
+  EnvelopeSimple,
   ShieldStar,
 } from "@phosphor-icons/react";
 
@@ -684,8 +685,10 @@ const Specs = () => {
    PRE-BOOK OTP MODAL
 ============================================================ */
 const PrebookModal = ({ onClose, product }) => {
-  const [step, setStep] = useState(1); // 1=phone, 2=otp, 3=success
+  const [channel, setChannel] = useState("email"); // 'email' | 'sms'
+  const [step, setStep] = useState(1); // 1=identifier, 2=otp, 3=success
   const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
@@ -709,22 +712,41 @@ const PrebookModal = ({ onClose, product }) => {
   }, [onClose]);
 
   const sendOtp = async () => {
-    const trimmed = phone.trim();
-    if (!trimmed || trimmed.replace(/\D/g, "").length < 10) {
-      toast.error("Enter a valid mobile number");
-      return;
-    }
     setLoading(true);
     try {
-      const res = await axios.post(`${API}/prebook/send-otp`, {
-        phone: trimmed,
-        product,
-      });
-      if (res.data?.demo_code) {
-        setDemoCode(res.data.demo_code);
-        toast.success(`Demo OTP: ${res.data.demo_code}`);
+      if (channel === "email") {
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.trim())) {
+          toast.error("Enter a valid email address");
+          setLoading(false);
+          return;
+        }
+        const res = await axios.post(`${API}/prebook/send-email-otp`, {
+          email: email.trim(),
+          product,
+        });
+        if (res.data?.demo_code) {
+          setDemoCode(res.data.demo_code);
+          toast.success(`Demo OTP: ${res.data.demo_code}`);
+        } else {
+          toast.success("OTP sent to your email");
+        }
       } else {
-        toast.success("OTP sent via SMS");
+        const trimmed = phone.trim();
+        if (!trimmed || trimmed.replace(/\D/g, "").length < 10) {
+          toast.error("Enter a valid mobile number");
+          setLoading(false);
+          return;
+        }
+        const res = await axios.post(`${API}/prebook/send-otp`, {
+          phone: trimmed,
+          product,
+        });
+        if (res.data?.demo_code) {
+          setDemoCode(res.data.demo_code);
+          toast.success(`Demo OTP: ${res.data.demo_code}`);
+        } else {
+          toast.success("OTP sent via SMS");
+        }
       }
       setStep(2);
       setResendIn(30);
@@ -742,12 +764,15 @@ const PrebookModal = ({ onClose, product }) => {
     }
     setLoading(true);
     try {
-      const res = await axios.post(`${API}/prebook/verify-otp`, {
-        phone,
-        code,
-        product,
-        name: name || null,
-      });
+      const url =
+        channel === "email"
+          ? `${API}/prebook/verify-email-otp`
+          : `${API}/prebook/verify-otp`;
+      const payload =
+        channel === "email"
+          ? { email: email.trim(), code, product, name: name || null }
+          : { phone, code, product, name: name || null };
+      const res = await axios.post(url, payload);
       setBookingId(res.data?.booking_id);
       setPosition(res.data?.position);
       setStep(3);
@@ -797,11 +822,40 @@ const PrebookModal = ({ onClose, product }) => {
                 </span>
               </h3>
               <p className="mt-2 text-sm text-zinc-400">
-                Enter your mobile number. We&apos;ll text you a 6-digit code to
-                confirm your spot.
+                {channel === "email"
+                  ? "Enter your email. We'll send you a 6-digit code to confirm your spot."
+                  : "Enter your mobile number. We'll text you a 6-digit code to confirm your spot."}
               </p>
 
-              <label className="mt-6 block text-[11px] uppercase tracking-[0.22em] text-zinc-500 mb-2">
+              {/* Channel tabs */}
+              <div className="mt-5 inline-flex p-1 rounded-full border border-white/10 bg-white/[0.03]">
+                <button
+                  data-testid="prebook-channel-email"
+                  onClick={() => setChannel("email")}
+                  className={`px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide flex items-center gap-1.5 transition ${
+                    channel === "email"
+                      ? "bg-cyan-400 text-black shadow-[0_0_20px_rgba(0,240,255,0.35)]"
+                      : "text-zinc-400 hover:text-white"
+                  }`}
+                >
+                  <EnvelopeSimple size={14} weight="bold" />
+                  Email
+                </button>
+                <button
+                  data-testid="prebook-channel-sms"
+                  onClick={() => setChannel("sms")}
+                  className={`px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide flex items-center gap-1.5 transition ${
+                    channel === "sms"
+                      ? "bg-cyan-400 text-black shadow-[0_0_20px_rgba(0,240,255,0.35)]"
+                      : "text-zinc-400 hover:text-white"
+                  }`}
+                >
+                  <Phone size={14} weight="bold" />
+                  SMS
+                </button>
+              </div>
+
+              <label className="mt-5 block text-[11px] uppercase tracking-[0.22em] text-zinc-500 mb-2">
                 Your name (optional)
               </label>
               <input
@@ -813,25 +867,44 @@ const PrebookModal = ({ onClose, product }) => {
                 className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/20 transition"
               />
 
-              <label className="mt-4 block text-[11px] uppercase tracking-[0.22em] text-zinc-500 mb-2">
-                Mobile number
-              </label>
-              <div className="flex items-stretch gap-2">
-                <div className="flex items-center px-4 rounded-xl border border-white/10 bg-white/[0.03] text-zinc-300 text-sm font-mono">
-                  +91
-                </div>
-                <input
-                  data-testid="prebook-phone-input"
-                  type="tel"
-                  inputMode="numeric"
-                  value={phone}
-                  onChange={(e) =>
-                    setPhone(e.target.value.replace(/[^\d+ ]/g, ""))
-                  }
-                  placeholder="98765 43210"
-                  className="flex-1 bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/20 transition tracking-wide"
-                />
-              </div>
+              {channel === "email" ? (
+                <>
+                  <label className="mt-4 block text-[11px] uppercase tracking-[0.22em] text-zinc-500 mb-2">
+                    Email address
+                  </label>
+                  <input
+                    data-testid="prebook-email-input"
+                    type="email"
+                    autoComplete="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@example.com"
+                    className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/20 transition"
+                  />
+                </>
+              ) : (
+                <>
+                  <label className="mt-4 block text-[11px] uppercase tracking-[0.22em] text-zinc-500 mb-2">
+                    Mobile number
+                  </label>
+                  <div className="flex items-stretch gap-2">
+                    <div className="flex items-center px-4 rounded-xl border border-white/10 bg-white/[0.03] text-zinc-300 text-sm font-mono">
+                      +91
+                    </div>
+                    <input
+                      data-testid="prebook-phone-input"
+                      type="tel"
+                      inputMode="numeric"
+                      value={phone}
+                      onChange={(e) =>
+                        setPhone(e.target.value.replace(/[^\d+ ]/g, ""))
+                      }
+                      placeholder="98765 43210"
+                      className="flex-1 bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/20 transition tracking-wide"
+                    />
+                  </div>
+                </>
+              )}
 
               <button
                 data-testid="prebook-send-otp-button"
@@ -844,14 +917,18 @@ const PrebookModal = ({ onClose, product }) => {
                 ) : (
                   <>
                     Send OTP
-                    <Phone size={16} weight="bold" />
+                    {channel === "email" ? (
+                      <EnvelopeSimple size={16} weight="bold" />
+                    ) : (
+                      <Phone size={16} weight="bold" />
+                    )}
                   </>
                 )}
               </button>
 
               <p className="mt-4 text-[11px] text-zinc-500 flex items-center justify-center gap-1.5">
                 <ShieldStar size={12} weight="duotone" className="text-cyan-400" />
-                Your number is encrypted and never shared.
+                Your details are encrypted and never shared.
               </p>
             </div>
           )}
@@ -866,7 +943,10 @@ const PrebookModal = ({ onClose, product }) => {
               </h3>
               <p className="mt-2 text-sm text-zinc-400">
                 Sent to{" "}
-                <span className="text-white font-medium">{phone}</span>.{" "}
+                <span className="text-white font-medium">
+                  {channel === "email" ? email : phone}
+                </span>
+                .{" "}
                 <button
                   data-testid="prebook-change-number"
                   onClick={() => setStep(1)}
