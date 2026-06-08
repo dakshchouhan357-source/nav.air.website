@@ -153,9 +153,8 @@ const Hero = () => {
           data-testid="hero-subhead"
           className="mt-8 text-base sm:text-lg text-zinc-400 leading-relaxed max-w-2xl mx-auto"
         >
-          A whisper-silent, app-connected air purifier that doubles as
-          sculpture. Cinematic engineering. Real-time intelligence. Priced for
-          real homes.
+          A premium air purifier that doubles as sculpture. Crafted materials.
+          Considered design. Made for modern Indian homes.
         </p>
 
         <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -182,12 +181,12 @@ const Hero = () => {
           </a>
         </div>
 
-        {/* Stats row */}
+        {/* Brand pillars row */}
         <div className="mt-20 grid grid-cols-3 max-w-3xl mx-auto gap-6 sm:gap-10 border-t border-white/5 pt-10">
           {[
-            { v: "99.97%", l: "HEPA filtration" },
-            { v: "22 dB", l: "Whisper silent" },
-            { v: "60 m²", l: "Coverage" },
+            { v: "Premium", l: "Multi-stage filtration" },
+            { v: "Quiet", l: "Engineered for comfort" },
+            { v: "Modern", l: "Designed for living" },
           ].map((s, i) => (
             <div key={i} className="text-left sm:text-center">
               <div className="font-display text-2xl sm:text-3xl tracking-tight text-white">
@@ -209,13 +208,13 @@ const Hero = () => {
 ============================================================ */
 const TrustStrip = () => {
   const items = [
-    "WIRED",
-    "MONOCLE",
-    "DEZEEN",
-    "FAST COMPANY",
-    "ARCHDAILY",
-    "THE VERGE",
-    "DWELL",
+    "PREMIUM BUILD",
+    "QUIET BY DESIGN",
+    "MODERN LIVING",
+    "CLEAN AESTHETIC",
+    "THOUGHTFUL CRAFT",
+    "FUTURE-READY",
+    "INDIAN DESIGNED",
   ];
   const row = [...items, ...items, ...items];
   return (
@@ -281,7 +280,7 @@ const Features = () => {
                 className="text-cyan-400"
               />
               <span className="text-[11px] uppercase tracking-[0.22em] text-cyan-400 font-bold">
-                Smartphone Connected
+                Future App · Coming Soon
               </span>
             </div>
 
@@ -291,25 +290,27 @@ const Features = () => {
                 <div className="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-5 rounded-full bg-black border border-white/10" />
                 <div className="w-full h-full rounded-[34px] bg-[#080808] overflow-hidden p-4 flex flex-col">
                   <div className="text-[10px] text-zinc-500 uppercase tracking-widest">
-                    Living Room
+                    Concept Preview
                   </div>
-                  <div className="mt-1 font-display text-5xl text-white tracking-tight">
-                    18
+                  <div className="mt-1 font-display text-3xl text-white tracking-tight leading-tight">
+                    Clean Air,
+                    <br />
+                    Beautifully
                   </div>
-                  <div className="text-[10px] text-cyan-400 uppercase tracking-widest">
-                    AQI · Excellent
+                  <div className="text-[10px] text-cyan-400 uppercase tracking-widest mt-1">
+                    Future App Experience
                   </div>
                   <div className="mt-4 h-px bg-white/5" />
                   <div className="mt-4 space-y-3">
                     {[
-                      { l: "PM 2.5", v: "4 µg", w: "20%" },
-                      { l: "VOC", v: "0.2", w: "12%" },
-                      { l: "CO₂", v: "612", w: "38%" },
+                      { l: "Filtration", w: "85%" },
+                      { l: "Comfort", w: "70%" },
+                      { l: "Ambience", w: "55%" },
                     ].map((m, i) => (
                       <div key={i}>
                         <div className="flex justify-between text-[10px] text-zinc-400">
                           <span>{m.l}</span>
-                          <span className="text-zinc-200">{m.v}</span>
+                          <span className="text-zinc-200">Active</span>
                         </div>
                         <div className="mt-1 h-1 bg-white/5 rounded-full overflow-hidden">
                           <div
@@ -335,8 +336,10 @@ const Features = () => {
                 Your home, in your pocket.
               </h3>
               <p className="mt-3 text-zinc-400 max-w-md">
-                Live readings, schedules and filter health — all from a single,
-                obsessively crafted iOS &amp; Android app.
+                A future companion app is in the works — designed to bring
+                schedules, filter reminders and ambient controls into one
+                considered experience.{" "}
+                <span className="text-cyan-300/80">Coming soon.</span>
               </p>
             </div>
           </div>
@@ -350,7 +353,7 @@ const Features = () => {
             <div className="flex items-center gap-2 z-10">
               <Wind size={18} weight="duotone" className="text-cyan-400" />
               <span className="text-[11px] uppercase tracking-[0.22em] text-cyan-400 font-bold">
-                Real-time Air Quality
+                Future Smart Sensing
               </span>
             </div>
 
@@ -384,15 +387,17 @@ const Features = () => {
                     </linearGradient>
                   </defs>
                 </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
                   <span className="text-[10px] uppercase tracking-[0.2em] text-zinc-500">
-                    Living room
+                    On the roadmap
                   </span>
-                  <span className="font-display text-6xl text-white tracking-tight mt-1">
-                    18
+                  <span className="font-display text-3xl text-white tracking-tight mt-2 leading-tight">
+                    Sense the
+                    <br />
+                    unseen
                   </span>
-                  <span className="text-[11px] uppercase tracking-[0.18em] text-cyan-300 mt-1">
-                    Excellent
+                  <span className="text-[11px] uppercase tracking-[0.18em] text-cyan-300 mt-2">
+                    Coming Soon
                   </span>
                 </div>
               </div>
@@ -400,11 +405,11 @@ const Features = () => {
 
             <div className="z-10">
               <h3 className="font-display text-2xl sm:text-3xl font-light tracking-tight text-white">
-                Sense the unseen.
+                Smarter, in time.
               </h3>
               <p className="mt-2 text-zinc-400">
-                Laser PM2.5, VOC, CO₂ &amp; humidity sensors fuse into one
-                living number.
+                Advanced ambient sensing is part of our future roadmap —
+                designed to make every room feel effortlessly considered.
               </p>
             </div>
           </div>
@@ -421,7 +426,7 @@ const Features = () => {
                 className="text-cyan-400"
               />
               <span className="text-[11px] uppercase tracking-[0.22em] text-cyan-400 font-bold">
-                Voice Control
+                Voice · Future Feature
               </span>
             </div>
 
@@ -442,10 +447,11 @@ const Features = () => {
 
             <div>
               <h3 className="font-display text-2xl font-light tracking-tight text-white">
-                “Hey NavAir, clean the air.”
+                A quieter way to interact.
               </h3>
               <p className="mt-2 text-sm text-zinc-400">
-                Native Siri, Google &amp; Alexa. No bridges. No hubs. Just talk.
+                Hands-free voice experiences are being explored for future
+                NavAir products. Coming soon.
               </p>
             </div>
           </div>
@@ -458,24 +464,26 @@ const Features = () => {
             <div className="flex items-center gap-2">
               <WaveSine size={18} weight="duotone" className="text-cyan-400" />
               <span className="text-[11px] uppercase tracking-[0.22em] text-cyan-400 font-bold">
-                Whisper-silent
+                Low-noise Operation
               </span>
             </div>
 
-            <div className="my-6 flex items-baseline gap-2">
-              <span className="font-display text-7xl tracking-tighter text-white">
-                22
-              </span>
-              <span className="font-display text-2xl text-zinc-500">dB</span>
+            <div className="my-6">
+              <div className="font-display text-5xl tracking-tighter text-white leading-none">
+                Quiet
+              </div>
+              <div className="mt-2 font-display text-xl text-zinc-500 italic">
+                by design.
+              </div>
             </div>
 
             <div>
               <h3 className="font-display text-2xl font-light tracking-tight text-white">
-                Quieter than a library.
+                Designed for calm.
               </h3>
               <p className="mt-2 text-sm text-zinc-400">
-                Aerodynamic blade geometry and rubber-isolated motor mounts
-                kill resonance.
+                Engineered for a comfortable and peaceful environment — so the
+                only thing you notice is the air.
               </p>
             </div>
           </div>
@@ -537,7 +545,7 @@ const Showcase = () => {
             <img
               data-testid="showcase-image"
               src="https://images.pexels.com/photos/19398651/pexels-photo-19398651.jpeg"
-              alt="NavAir luxury air purifier"
+              alt="NavAir premium air purifier"
               className="w-full h-full object-cover opacity-90 mix-blend-luminosity hover:mix-blend-normal transition-all duration-1000"
               loading="lazy"
             />
@@ -545,10 +553,10 @@ const Showcase = () => {
             <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between">
               <div>
                 <div className="text-[10px] uppercase tracking-[0.22em] text-cyan-300 font-bold">
-                  NavAir 01 · Obsidian
+                  NavAir · Obsidian
                 </div>
                 <div className="font-display text-2xl text-white mt-1">
-                  Hand-anodized aluminum
+                  Crafted aluminum body
                 </div>
               </div>
               <span className="w-10 h-10 rounded-full bg-cyan-400/90 inline-flex items-center justify-center">
@@ -569,32 +577,32 @@ const Showcase = () => {
             </span>
           </h2>
           <p className="mt-6 text-zinc-400 leading-relaxed max-w-lg">
-            NavAir 01 is engineered around a single belief: technology should
-            disappear into beauty. A monolithic aluminum body, a soft
-            illuminated halo, and a ceramic crown — designed by industrial
-            artisans, priced for everyone.
+            NavAir is built around a single belief: technology should disappear
+            into beauty. A monolithic aluminum body, a soft illuminated halo,
+            and a ceramic crown — designed for modern living, priced for real
+            homes.
           </p>
 
           <div className="mt-10 grid sm:grid-cols-2 gap-5">
             {[
               {
-                t: "Filter health, live.",
-                d: "Three-stage HEPA-13 + activated carbon. Replacement alerts at 95%.",
+                t: "Premium filtration.",
+                d: "A considered multi-stage filtration system designed for everyday clean-air comfort.",
                 i: ShieldCheck,
               },
               {
-                t: "Smart auto-clean.",
-                d: "AI ramps power based on pets, cooking and pollen forecasts.",
+                t: "Smart features — soon.",
+                d: "Future NavAir products may include auto modes that respond to your home's rhythm.",
                 i: Lightning,
               },
               {
-                t: "Moisture aware.",
-                d: "Built-in humidity sensor optimizes filter longevity.",
+                t: "Comfort first.",
+                d: "Engineered to keep the air feeling fresh and the room feeling calm.",
                 i: Drop,
               },
               {
                 t: "Made to last.",
-                d: "10-year structural warranty. Recyclable, modular parts.",
+                d: "Durable construction with thoughtful, modular parts.",
                 i: Heart,
               },
             ].map((it, i) => (
@@ -620,13 +628,13 @@ const Showcase = () => {
 ============================================================ */
 const Specs = () => {
   const rows = [
-    ["Coverage", "60 m² / 645 ft²"],
-    ["Filtration", "HEPA-13 · 99.97% @ 0.3μm"],
-    ["Noise Floor", "22 dB · whisper-silent"],
-    ["Sensors", "PM2.5 · VOC · CO₂ · Humidity"],
-    ["Connectivity", "Wi-Fi 6 · BLE · Thread"],
-    ["Voice", "Siri · Google · Alexa"],
-    ["Power", "45 W max · 4 W idle"],
+    ["Coverage", "Designed for modern living spaces"],
+    ["Filtration", "Premium multi-stage filtration"],
+    ["Acoustics", "Engineered for low-noise operation"],
+    ["Smart sensing", "Coming soon — future products"],
+    ["App connectivity", "Coming soon — future products"],
+    ["Voice features", "Coming soon — future products"],
+    ["Operation", "Energy-conscious design"],
     ["Body", "Anodized aluminum + ceramic"],
   ];
   return (
@@ -641,12 +649,12 @@ const Specs = () => {
             — Specifications
           </div>
           <h2 className="font-display text-4xl sm:text-5xl font-light tracking-[-0.03em] text-white leading-[1.05]">
-            Numbers that{" "}
-            <span className="italic text-zinc-500">whisper.</span>
+            Considered{" "}
+            <span className="italic text-zinc-500">by design.</span>
           </h2>
           <p className="mt-6 text-zinc-400 max-w-md">
-            Every figure on this page is measured under independent lab
-            conditions. No marketing math.
+            A premium product made for everyday calm. Final specifications
+            will be shared as we approach launch.
           </p>
         </div>
         <div className="lg:col-span-7">
@@ -983,17 +991,14 @@ const Pricing = () => {
             — Accessible luxury
           </div>
           <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-light tracking-[-0.03em] text-white leading-[1.05]">
-            Built like a{" "}
-            <span className="italic text-zinc-500">₹1,50,000</span> machine.
-            <br />
-            Priced like{" "}
+            Premium materials.{" "}
             <span className="italic bg-gradient-to-r from-cyan-200 to-cyan-400 bg-clip-text text-transparent">
-              a weekend dinner.
+              Honest pricing.
             </span>
           </h2>
           <p className="mt-6 text-zinc-400 max-w-xl mx-auto">
-            We obsessed over the supply chain so you don&apos;t have to obsess over
-            the price tag.
+            We believe premium air purification should feel within reach for
+            modern homes.
           </p>
         </div>
 
@@ -1001,32 +1006,40 @@ const Pricing = () => {
           {[
             {
               tier: "NavAir Mini",
-              size: "Bedroom · 25m²",
+              size: "For personal spaces",
               price: "₹3,499",
               old: "₹5,999",
               popular: false,
-              perks: ["HEPA-13", "App control", "Auto mode"],
+              perks: [
+                "Premium filtration",
+                "Quiet operation",
+                "Clean, modern design",
+              ],
             },
             {
               tier: "NavAir 01",
-              size: "Living room · 60m²",
+              size: "For living spaces",
               price: "₹4,999",
               old: "₹8,499",
               popular: true,
               perks: [
-                "HEPA-13 + Carbon",
-                "Real-time AQI",
-                "Voice + App",
-                "Whisper 22dB",
+                "Premium multi-stage filtration",
+                "Low-noise operation",
+                "Crafted aluminum body",
+                "Future app & smart features",
               ],
             },
             {
               tier: "NavAir Pro",
-              size: "Open space · 90m²",
+              size: "For larger spaces",
               price: "₹6,999",
               old: "₹11,999",
               popular: false,
-              perks: ["Dual filtration", "Pro sensors", "Thread + Matter"],
+              perks: [
+                "Advanced filtration system",
+                "Premium materials",
+                "Future smart connectivity",
+              ],
             },
           ].map((p, i) => (
             <div
@@ -1158,8 +1171,7 @@ const Waitlist = () => {
           </span>
         </h2>
         <p className="mt-6 text-zinc-400">
-          Be first in line. Early reservations get founder pricing and a hand
-          signed unit.
+          Be among the first. Early reservations receive founder pricing.
         </p>
 
         {!joined ? (
@@ -1253,9 +1265,15 @@ const Footer = () => {
             <span className="font-display text-xl tracking-tight">NavAir</span>
           </div>
           <p className="mt-4 text-zinc-500 max-w-sm text-sm">
-            Accessible luxury for the air you live in. Designed in Stockholm,
-            assembled with care.
+            Premium air purification, thoughtfully designed for modern living.
           </p>
+          <a
+            href="mailto:nav.purify@gmail.com"
+            data-testid="footer-contact-email"
+            className="mt-5 inline-flex items-center gap-2 text-sm text-cyan-300 hover:text-cyan-200 transition-colors"
+          >
+            nav.purify@gmail.com
+          </a>
         </div>
         <div className="md:col-span-7 grid grid-cols-3 gap-8 text-sm">
           {[
@@ -1265,33 +1283,45 @@ const Footer = () => {
             },
             {
               h: "Company",
-              l: ["About", "Press", "Sustainability", "Careers"],
+              l: ["About", "Sustainability", "Careers"],
             },
-            { h: "Support", l: ["Help center", "Warranty", "Contact", "App"] },
+            {
+              h: "Support",
+              l: [
+                { label: "Contact", href: "mailto:nav.purify@gmail.com" },
+                { label: "Warranty" },
+                { label: "Help center" },
+              ],
+            },
           ].map((c, i) => (
             <div key={i}>
               <div className="text-[11px] uppercase tracking-[0.22em] text-zinc-500 font-bold mb-4">
                 {c.h}
               </div>
               <ul className="space-y-2.5">
-                {c.l.map((it, j) => (
-                  <li key={j}>
-                    <a
-                      href="#"
-                      data-testid={`footer-link-${c.h.toLowerCase()}-${j}`}
-                      className="text-zinc-300 hover:text-cyan-300 transition-colors"
-                    >
-                      {it}
-                    </a>
-                  </li>
-                ))}
+                {c.l.map((it, j) => {
+                  const isObj = typeof it === "object";
+                  const label = isObj ? it.label : it;
+                  const href = isObj ? it.href : "#";
+                  return (
+                    <li key={j}>
+                      <a
+                        href={href || "#"}
+                        data-testid={`footer-link-${c.h.toLowerCase()}-${j}`}
+                        className="text-zinc-300 hover:text-cyan-300 transition-colors"
+                      >
+                        {label}
+                      </a>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ))}
         </div>
       </div>
       <div className="max-w-7xl mx-auto mt-14 pt-6 border-t border-white/5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-zinc-500">
-        <div>© {new Date().getFullYear()} NavAir AB. All rights reserved.</div>
+        <div>© {new Date().getFullYear()} NavAir. All rights reserved.</div>
         <div className="flex gap-6">
           <a href="#" className="hover:text-zinc-300">
             Privacy
