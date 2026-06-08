@@ -91,10 +91,14 @@ async def join_waitlist(payload: WaitlistCreate):
     email_lower = payload.email.lower()
     existing = await db.waitlist.find_one({"email": email_lower})
     if existing:
+        # Compute the position of the existing entry (1-indexed by created_at)
+        created_at = existing.get("created_at")
+        position = await db.waitlist.count_documents({"created_at": {"$lte": created_at}}) if created_at else None
         return {
             "ok": True,
             "already_joined": True,
             "message": "You're already on the list. We'll be in touch soon.",
+            "position": position,
         }
     entry = WaitlistEntry(email=email_lower, source=payload.source)
     doc = entry.model_dump()
@@ -229,9 +233,10 @@ async def verify_otp(payload: VerifyOtpRequest):
         if record.get("attempts", 0) >= 5:
             raise HTTPException(status_code=429, detail="Too many attempts. Request a new code.")
         verified = (record.get("code") == code)
-        await db.otp_codes.update_one(
-            {"phone": phone}, {"$inc": {"attempts": 1}}
-        )
+        if not verified:
+            await db.otp_codes.update_one(
+                {"phone": phone}, {"$inc": {"attempts": 1}}
+            )
 
     if not verified:
         raise HTTPException(status_code=400, detail="Incorrect code. Please try again.")
