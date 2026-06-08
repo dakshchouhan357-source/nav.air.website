@@ -675,7 +675,7 @@ const Specs = () => {
 /* ============================================================
    PRE-BOOK OTP MODAL
 ============================================================ */
-const PrebookModal = ({ open, onClose, product }) => {
+const PrebookModal = ({ onClose, product }) => {
   const [step, setStep] = useState(1); // 1=phone, 2=otp, 3=success
   const [phone, setPhone] = useState("");
   const [code, setCode] = useState("");
@@ -686,20 +686,6 @@ const PrebookModal = ({ open, onClose, product }) => {
   const [position, setPosition] = useState(null);
   const [resendIn, setResendIn] = useState(0);
 
-  // Reset whenever opened
-  useEffect(() => {
-    if (open) {
-      setStep(1);
-      setPhone("");
-      setCode("");
-      setName("");
-      setDemoCode(null);
-      setBookingId(null);
-      setPosition(null);
-      setResendIn(0);
-    }
-  }, [open]);
-
   // Resend countdown
   useEffect(() => {
     if (resendIn <= 0) return;
@@ -709,13 +695,10 @@ const PrebookModal = ({ open, onClose, product }) => {
 
   // Esc to close
   useEffect(() => {
-    if (!open) return;
     const onKey = (e) => e.key === "Escape" && onClose?.();
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open, onClose]);
-
-  if (!open) return null;
+  }, [onClose]);
 
   const sendOtp = async () => {
     const trimmed = phone.trim();
@@ -806,7 +789,7 @@ const PrebookModal = ({ open, onClose, product }) => {
                 </span>
               </h3>
               <p className="mt-2 text-sm text-zinc-400">
-                Enter your mobile number. We'll text you a 6-digit code to
+                Enter your mobile number. We&apos;ll text you a 6-digit code to
                 confirm your spot.
               </p>
 
@@ -922,7 +905,7 @@ const PrebookModal = ({ open, onClose, product }) => {
               </button>
 
               <div className="mt-4 text-center text-xs text-zinc-500">
-                Didn't get it?{" "}
+                Didn&apos;t get it?{" "}
                 {resendIn > 0 ? (
                   <span className="text-zinc-400">Resend in {resendIn}s</span>
                 ) : (
@@ -944,7 +927,7 @@ const PrebookModal = ({ open, onClose, product }) => {
                 <CheckCircle size={28} weight="duotone" className="text-cyan-300" />
               </div>
               <h3 className="mt-5 font-display text-2xl sm:text-3xl text-white tracking-tight leading-tight">
-                You're in the{" "}
+                You&apos;re in the{" "}
                 <span className="italic bg-gradient-to-r from-cyan-200 to-cyan-400 bg-clip-text text-transparent">
                   first wave.
                 </span>
@@ -1009,7 +992,7 @@ const Pricing = () => {
             </span>
           </h2>
           <p className="mt-6 text-zinc-400 max-w-xl mx-auto">
-            We obsessed over the supply chain so you don't have to obsess over
+            We obsessed over the supply chain so you don&apos;t have to obsess over
             the price tag.
           </p>
         </div>
@@ -1105,11 +1088,13 @@ const Pricing = () => {
         </div>
       </div>
 
-      <PrebookModal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        product={selected || "NavAir 01"}
-      />
+      {modalOpen && (
+        <PrebookModal
+          key={selected || "default"}
+          onClose={() => setModalOpen(false)}
+          product={selected || "NavAir 01"}
+        />
+      )}
     </section>
   );
 };
@@ -1227,10 +1212,10 @@ const Waitlist = () => {
               className="text-cyan-300"
             />
             <div className="font-display text-xl text-white">
-              You're on the list.
+              You&apos;re on the list.
             </div>
             <div className="text-sm text-zinc-400">
-              Position #{count?.toLocaleString() || "—"} · We'll email you when
+              Position #{count?.toLocaleString() || "—"} · We&apos;ll email you when
               units ship.
             </div>
           </div>

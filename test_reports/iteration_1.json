@@ -1,0 +1,43 @@
+{
+  "summary": "Full E2E backend + frontend testing of NavAir landing page completed. Backend tests run in both LIVE and DEMO Twilio modes — all 8 pytest tests pass in DEMO mode (6/6 in LIVE, with 2 skipped that require demo mode). Frontend pricing modal flow (pricing-cta → step-phone → send-otp → step-otp w/ demo code → verify → step-success → done closes), modal remount on reopen, Escape close, and waitlist (valid + native invalid email validation) all work. No console errors. Twilio LIVE mode restored (twilio_enabled=true).",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "/api/prebook/verify-otp (demo)", "issue": "attempts counter is incremented even when code is correct (DB update happens before verify check), causing legitimate users to use up attempts unnecessarily. Cosmetic in demo mode only."},
+      {"endpoint": "/api/prebook/send-otp", "issue": "When TWILIO_VERIFY_SID is empty but ACCOUNT_SID/AUTH_TOKEN present, twilio_client is still initialised, so the response channel string reads 'demo' for the send doc but `channel` field uses `twilio_client` truthiness — minor inconsistency in /api/prebook/send-otp response shape (channel='demo' only when twilio_client is None). Not user-facing."},
+      {"endpoint": "/api/waitlist (duplicate)", "issue": "Duplicate response is idempotent (already_joined=true) but does NOT include the original `position` field. Spec asked for 'returns same position'. Currently returns only ok+already_joined+message. Should return position for parity."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_navair_api.py",
+    "/app/test_reports/pytest/live_results.xml",
+    "/app/test_reports/pytest/demo_results.xml"
+  ],
+  "action_items": [
+    "(Minor) Include `position` in duplicate /api/waitlist response so frontend can show 'You are #N'.",
+    "(Minor) In demo verify-otp branch, only increment `attempts` when code does NOT match (move $inc into the failed-verify branch)."
+  ],
+  "critical_code_review_comments": [
+    "server.py is monolithic but small (~290 lines) — fine for now; will need splitting if it grows past 700 lines.",
+    "logger is defined AFTER it is referenced inside send_otp/verify_otp exception handlers (logger initialised on line 287 but used on 173/220). In Python this works at call-time because the function body looks up the global at execution; however any module-level call before line 287 would fail. Suggest moving logging.basicConfig() up before route definitions.",
+    "Rate limit on /api/prebook/send-otp counts ALL channel sends (twilio + demo) per phone, ignoring product. Acceptable.",
+    "No CSRF protection — acceptable for public OTP flow.",
+    "MongoDB ObjectId is correctly excluded (status_checks uses projection {_id:0})."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_navair_api.py (new)",
+    "/app/backend/tests/__init__.py (new, empty)"
+  ],
+  "success_rate": {"backend": "100% (8/8 in demo mode; 6/6 + 2 skipped in live mode)", "frontend": "100% on tested flows (pricing modal, waitlist valid+invalid, navigation, brand, no console errors)"},
+  "test_credentials": "N/A — no auth required for public endpoints. Twilio creds in /app/backend/.env (LIVE).",
+  "seed_data_creation": "Tests use uniquely random TEST_*@example.com waitlist emails and random +91 phone numbers (no real numbers used). Created waitlist entries and prebookings remain in DB.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend is back in LIVE Twilio mode (TWILIO_VERIFY_SID=VA1ecbae7c475c34ca2ccdd5ca732f4868). To re-run E2E OTP/rate-limit tests, set TWILIO_VERIFY_SID=\"\" in /app/backend/.env, restart backend, run pytest, then RESTORE. pytest demo-mode tests auto-skip in LIVE mode. data-testids verified for all sections: hero-section, features-section, showcase-section, specs-section, pricing-section, waitlist-section, site-footer. Pricing CTAs: pricing-cta-{0,1,2}. Modal flow: prebook-modal → prebook-step-phone (name + phone inputs + send button) → prebook-step-otp (demo code rendered in screen text, otp input, verify button, resend) → prebook-step-success (done button). PrebookModal reset via remount with key={selected} works correctly. Backdrop close and Escape close both work.",
+  "rca of the issue": "No critical bugs found. Minor issues documented under backend_issues.minor and action_items."
+}
