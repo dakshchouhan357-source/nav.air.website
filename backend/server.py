@@ -28,6 +28,7 @@ TWILIO_ENABLED = bool(TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN and TWILIO_VERIFY
 GMAIL_USER = os.environ.get('GMAIL_USER', '').strip()
 GMAIL_APP_PASSWORD = os.environ.get('GMAIL_APP_PASSWORD', '').strip().replace(' ', '')
 BRAND_NAME = os.environ.get('BRAND_NAME', 'NavAir').strip()
+BRAND_CONTACT_EMAIL = os.environ.get('BRAND_CONTACT_EMAIL', '').strip()
 GMAIL_ENABLED = bool(GMAIL_USER and GMAIL_APP_PASSWORD)
 
 twilio_client = None
@@ -335,7 +336,10 @@ def _send_otp_email(to_email: str, code: str, product: str, name: Optional[str])
         raise RuntimeError("Gmail SMTP is not configured")
     msg = MIMEMultipart("alternative")
     msg["Subject"] = f"{code} is your {BRAND_NAME} verification code"
+    # Display as NavAir even though it's sent from a personal Gmail
     msg["From"] = f"{BRAND_NAME} <{GMAIL_USER}>"
+    if BRAND_CONTACT_EMAIL:
+        msg["Reply-To"] = BRAND_CONTACT_EMAIL
     msg["To"] = to_email
     text = (
         f"Your {BRAND_NAME} verification code is {code}.\n"
