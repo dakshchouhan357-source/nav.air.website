@@ -15,6 +15,9 @@ import {
   Drop,
   CaretRight,
   Heart,
+  X,
+  Phone,
+  ShieldStar,
 } from "@phosphor-icons/react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -670,9 +673,317 @@ const Specs = () => {
 };
 
 /* ============================================================
+   PRE-BOOK OTP MODAL
+============================================================ */
+const PrebookModal = ({ open, onClose, product }) => {
+  const [step, setStep] = useState(1); // 1=phone, 2=otp, 3=success
+  const [phone, setPhone] = useState("");
+  const [code, setCode] = useState("");
+  const [name, setName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [demoCode, setDemoCode] = useState(null);
+  const [bookingId, setBookingId] = useState(null);
+  const [position, setPosition] = useState(null);
+  const [resendIn, setResendIn] = useState(0);
+
+  // Reset whenever opened
+  useEffect(() => {
+    if (open) {
+      setStep(1);
+      setPhone("");
+      setCode("");
+      setName("");
+      setDemoCode(null);
+      setBookingId(null);
+      setPosition(null);
+      setResendIn(0);
+    }
+  }, [open]);
+
+  // Resend countdown
+  useEffect(() => {
+    if (resendIn <= 0) return;
+    const t = setTimeout(() => setResendIn((s) => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [resendIn]);
+
+  // Esc to close
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e) => e.key === "Escape" && onClose?.();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  const sendOtp = async () => {
+    const trimmed = phone.trim();
+    if (!trimmed || trimmed.replace(/\D/g, "").length < 10) {
+      toast.error("Enter a valid mobile number");
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await axios.post(`${API}/prebook/send-otp`, {
+        phone: trimmed,
+        product,
+      });
+      if (res.data?.demo_code) {
+        setDemoCode(res.data.demo_code);
+        toast.success(`Demo OTP: ${res.data.demo_code}`);
+      } else {
+        toast.success("OTP sent via SMS");
+      }
+      setStep(2);
+      setResendIn(30);
+    } catch (err) {
+      toast.error(err?.response?.data?.detail || "Could not send OTP");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const verifyOtp = async () => {
+    if (!/^\d{4,6}$/.test(code)) {
+      toast.error("Enter the 6-digit code");
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await axios.post(`${API}/prebook/verify-otp`, {
+        phone,
+        code,
+        product,
+        name: name || null,
+      });
+      setBookingId(res.data?.booking_id);
+      setPosition(res.data?.position);
+      setStep(3);
+      toast.success("Pre-booking confirmed");
+    } catch (err) {
+      toast.error(err?.response?.data?.detail || "Invalid code");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div
+      data-testid="prebook-modal"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6"
+    >
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-black/80 backdrop-blur-xl"
+        onClick={onClose}
+      />
+      {/* Card */}
+      <div className="relative w-full max-w-md rounded-3xl border border-white/10 bg-gradient-to-b from-zinc-900/95 to-black/95 p-6 sm:p-8 shadow-[0_0_80px_-10px_rgba(0,240,255,0.35)]">
+        {/* Glow */}
+        <div className="absolute -top-24 -right-16 w-56 h-56 rounded-full bg-cyan-400/20 blur-3xl pointer-events-none" />
+
+        <button
+          data-testid="prebook-modal-close"
+          onClick={onClose}
+          className="absolute top-4 right-4 p-2 rounded-full text-zinc-400 hover:text-white hover:bg-white/5 transition"
+          aria-label="Close"
+        >
+          <X size={18} weight="bold" />
+        </button>
+
+        <div className="relative">
+          <div className="text-[10px] uppercase tracking-[0.22em] text-cyan-400 font-bold">
+            Pre-book · {product}
+          </div>
+
+          {step === 1 && (
+            <div data-testid="prebook-step-phone" className="mt-3">
+              <h3 className="font-display text-2xl sm:text-3xl text-white tracking-tight leading-tight">
+                Reserve with a{" "}
+                <span className="italic bg-gradient-to-r from-cyan-200 to-cyan-400 bg-clip-text text-transparent">
+                  one-tap OTP.
+                </span>
+              </h3>
+              <p className="mt-2 text-sm text-zinc-400">
+                Enter your mobile number. We'll text you a 6-digit code to
+                confirm your spot.
+              </p>
+
+              <label className="mt-6 block text-[11px] uppercase tracking-[0.22em] text-zinc-500 mb-2">
+                Your name (optional)
+              </label>
+              <input
+                data-testid="prebook-name-input"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Ananya"
+                className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/20 transition"
+              />
+
+              <label className="mt-4 block text-[11px] uppercase tracking-[0.22em] text-zinc-500 mb-2">
+                Mobile number
+              </label>
+              <div className="flex items-stretch gap-2">
+                <div className="flex items-center px-4 rounded-xl border border-white/10 bg-white/[0.03] text-zinc-300 text-sm font-mono">
+                  +91
+                </div>
+                <input
+                  data-testid="prebook-phone-input"
+                  type="tel"
+                  inputMode="numeric"
+                  value={phone}
+                  onChange={(e) =>
+                    setPhone(e.target.value.replace(/[^\d+ ]/g, ""))
+                  }
+                  placeholder="98765 43210"
+                  className="flex-1 bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/20 transition tracking-wide"
+                />
+              </div>
+
+              <button
+                data-testid="prebook-send-otp-button"
+                onClick={sendOtp}
+                disabled={loading}
+                className="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-full bg-cyan-400 text-black hover:bg-cyan-300 disabled:opacity-50 px-6 py-3 font-semibold transition shadow-[0_0_40px_rgba(0,240,255,0.35)]"
+              >
+                {loading ? (
+                  <CircleNotch size={16} weight="bold" className="animate-spin" />
+                ) : (
+                  <>
+                    Send OTP
+                    <Phone size={16} weight="bold" />
+                  </>
+                )}
+              </button>
+
+              <p className="mt-4 text-[11px] text-zinc-500 flex items-center justify-center gap-1.5">
+                <ShieldStar size={12} weight="duotone" className="text-cyan-400" />
+                Your number is encrypted and never shared.
+              </p>
+            </div>
+          )}
+
+          {step === 2 && (
+            <div data-testid="prebook-step-otp" className="mt-3">
+              <h3 className="font-display text-2xl sm:text-3xl text-white tracking-tight leading-tight">
+                Enter the{" "}
+                <span className="italic bg-gradient-to-r from-cyan-200 to-cyan-400 bg-clip-text text-transparent">
+                  6-digit code.
+                </span>
+              </h3>
+              <p className="mt-2 text-sm text-zinc-400">
+                Sent to{" "}
+                <span className="text-white font-medium">{phone}</span>.{" "}
+                <button
+                  data-testid="prebook-change-number"
+                  onClick={() => setStep(1)}
+                  className="text-cyan-400 hover:text-cyan-300 underline-offset-4 hover:underline"
+                >
+                  Change
+                </button>
+              </p>
+
+              {demoCode && (
+                <div className="mt-4 p-3 rounded-xl border border-cyan-400/30 bg-cyan-400/5 text-xs text-cyan-200 font-mono">
+                  Demo mode — your code is{" "}
+                  <span className="font-bold tracking-widest">{demoCode}</span>
+                </div>
+              )}
+
+              <input
+                data-testid="prebook-otp-input"
+                type="text"
+                inputMode="numeric"
+                maxLength={6}
+                value={code}
+                onChange={(e) =>
+                  setCode(e.target.value.replace(/\D/g, "").slice(0, 6))
+                }
+                placeholder="••••••"
+                className="mt-6 w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-4 text-center text-white text-2xl tracking-[0.5em] font-mono placeholder-zinc-700 focus:outline-none focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/20 transition"
+              />
+
+              <button
+                data-testid="prebook-verify-button"
+                onClick={verifyOtp}
+                disabled={loading || code.length < 4}
+                className="mt-5 w-full inline-flex items-center justify-center gap-2 rounded-full bg-cyan-400 text-black hover:bg-cyan-300 disabled:opacity-50 px-6 py-3 font-semibold transition shadow-[0_0_40px_rgba(0,240,255,0.35)]"
+              >
+                {loading ? (
+                  <CircleNotch size={16} weight="bold" className="animate-spin" />
+                ) : (
+                  <>
+                    Verify & reserve
+                    <ArrowRight size={16} weight="bold" />
+                  </>
+                )}
+              </button>
+
+              <div className="mt-4 text-center text-xs text-zinc-500">
+                Didn't get it?{" "}
+                {resendIn > 0 ? (
+                  <span className="text-zinc-400">Resend in {resendIn}s</span>
+                ) : (
+                  <button
+                    data-testid="prebook-resend-button"
+                    onClick={sendOtp}
+                    className="text-cyan-400 hover:text-cyan-300 underline-offset-4 hover:underline"
+                  >
+                    Resend OTP
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {step === 3 && (
+            <div data-testid="prebook-step-success" className="mt-3 text-center">
+              <div className="mx-auto w-16 h-16 rounded-full bg-cyan-400/15 border border-cyan-400/40 flex items-center justify-center shadow-[0_0_30px_rgba(0,240,255,0.35)]">
+                <CheckCircle size={28} weight="duotone" className="text-cyan-300" />
+              </div>
+              <h3 className="mt-5 font-display text-2xl sm:text-3xl text-white tracking-tight leading-tight">
+                You're in the{" "}
+                <span className="italic bg-gradient-to-r from-cyan-200 to-cyan-400 bg-clip-text text-transparent">
+                  first wave.
+                </span>
+              </h3>
+              <p className="mt-3 text-sm text-zinc-400">
+                {name ? `${name}, your` : "Your"} {product} is reserved.
+                {position ? ` You're #${position} on the list.` : ""}
+              </p>
+              {bookingId && (
+                <div className="mt-5 mx-auto inline-block px-4 py-2 rounded-full border border-white/10 bg-white/[0.03] font-mono text-[11px] text-zinc-400">
+                  Booking · {bookingId.slice(0, 8).toUpperCase()}
+                </div>
+              )}
+              <button
+                data-testid="prebook-done-button"
+                onClick={onClose}
+                className="mt-7 w-full inline-flex items-center justify-center gap-2 rounded-full border border-white/15 text-white hover:bg-white/5 px-6 py-3 font-medium transition"
+              >
+                Done
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ============================================================
    PRICING TEASER
 ============================================================ */
 const Pricing = () => {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selected, setSelected] = useState(null);
+
+  const openModal = (tier) => {
+    setSelected(tier);
+    setModalOpen(true);
+  };
   return (
     <section
       id="pricing"
@@ -776,8 +1087,9 @@ const Pricing = () => {
                   </li>
                 ))}
               </ul>
-              <a
-                href="#waitlist"
+              <button
+                type="button"
+                onClick={() => openModal(p.tier)}
                 data-testid={`pricing-cta-${i}`}
                 className={`mt-8 w-full inline-flex items-center justify-center gap-2 rounded-full py-3 text-sm font-medium transition-all ${
                   p.popular
@@ -787,11 +1099,17 @@ const Pricing = () => {
               >
                 Reserve {p.tier.split(" ")[1]}
                 <ArrowRight size={14} weight="bold" />
-              </a>
+              </button>
             </div>
           ))}
         </div>
       </div>
+
+      <PrebookModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        product={selected || "NavAir 01"}
+      />
     </section>
   );
 };
