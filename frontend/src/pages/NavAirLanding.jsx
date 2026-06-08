@@ -19,6 +19,7 @@ import {
   Phone,
   EnvelopeSimple,
   ShieldStar,
+  Plus,
 } from "@phosphor-icons/react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -40,6 +41,7 @@ const Header = () => {
     { id: "showcase", label: "Showcase" },
     { id: "specs", label: "Specs" },
     { id: "pricing", label: "Pricing" },
+    { id: "faq", label: "FAQ" },
   ];
 
   return (
@@ -80,7 +82,7 @@ const Header = () => {
         </nav>
 
         <a
-          href="#waitlist"
+          href="#pricing"
           data-testid="header-cta-button"
           className="hidden sm:inline-flex items-center gap-2 text-sm font-medium text-black bg-cyan-400 hover:bg-cyan-300 rounded-full pl-5 pr-2 py-2 transition-all duration-300 shadow-[0_0_30px_rgba(0,240,255,0.25)] hover:shadow-[0_0_50px_rgba(0,240,255,0.45)]"
         >
@@ -155,12 +157,12 @@ const Hero = () => {
           className="mt-8 text-base sm:text-lg text-zinc-400 leading-relaxed max-w-2xl mx-auto"
         >
           A premium air purifier that doubles as sculpture. Crafted materials.
-          Considered design. Made for modern Indian homes.
+          Considered design. Made for modern living.
         </p>
 
         <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
           <a
-            href="#waitlist"
+            href="#pricing"
             data-testid="hero-cta-button"
             className="group relative inline-flex items-center gap-3 bg-cyan-400 text-black hover:bg-cyan-300 rounded-full pl-7 pr-2 py-2 font-semibold transition-all duration-300 shadow-[0_0_40px_rgba(0,240,255,0.35)] hover:shadow-[0_0_60px_rgba(0,240,255,0.6)]"
           >
@@ -215,7 +217,7 @@ const TrustStrip = () => {
     "CLEAN AESTHETIC",
     "THOUGHTFUL CRAFT",
     "FUTURE-READY",
-    "INDIAN DESIGNED",
+    "CONSIDERED DETAIL",
   ];
   const row = [...items, ...items, ...items];
   return (
@@ -1193,134 +1195,133 @@ const Pricing = () => {
 };
 
 /* ============================================================
-   WAITLIST
+   FAQ — Premium answers, no signup
 ============================================================ */
-const Waitlist = () => {
-  const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [joined, setJoined] = useState(false);
-  const [count, setCount] = useState(null);
-
-  useEffect(() => {
-    axios
-      .get(`${API}/waitlist/count`)
-      .then((r) => setCount(r.data.count))
-      .catch(() => {});
-  }, []);
-
-  const submit = async (e) => {
-    e.preventDefault();
-    if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
-      toast.error("Please enter a valid email.");
-      return;
-    }
-    setLoading(true);
-    try {
-      const res = await axios.post(`${API}/waitlist`, {
-        email,
-        source: "waitlist-section",
-      });
-      setJoined(true);
-      if (res.data?.position) setCount(res.data.position);
-      toast.success(res.data?.message || "You're on the list.");
-    } catch (err) {
-      toast.error("Something went wrong. Try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+const Faq = () => {
+  const [openIdx, setOpenIdx] = useState(0);
+  const faqs = [
+    {
+      q: "When will NavAir start shipping?",
+      a: "We're in the final stretch of production. Reservations placed via the pricing section will be fulfilled in the order received once units ship.",
+    },
+    {
+      q: "How is NavAir different from other air purifiers?",
+      a: "NavAir is built around design and quietness first. Premium materials, a considered form, and a thoughtful approach to indoor comfort — designed to feel at home in modern interiors.",
+    },
+    {
+      q: "What about smart features and the mobile app?",
+      a: "Smart connectivity, ambient sensing and a companion app are part of our future roadmap. Final feature timing will be shared as we approach launch.",
+    },
+    {
+      q: "Do I pay anything when I pre-book?",
+      a: "No. Pre-booking only secures your spot — no charges, no card details. Final pricing is locked when units begin to ship.",
+    },
+    {
+      q: "What's the return and warranty policy?",
+      a: "Every NavAir is backed by a hassle-free return window and a manufacturer warranty. Final terms will accompany your shipping confirmation.",
+    },
+    {
+      q: "How can I get in touch?",
+      a: "Reach us anytime at nav.purify@gmail.com — we read every message.",
+    },
+  ];
 
   return (
     <section
-      id="waitlist"
-      data-testid="waitlist-section"
+      id="faq"
+      data-testid="faq-section"
       className="relative py-28 sm:py-36 px-6 sm:px-10 overflow-hidden border-t border-white/5"
     >
       <div
-        className="aurora bg-cyan-500/40"
+        className="aurora bg-cyan-500/30"
         style={{ width: 600, height: 600, bottom: "-30%", left: "20%" }}
       />
-      <div className="max-w-3xl mx-auto text-center relative">
-        <div className="text-[11px] font-bold uppercase tracking-[0.22em] text-cyan-400 mb-5">
-          — Join the first wave
+      <div className="max-w-4xl mx-auto relative">
+        <div className="text-center">
+          <div className="text-[11px] font-bold uppercase tracking-[0.22em] text-cyan-400 mb-5">
+            — The Quiet Details
+          </div>
+          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-light tracking-[-0.03em] text-white leading-[1.05]">
+            Answered,{" "}
+            <span className="italic bg-gradient-to-r from-cyan-200 to-cyan-400 bg-clip-text text-transparent">
+              honestly.
+            </span>
+          </h2>
+          <p className="mt-6 text-zinc-400 max-w-xl mx-auto">
+            Everything worth knowing before you reserve.
+          </p>
         </div>
-        <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-light tracking-[-0.03em] text-white leading-[1.05]">
-          Reserve your{" "}
-          <span className="italic bg-gradient-to-r from-cyan-200 to-cyan-400 bg-clip-text text-transparent">
-            future air.
-          </span>
-        </h2>
-        <p className="mt-6 text-zinc-400">
-          Be among the first. Early reservations receive founder pricing.
-        </p>
 
-        {!joined ? (
-          <form
-            onSubmit={submit}
-            data-testid="waitlist-form"
-            className="mt-10 flex flex-col sm:flex-row items-stretch gap-3 max-w-xl mx-auto"
-          >
-            <input
-              data-testid="waitlist-email-input"
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@home.com"
-              className="flex-1 bg-white/[0.03] border border-white/10 rounded-full px-6 py-4 text-white placeholder-zinc-500 focus:outline-none focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/20 transition-all"
-            />
-            <button
-              data-testid="waitlist-submit-button"
-              type="submit"
-              disabled={loading}
-              className="group inline-flex items-center justify-center gap-2 bg-cyan-400 text-black hover:bg-cyan-300 disabled:opacity-50 rounded-full px-6 py-4 font-semibold transition-all shadow-[0_0_40px_rgba(0,240,255,0.35)] hover:shadow-[0_0_60px_rgba(0,240,255,0.55)]"
-            >
-              {loading ? (
-                <CircleNotch
-                  size={18}
-                  weight="bold"
-                  className="animate-spin"
-                />
-              ) : (
-                <>
-                  Reserve mine
-                  <ArrowRight
-                    size={16}
-                    weight="bold"
-                    className="transition-transform group-hover:translate-x-0.5"
-                  />
-                </>
-              )}
-            </button>
-          </form>
-        ) : (
-          <div
-            data-testid="waitlist-success"
-            className="mt-10 inline-flex flex-col items-center gap-3 px-8 py-6 rounded-3xl border border-cyan-400/30 bg-cyan-400/5 backdrop-blur-xl"
-          >
-            <CheckCircle
-              size={28}
-              weight="duotone"
-              className="text-cyan-300"
-            />
-            <div className="font-display text-xl text-white">
-              You&apos;re on the list.
+        <div
+          data-testid="faq-list"
+          className="mt-14 divide-y divide-white/5 border-y border-white/5"
+        >
+          {faqs.map((f, i) => {
+            const open = openIdx === i;
+            return (
+              <div key={i} data-testid={`faq-item-${i}`}>
+                <button
+                  data-testid={`faq-question-${i}`}
+                  onClick={() => setOpenIdx(open ? -1 : i)}
+                  className="group w-full flex items-center justify-between text-left py-6 sm:py-7 transition-colors"
+                  aria-expanded={open}
+                >
+                  <span
+                    className={`font-display text-lg sm:text-xl tracking-tight transition-colors ${
+                      open ? "text-white" : "text-zinc-300 group-hover:text-white"
+                    }`}
+                  >
+                    {f.q}
+                  </span>
+                  <span
+                    className={`ml-6 shrink-0 w-9 h-9 rounded-full border flex items-center justify-center transition-all ${
+                      open
+                        ? "border-cyan-400/60 bg-cyan-400/10 text-cyan-300 rotate-45"
+                        : "border-white/10 text-zinc-400 group-hover:border-white/20"
+                    }`}
+                  >
+                    <Plus size={14} weight="bold" />
+                  </span>
+                </button>
+                <div
+                  className={`grid transition-all duration-500 ease-out ${
+                    open
+                      ? "grid-rows-[1fr] opacity-100 pb-7"
+                      : "grid-rows-[0fr] opacity-0"
+                  }`}
+                >
+                  <div className="overflow-hidden">
+                    <p
+                      data-testid={`faq-answer-${i}`}
+                      className="text-sm sm:text-base text-zinc-400 leading-relaxed max-w-3xl"
+                    >
+                      {f.a}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="mt-14 flex flex-col sm:flex-row items-center justify-between gap-6 p-6 sm:p-8 rounded-3xl border border-white/10 bg-white/[0.02]">
+          <div>
+            <div className="text-[11px] uppercase tracking-[0.22em] text-cyan-400 font-bold">
+              Still curious?
             </div>
-            <div className="text-sm text-zinc-400">
-              Position #{count?.toLocaleString() || "—"} · We&apos;ll email you when
-              units ship.
+            <div className="mt-2 font-display text-2xl text-white tracking-tight">
+              We&apos;re a message away.
             </div>
           </div>
-        )}
-
-        {count !== null && !joined && (
-          <div
-            data-testid="waitlist-count"
-            className="mt-6 text-xs uppercase tracking-[0.22em] text-zinc-500"
+          <a
+            href="mailto:nav.purify@gmail.com"
+            data-testid="faq-contact-cta"
+            className="inline-flex items-center gap-2 rounded-full border border-cyan-400/40 bg-cyan-400/10 hover:bg-cyan-400/20 text-cyan-100 px-6 py-3 text-sm font-semibold transition-all"
           >
-            {count.toLocaleString()} people already in line
-          </div>
-        )}
+            <EnvelopeSimple size={16} weight="bold" />
+            nav.purify@gmail.com
+          </a>
+        </div>
       </div>
     </section>
   );
@@ -1431,7 +1432,7 @@ export default function NavAirLanding() {
       <Showcase />
       <Specs />
       <Pricing />
-      <Waitlist />
+      <Faq />
       <Footer />
     </main>
   );
