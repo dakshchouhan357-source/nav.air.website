@@ -1,79 +1,102 @@
 # NavAir — Product Requirements Document
 
 ## 1. Original Problem Statement
-Build a sleek, ultra-modern, premium landing page for **NavAir** — a brand of high-tech, affordable air purifiers. The page must use a dark theme, minimalist layouts, and neon/cyan accents. Target audience: tech-savvy individuals. Primary CTA: **"Explore the Future of Clean Air"**.
+Build a sleek, ultra-modern, premium landing page for **NavAir**.
 
-User-driven additions across the project:
-- Pricing in **INR** under **₹7,000**, three tiers.
-- **OTP-based pre-booking** flow (SMS) using **Twilio Verify** so visitors can reserve a unit by verifying their phone number.
+**Brand pivot (Feb 2026):** NavAir is now a **premium technology & lifestyle brand** focused on productivity, comfort, and modern living. Primary product line is **Keyboard & Mouse Combos**. The air-purifier series is now a **"Coming Soon" future product line** (no purchases enabled). Dark theme, neon/cyan + emerald-green accents, glassmorphism, premium animations.
 
 ## 2. Users / Personas
-- **Indian urban professional, 25–40**, tech-curious, lives in a tier-1 city, conscious of air quality, looking for an affordable design-forward smart-home gadget.
-- **Design-led shopper** who values aesthetics on par with engineering specs.
+- **Tech-savvy professional / creator, 22–40** — values productivity, design, and premium materials.
+- **Student or office worker** looking for a reliable wireless K&M combo without overspending.
+- **Early adopter** interested in NavAir's future ecosystem (air purifier, smart devices, mechanical KBs, gaming mouse).
 
 ## 3. Architecture
-- **Frontend**: React (CRA) + Tailwind CSS, dark theme, single landing page route at `/`.
-  - Main file: `/app/frontend/src/pages/NavAirLanding.jsx`
-  - Components: `Header`, `Hero`, `TrustStrip`, `Features` (bento grid), `Showcase`, `Specs`, `Pricing`, `PrebookModal` (OTP flow), `Waitlist`, `Footer`.
-  - Icons: `@phosphor-icons/react`. Toasts: `sonner`. HTTP: `axios`.
-- **Backend**: FastAPI + Motor (MongoDB async).
-  - Main file: `/app/backend/server.py`
-  - Twilio Python SDK (`twilio==9.10.9`) for Verify Service. Demo-mode fallback when `TWILIO_VERIFY_SID` is empty.
-- **Database**: MongoDB (`DB_NAME` from env).
-- **Env**: `/app/backend/.env` holds `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_VERIFY_SID`. Frontend uses `REACT_APP_BACKEND_URL`.
+- **Frontend:** React (CRA) + Tailwind CSS. Single-page landing at `/`.
+  - File: `/app/frontend/src/pages/NavAirLanding.jsx` (~1.8k lines).
+  - Sections: Header → Hero → TrustStrip → Features → Showcase → Comparison → Pricing (id=products) → AirPurificationSeries → Roadmap → About → Faq → Footer.
+  - PrebookModal (3-step OTP) handles both Email + SMS channels.
+- **Backend:** FastAPI + Motor (MongoDB async).
+  - File: `/app/backend/server.py`.
+  - Twilio Verify (SMS OTP) + Gmail SMTP (Email OTP).
+- **Database:** MongoDB.
+- **Env:** `/app/backend/.env` (TWILIO_*, GMAIL_USER, GMAIL_APP_PASSWORD, BRAND_NAME, BRAND_CONTACT_EMAIL).
 
-## 4. Data Models
-- **waitlist**: `{email, source, created_at}`
-- **prebookings**: `{id, phone, product, name, created_at}`
-- **otp_codes** (demo-mode only): `{phone, code, expires_at, attempts}`
-- **otp_sends** (rate-limit log): `{phone, product, created_at, channel}`
+## 4. Product Lineup
+| Product | Price | Badge |
+|---|---|---|
+| NavAir Essential K&M Combo | ₹1,799 | Best Value |
+| NavAir Performance K&M Combo | ₹2,499 | Most Popular (highlighted) |
+| NavAir Pro K&M Combo | ₹3,299 | Flagship |
+| Air Purification Series | — | Future Product Line / Coming Soon |
 
-## 5. API Endpoints (all prefixed with `/api`)
+## 5. Data Models
+- **waitlist:** `{email, source, created_at}` — duplicate-safe; returns position.
+- **prebookings:** `{id, email|phone, product, name, channel, created_at}`.
+- **otp_codes** (demo-mode): `{phone|email, code, expires_at, attempts}`.
+- **otp_sends** (rate-limit log): `{phone|email, product, created_at, channel}`.
+
+## 6. API Endpoints (`/api` prefix)
 | Method | Path | Purpose |
 |---|---|---|
-| GET | `/waitlist/count` | Public count of waitlist signups |
-| POST | `/waitlist` | Join waitlist (idempotent on email) — returns `position` |
-| POST | `/prebook/send-otp` | Send 6-digit OTP via Twilio Verify (or demo) |
-| POST | `/prebook/verify-otp` | Verify OTP & create prebooking |
-| GET | `/prebook/status` | Total prebookings + Twilio flag |
+| GET | `/waitlist/count` | Public count |
+| POST | `/waitlist` | Join waitlist (idempotent on email + returns position) |
+| POST | `/prebook/send-otp` | Send SMS OTP (Twilio Verify or demo) |
+| POST | `/prebook/verify-otp` | Verify SMS OTP & create prebooking |
+| POST | `/prebook/send-email-otp` | Send Email OTP (Gmail SMTP or demo) |
+| POST | `/prebook/verify-email-otp` | Verify Email OTP & create prebooking |
+| GET | `/prebook/status` | Total + twilio_enabled + email_enabled |
 | GET | `/` | Health |
 
-Rate limit: max **5 OTP sends per phone per hour**.
+Rate-limit: 5 OTP sends per phone/email per hour.
 
-## 6. Implemented (Changelog)
+## 7. Implemented (Changelog)
 
-### 2026-02-08 — OTP Pre-booking Live
-- ✅ Integrated Twilio Verify (`TWILIO_VERIFY_SID=VA1ecbae...`) — **LIVE SMS**.
-- ✅ Added `/api/prebook/send-otp`, `/api/prebook/verify-otp`, `/api/prebook/status` endpoints with demo-mode fallback.
-- ✅ Built `PrebookModal` (3-step: phone → OTP → success) with name capture, +91 prefix, resend countdown, demo-code preview banner.
-- ✅ Wired each Pricing card's `Reserve` CTA to open modal with selected product (`NavAir Mini` / `01` / `Pro`).
-- ✅ Modal remounts cleanly on reopen via `{open && <PrebookModal key=...>}` pattern (avoids stale state).
-- ✅ Fixed minor backend issues: duplicate waitlist now returns existing position; demo verify only increments `attempts` on failure.
-- ✅ Tested end-to-end via `testing_agent_v3_fork` (pytest backend + Playwright frontend) — 100% pass.
+### 2026-02-09 — Major Brand Pivot
+- ✅ Repositioned NavAir from air-purifier brand → premium tech & lifestyle brand.
+- ✅ New hero: "Premium tech for modern living"; emerald + cyan gradient.
+- ✅ TrustStrip refreshed for tech brand keywords.
+- ✅ Features bento rebuilt around 5 cards (Wireless / Comfort / Productivity / Reliability / Design).
+- ✅ Showcase now features NavAir Performance K&M combo with image.
+- ✅ Specs section → replaced with **Comparison Table** (3 columns × 6 rows, Most Popular highlighted).
+- ✅ Pricing → **Products** section with 3 K&M combo cards + "Pre-Book Now" CTAs.
+- ✅ New **AirPurificationSeries** section: future product line, emerald accents, "Notify Me" + "Join Waitlist" + "Learn More" buttons. No purchases.
+- ✅ New **Roadmap** section: 5 future items (gaming mouse, mechanical KB, desk accessories, smart devices, air series "In Development").
+- ✅ New **About** section: brand story + "Growing Ecosystem" sidebar.
+- ✅ FAQ updated with 7 new tech-brand questions.
+- ✅ Footer: products updated; nav.purify@gmail.com prominent; NO phone numbers.
+- ✅ Header nav refreshed: Combos / Compare / Air Series / Roadmap / About / FAQ.
+- ✅ Pre-book modal product names updated.
+- ✅ Tested via `testing_agent_v3_fork` iteration 2 → 100% frontend & backend pass.
 
-### Earlier
-- ✅ Landing page sections: Hero, TrustStrip marquee, Features bento grid, Showcase, Specs table, Pricing, Waitlist, Footer.
-- ✅ Pricing updated to INR (₹3,499 / ₹4,999 / ₹6,999).
-- ✅ Waitlist email capture with duplicate guard.
+### 2026-02-08 — Email OTP added
+- ✅ Gmail SMTP integration (from dakshchouhan357@gmail.com, reply-to nav.purify@gmail.com).
+- ✅ New endpoints `/api/prebook/send-email-otp` + `/api/prebook/verify-email-otp`.
+- ✅ Modal now has **Email / SMS** channel tabs (email default).
+- ✅ FAQ section replaced old email-only waitlist below pricing.
 
-## 7. Backlog / Roadmap
+### 2026-02-08 — Twilio OTP (SMS) live
+- ✅ Twilio Verify wired with user's Verify Service SID.
+- ✅ 3-step PrebookModal (input → OTP → success), demo-mode fallback.
 
-### P0
-- _(none currently)_
+### Earlier (pre-pivot)
+- Hero, TrustStrip marquee, Features bento (air-purifier theme), Showcase, Specs, Pricing (₹3,499/₹4,999/₹6,999), Waitlist email capture.
+
+## 8. Backlog / Roadmap
 
 ### P1
-- **Admin dashboard** to view waitlist + prebookings (CSV export).
-- **Email confirmation** on successful pre-booking (Resend or SES).
-- **Stripe / Razorpay deposit** to convert pre-booking into ₹500 advance.
+- **Admin dashboard:** view waitlist + prebookings (CSV export).
+- **Email confirmation** after successful pre-booking (post-OTP).
+- **Stripe / Razorpay** ₹500 deposit to harden pre-booking conversion.
 
 ### P2
-- Localization (English ↔ Hindi).
-- A/B test hero copy variants.
-- Add 3D hero product render (Three.js / Spline).
-- Capture UTM source on waitlist & prebooking entries.
+- **Modular refactor**: split `NavAirLanding.jsx` (1.8k lines) into `src/pages/navair/*` sub-components.
+- Localization (EN ↔ HI).
+- A/B test hero copy.
+- 3D product render (Three.js / Spline) for K&M combo.
+- UTM source capture on every form.
 
-## 8. Known Mocked / Demo Items
-- None. Twilio is **LIVE**. Demo mode only triggers if `TWILIO_VERIFY_SID` is cleared.
+## 9. Known Mocked / Demo Items
+- None. Twilio + Gmail both LIVE.
 
-## 9. Test Credentials
+## 10. Test Credentials
 See `/app/memory/test_credentials.md`.
