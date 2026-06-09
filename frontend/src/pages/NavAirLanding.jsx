@@ -37,10 +37,11 @@ const Header = () => {
   }, []);
 
   const links = [
-    { id: "features", label: "Features" },
-    { id: "showcase", label: "Showcase" },
-    { id: "specs", label: "Specs" },
-    { id: "pricing", label: "Pricing" },
+    { id: "products", label: "Combos" },
+    { id: "comparison", label: "Compare" },
+    { id: "air-purification", label: "Air Series" },
+    { id: "roadmap", label: "Roadmap" },
+    { id: "about", label: "About" },
     { id: "faq", label: "FAQ" },
   ];
 
@@ -82,7 +83,7 @@ const Header = () => {
         </nav>
 
         <a
-          href="#pricing"
+          href="#products"
           data-testid="header-cta-button"
           className="hidden sm:inline-flex items-center gap-2 text-sm font-medium text-black bg-cyan-400 hover:bg-cyan-300 rounded-full pl-5 pr-2 py-2 transition-all duration-300 shadow-[0_0_30px_rgba(0,240,255,0.25)] hover:shadow-[0_0_50px_rgba(0,240,255,0.45)]"
         >
@@ -136,7 +137,7 @@ const Hero = () => {
             <span className="relative w-1.5 h-1.5 rounded-full bg-cyan-400" />
           </span>
           <span className="text-[11px] font-bold uppercase tracking-[0.22em] text-cyan-300/90">
-            NavAir Series 01 · Now Open
+            Keyboard & Mouse Combos · Pre-Orders Open
           </span>
         </div>
 
@@ -144,30 +145,30 @@ const Hero = () => {
           data-testid="hero-headline"
           className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-[88px] font-light tracking-[-0.04em] leading-[0.95] text-white"
         >
-          Breathe the
+          Premium tech for
           <br />
-          <span className="italic font-extralight bg-gradient-to-r from-white via-cyan-200 to-cyan-400 bg-clip-text text-transparent">
-            sculpted
-          </span>{" "}
-          future.
+          <span className="italic font-extralight bg-gradient-to-r from-white via-cyan-200 to-emerald-300 bg-clip-text text-transparent">
+            modern living.
+          </span>
         </h1>
 
         <p
           data-testid="hero-subhead"
           className="mt-8 text-base sm:text-lg text-zinc-400 leading-relaxed max-w-2xl mx-auto"
         >
-          A premium air purifier that doubles as sculpture. Crafted materials.
-          Considered design. Made for modern living.
+          Beautifully designed keyboards and mice — built for productivity,
+          comfort, and the way you actually work. Our first generation is now
+          open for pre-booking.
         </p>
 
         <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
           <a
-            href="#pricing"
+            href="#products"
             data-testid="hero-cta-button"
             className="group relative inline-flex items-center gap-3 bg-cyan-400 text-black hover:bg-cyan-300 rounded-full pl-7 pr-2 py-2 font-semibold transition-all duration-300 shadow-[0_0_40px_rgba(0,240,255,0.35)] hover:shadow-[0_0_60px_rgba(0,240,255,0.6)]"
           >
             <span className="text-[15px] tracking-tight">
-              Explore the Future of Clean Air
+              Explore the Combos
             </span>
             <span className="w-10 h-10 rounded-full bg-black inline-flex items-center justify-center transition-transform duration-300 group-hover:translate-x-0.5">
               <ArrowRight size={16} weight="bold" className="text-cyan-300" />
@@ -175,21 +176,21 @@ const Hero = () => {
           </a>
 
           <a
-            href="#showcase"
+            href="#air-purification"
             data-testid="hero-secondary-cta"
             className="inline-flex items-center gap-2 text-sm text-zinc-300 hover:text-white border border-white/15 hover:border-white/30 rounded-full px-6 py-3.5 transition-colors"
           >
-            <CircleNotch size={16} weight="bold" />
-            See it in motion
+            <Sparkle size={16} weight="bold" className="text-emerald-300" />
+            Air Purification — Coming Soon
           </a>
         </div>
 
         {/* Brand pillars row */}
         <div className="mt-20 grid grid-cols-3 max-w-3xl mx-auto gap-6 sm:gap-10 border-t border-white/5 pt-10">
           {[
-            { v: "Premium", l: "Multi-stage filtration" },
-            { v: "Quiet", l: "Engineered for comfort" },
-            { v: "Modern", l: "Designed for living" },
+            { v: "Productivity", l: "Designed to perform" },
+            { v: "Comfort", l: "Built for long sessions" },
+            { v: "Premium", l: "Materials that last" },
           ].map((s, i) => (
             <div key={i} className="text-left sm:text-center">
               <div className="font-display text-2xl sm:text-3xl tracking-tight text-white">
@@ -212,12 +213,12 @@ const Hero = () => {
 const TrustStrip = () => {
   const items = [
     "PREMIUM BUILD",
-    "QUIET BY DESIGN",
-    "MODERN LIVING",
-    "CLEAN AESTHETIC",
+    "MODERN DESIGN",
+    "COMFORT FIRST",
+    "WIRELESS FREEDOM",
+    "EVERYDAY RELIABILITY",
     "THOUGHTFUL CRAFT",
     "FUTURE-READY",
-    "CONSIDERED DETAIL",
   ];
   const row = [...items, ...items, ...items];
   return (
@@ -242,7 +243,7 @@ const TrustStrip = () => {
 };
 
 /* ============================================================
-   FEATURES — BENTO GRID
+   FEATURES — Why NavAir
 ============================================================ */
 const Features = () => {
   return (
@@ -254,24 +255,23 @@ const Features = () => {
       <div className="max-w-7xl mx-auto">
         <div className="max-w-3xl mb-14 sm:mb-20">
           <div className="text-[11px] font-bold uppercase tracking-[0.22em] text-cyan-400 mb-5">
-            <span data-testid="features-label">— Engineered intelligence</span>
+            <span data-testid="features-label">— Why NavAir</span>
           </div>
           <h2
             data-testid="features-headline"
             className="font-display text-4xl sm:text-5xl md:text-6xl font-light tracking-[-0.03em] text-white leading-[1.05]"
           >
-            Four senses. <span className="italic text-zinc-500">One </span>
-            <span className="italic bg-gradient-to-r from-cyan-200 to-cyan-400 bg-clip-text text-transparent">
-              quiet
-            </span>{" "}
-            <span className="italic text-zinc-500">machine.</span>
+            Designed for the way you{" "}
+            <span className="italic bg-gradient-to-r from-cyan-200 to-emerald-300 bg-clip-text text-transparent">
+              actually work.
+            </span>
           </h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-5 sm:gap-6">
-          {/* Card 1 — App Connectivity (wide) */}
+          {/* Wireless Freedom (wide) */}
           <div
-            data-testid="feature-card-app"
+            data-testid="feature-card-wireless"
             className="md:col-span-7 group relative bg-white/[0.02] border border-white/5 rounded-3xl p-8 sm:p-10 backdrop-blur-2xl overflow-hidden hover:border-cyan-400/30 transition-all duration-500 min-h-[420px] flex flex-col justify-between"
           >
             <div className="absolute -top-32 -right-32 w-72 h-72 rounded-full bg-cyan-500/10 blur-3xl group-hover:bg-cyan-500/20 transition-all duration-700" />
@@ -283,153 +283,91 @@ const Features = () => {
                 className="text-cyan-400"
               />
               <span className="text-[11px] uppercase tracking-[0.22em] text-cyan-400 font-bold">
-                Future App · Coming Soon
+                Wireless Freedom
               </span>
             </div>
 
-            {/* Mock phone visual */}
             <div className="relative z-10 mt-8 flex justify-center">
-              <div className="relative w-[210px] h-[420px] rounded-[42px] border border-white/10 bg-gradient-to-b from-zinc-900 to-black p-3 shadow-[0_30px_80px_-20px_rgba(0,240,255,0.25)] float">
-                <div className="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-5 rounded-full bg-black border border-white/10" />
-                <div className="w-full h-full rounded-[34px] bg-[#080808] overflow-hidden p-4 flex flex-col">
-                  <div className="text-[10px] text-zinc-500 uppercase tracking-widest">
-                    Concept Preview
+              <div className="relative w-full max-w-[420px] aspect-[4/3] rounded-3xl border border-white/10 bg-gradient-to-br from-zinc-900 via-black to-zinc-950 overflow-hidden float">
+                <div className="absolute inset-0 bg-grid opacity-30" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="relative w-[78%] aspect-[16/5] rounded-xl bg-gradient-to-b from-zinc-700 via-zinc-800 to-zinc-900 shadow-[0_30px_80px_-20px_rgba(0,240,255,0.25)] border border-white/10">
+                    <div className="absolute inset-2 grid grid-cols-14 gap-[3px]">
+                      {Array.from({ length: 56 }).map((_, k) => (
+                        <span
+                          key={k}
+                          className="rounded-sm bg-zinc-700/80 border border-white/5"
+                        />
+                      ))}
+                    </div>
                   </div>
-                  <div className="mt-1 font-display text-3xl text-white tracking-tight leading-tight">
-                    Clean Air,
-                    <br />
-                    Beautifully
-                  </div>
-                  <div className="text-[10px] text-cyan-400 uppercase tracking-widest mt-1">
-                    Future App Experience
-                  </div>
-                  <div className="mt-4 h-px bg-white/5" />
-                  <div className="mt-4 space-y-3">
-                    {[
-                      { l: "Filtration", w: "85%" },
-                      { l: "Comfort", w: "70%" },
-                      { l: "Ambience", w: "55%" },
-                    ].map((m, i) => (
-                      <div key={i}>
-                        <div className="flex justify-between text-[10px] text-zinc-400">
-                          <span>{m.l}</span>
-                          <span className="text-zinc-200">Active</span>
-                        </div>
-                        <div className="mt-1 h-1 bg-white/5 rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-gradient-to-r from-cyan-400 to-blue-500 bar-reveal"
-                            style={{ width: m.w }}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="mt-auto flex items-center justify-between p-2 rounded-2xl bg-white/[0.03] border border-white/5">
-                    <span className="text-[10px] text-zinc-400">Auto Mode</span>
-                    <span className="w-7 h-4 rounded-full bg-cyan-400 relative">
-                      <span className="absolute right-0.5 top-0.5 w-3 h-3 rounded-full bg-black" />
-                    </span>
-                  </div>
+                </div>
+                <div className="absolute bottom-4 right-4 w-12 h-16 rounded-2xl bg-gradient-to-b from-zinc-700 to-zinc-900 border border-white/10 shadow-[0_15px_30px_-10px_rgba(0,240,255,0.2)]">
+                  <div className="absolute top-1 left-1 right-1 h-1 rounded-full bg-cyan-400/60" />
                 </div>
               </div>
             </div>
 
             <div className="relative z-10 mt-6">
               <h3 className="font-display text-2xl sm:text-3xl font-light tracking-tight text-white">
-                Your home, in your pocket.
+                Cable-free. Clutter-free.
               </h3>
               <p className="mt-3 text-zinc-400 max-w-md">
-                A future companion app is in the works — designed to bring
-                schedules, filter reminders and ambient controls into one
-                considered experience.{" "}
-                <span className="text-cyan-300/80">Coming soon.</span>
+                Reliable wireless connectivity that just works — desk to desk,
+                room to room, lap to lap. Designed for modern setups.
               </p>
             </div>
           </div>
 
-          {/* Card 2 — Real-time AQI (tall right) */}
+          {/* Comfort */}
           <div
-            data-testid="feature-card-aqi"
+            data-testid="feature-card-comfort"
             className="md:col-span-5 group relative bg-white/[0.02] border border-white/5 rounded-3xl p-8 sm:p-10 backdrop-blur-2xl overflow-hidden hover:border-cyan-400/30 transition-all duration-500 min-h-[420px] flex flex-col justify-between"
           >
-            <div className="absolute -bottom-40 -left-32 w-80 h-80 rounded-full bg-blue-600/15 blur-3xl group-hover:bg-blue-600/25 transition-all duration-700" />
+            <div className="absolute -bottom-40 -left-32 w-80 h-80 rounded-full bg-emerald-500/10 blur-3xl group-hover:bg-emerald-500/20 transition-all duration-700" />
             <div className="flex items-center gap-2 z-10">
-              <Wind size={18} weight="duotone" className="text-cyan-400" />
-              <span className="text-[11px] uppercase tracking-[0.22em] text-cyan-400 font-bold">
-                Future Smart Sensing
+              <Heart size={18} weight="duotone" className="text-emerald-300" />
+              <span className="text-[11px] uppercase tracking-[0.22em] text-emerald-300 font-bold">
+                Built for Long Sessions
               </span>
             </div>
 
-            {/* Animated AQI ring */}
             <div className="relative flex-1 flex items-center justify-center z-10 my-6">
-              <div className="relative w-56 h-56">
-                <svg viewBox="0 0 200 200" className="w-full h-full -rotate-90">
-                  <circle
-                    cx="100"
-                    cy="100"
-                    r="86"
-                    stroke="rgba(255,255,255,0.06)"
-                    strokeWidth="2"
-                    fill="none"
-                  />
-                  <circle
-                    cx="100"
-                    cy="100"
-                    r="86"
-                    stroke="url(#gradAQI)"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    fill="none"
-                    strokeDasharray="540"
-                    strokeDashoffset="120"
-                  />
-                  <defs>
-                    <linearGradient id="gradAQI" x1="0" x2="1">
-                      <stop offset="0%" stopColor="#00f0ff" />
-                      <stop offset="100%" stopColor="#0055ff" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-                  <span className="text-[10px] uppercase tracking-[0.2em] text-zinc-500">
-                    On the roadmap
-                  </span>
-                  <span className="font-display text-3xl text-white tracking-tight mt-2 leading-tight">
-                    Sense the
-                    <br />
-                    unseen
-                  </span>
-                  <span className="text-[11px] uppercase tracking-[0.18em] text-cyan-300 mt-2">
-                    Coming Soon
-                  </span>
+              <div className="relative">
+                <div className="absolute inset-0 rounded-full bg-emerald-400/10 blur-3xl" />
+                <div className="relative font-display text-6xl sm:text-7xl tracking-tighter text-white leading-none">
+                  All-day
+                  <div className="mt-2 font-display text-xl text-zinc-500 italic">
+                    comfort.
+                  </div>
                 </div>
               </div>
             </div>
 
             <div className="z-10">
               <h3 className="font-display text-2xl sm:text-3xl font-light tracking-tight text-white">
-                Smarter, in time.
+                Comfort, considered.
               </h3>
               <p className="mt-2 text-zinc-400">
-                Advanced ambient sensing is part of our future roadmap —
-                designed to make every room feel effortlessly considered.
+                Thoughtful ergonomics for students, professionals, and creators
+                who spend their day at the desk.
               </p>
             </div>
           </div>
 
-          {/* Card 3 — Voice */}
+          {/* Productivity */}
           <div
-            data-testid="feature-card-voice"
+            data-testid="feature-card-productivity"
             className="md:col-span-4 group relative bg-white/[0.02] border border-white/5 rounded-3xl p-8 backdrop-blur-2xl overflow-hidden hover:border-cyan-400/30 transition-all duration-500 min-h-[300px] flex flex-col justify-between"
           >
             <div className="flex items-center gap-2">
-              <Microphone
+              <Lightning
                 size={18}
                 weight="duotone"
                 className="text-cyan-400"
               />
               <span className="text-[11px] uppercase tracking-[0.22em] text-cyan-400 font-bold">
-                Voice · Future Feature
+                Productivity First
               </span>
             </div>
 
@@ -450,74 +388,75 @@ const Features = () => {
 
             <div>
               <h3 className="font-display text-2xl font-light tracking-tight text-white">
-                A quieter way to interact.
+                Flow without friction.
               </h3>
               <p className="mt-2 text-sm text-zinc-400">
-                Hands-free voice experiences are being explored for future
-                NavAir products. Coming soon.
+                Responsive typing. Precise tracking. Quiet operation. Designed
+                to keep you in the zone.
               </p>
             </div>
           </div>
 
-          {/* Card 4 — Whisper silent */}
+          {/* Reliability */}
           <div
-            data-testid="feature-card-silent"
+            data-testid="feature-card-reliable"
             className="md:col-span-4 group relative bg-white/[0.02] border border-white/5 rounded-3xl p-8 backdrop-blur-2xl overflow-hidden hover:border-cyan-400/30 transition-all duration-500 min-h-[300px] flex flex-col justify-between"
           >
             <div className="flex items-center gap-2">
-              <WaveSine size={18} weight="duotone" className="text-cyan-400" />
+              <ShieldCheck size={18} weight="duotone" className="text-cyan-400" />
               <span className="text-[11px] uppercase tracking-[0.22em] text-cyan-400 font-bold">
-                Low-noise Operation
+                Everyday Reliability
               </span>
             </div>
 
             <div className="my-6">
               <div className="font-display text-5xl tracking-tighter text-white leading-none">
-                Quiet
+                Built
               </div>
               <div className="mt-2 font-display text-xl text-zinc-500 italic">
-                by design.
+                to last.
               </div>
             </div>
 
             <div>
               <h3 className="font-display text-2xl font-light tracking-tight text-white">
-                Designed for calm.
+                Made to keep up.
               </h3>
               <p className="mt-2 text-sm text-zinc-400">
-                Engineered for a comfortable and peaceful environment — so the
-                only thing you notice is the air.
+                Durable materials and a quality-first approach — for years of
+                consistent use, not just months.
               </p>
             </div>
           </div>
 
-          {/* Card 5 — Design / luxury */}
+          {/* Design / luxury */}
           <div
             data-testid="feature-card-design"
-            className="md:col-span-4 group relative bg-gradient-to-br from-cyan-500/10 via-white/[0.02] to-blue-600/10 border border-cyan-400/20 rounded-3xl p-8 backdrop-blur-2xl overflow-hidden hover:border-cyan-400/40 transition-all duration-500 min-h-[300px] flex flex-col justify-between"
+            className="md:col-span-4 group relative bg-gradient-to-br from-cyan-500/10 via-white/[0.02] to-emerald-500/10 border border-cyan-400/20 rounded-3xl p-8 backdrop-blur-2xl overflow-hidden hover:border-cyan-400/40 transition-all duration-500 min-h-[300px] flex flex-col justify-between"
           >
             <div className="absolute inset-0 bg-grid opacity-40" />
             <div className="relative flex items-center gap-2">
               <Sparkle size={18} weight="duotone" className="text-cyan-400" />
               <span className="text-[11px] uppercase tracking-[0.22em] text-cyan-300 font-bold">
-                Sculptural
+                Premium Design
               </span>
             </div>
 
             <div className="relative my-6 flex justify-center">
-              <div className="relative w-24 h-32">
-                <div className="absolute inset-0 rounded-full bg-cyan-400/10 blur-2xl" />
-                <div className="relative w-full h-full rounded-full bg-gradient-to-b from-zinc-200 via-zinc-400 to-zinc-700 shadow-[inset_0_0_20px_rgba(255,255,255,0.3)]" />
-                <div className="absolute -inset-3 rounded-full border border-cyan-400/30" />
+              <div className="relative w-28 h-20">
+                <div className="absolute inset-0 rounded-2xl bg-cyan-400/10 blur-2xl" />
+                <div className="relative w-full h-full rounded-2xl bg-gradient-to-b from-zinc-200 via-zinc-400 to-zinc-700 shadow-[inset_0_0_20px_rgba(255,255,255,0.3)]" />
+                <div className="absolute -inset-2 rounded-2xl border border-cyan-400/30" />
               </div>
             </div>
 
             <div className="relative">
               <h3 className="font-display text-2xl font-light tracking-tight text-white">
-                Furniture, first.
+                Looks the part.
               </h3>
               <p className="mt-2 text-sm text-zinc-300/80">
-                Hand-anodized aluminum + ceramic top. Built to be seen.
+                Clean lines, considered materials, and a finish that elevates
+                any desk.
               </p>
             </div>
           </div>
@@ -527,8 +466,9 @@ const Features = () => {
   );
 };
 
+
 /* ============================================================
-   PRODUCT SHOWCASE
+   FLAGSHIP SHOWCASE — Performance Combo
 ============================================================ */
 const Showcase = () => {
   return (
@@ -547,8 +487,8 @@ const Showcase = () => {
           <div className="relative aspect-[4/5] rounded-[2rem] overflow-hidden border border-white/10 bg-gradient-to-b from-zinc-900 to-black">
             <img
               data-testid="showcase-image"
-              src="https://images.pexels.com/photos/19398651/pexels-photo-19398651.jpeg"
-              alt="NavAir premium air purifier"
+              src="https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=1200&q=80"
+              alt="NavAir Performance Keyboard & Mouse Combo"
               className="w-full h-full object-cover opacity-90 mix-blend-luminosity hover:mix-blend-normal transition-all duration-1000"
               loading="lazy"
             />
@@ -556,10 +496,10 @@ const Showcase = () => {
             <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between">
               <div>
                 <div className="text-[10px] uppercase tracking-[0.22em] text-cyan-300 font-bold">
-                  NavAir · Obsidian
+                  NavAir Performance · Most Popular
                 </div>
                 <div className="font-display text-2xl text-white mt-1">
-                  Crafted aluminum body
+                  The hero of the lineup
                 </div>
               </div>
               <span className="w-10 h-10 rounded-full bg-cyan-400/90 inline-flex items-center justify-center">
@@ -571,42 +511,41 @@ const Showcase = () => {
 
         <div className="lg:col-span-6">
           <div className="text-[11px] font-bold uppercase tracking-[0.22em] text-cyan-400 mb-5">
-            — The object
+            — The flagship pair
           </div>
           <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-light tracking-[-0.03em] text-white leading-[1.05]">
-            Decor that{" "}
-            <span className="italic bg-gradient-to-r from-cyan-200 to-cyan-400 bg-clip-text text-transparent">
-              breathes.
+            Designed to be{" "}
+            <span className="italic bg-gradient-to-r from-cyan-200 to-emerald-300 bg-clip-text text-transparent">
+              picked up.
             </span>
           </h2>
           <p className="mt-6 text-zinc-400 leading-relaxed max-w-lg">
-            NavAir is built around a single belief: technology should disappear
-            into beauty. A monolithic aluminum body, a soft illuminated halo,
-            and a ceramic crown — designed for modern living, priced for real
-            homes.
+            Our NavAir Performance combo is built around a single belief —
+            premium tech should feel as good as it looks. A considered keyboard,
+            a refined mouse, and the kind of finish that earns a second glance.
           </p>
 
           <div className="mt-10 grid sm:grid-cols-2 gap-5">
             {[
               {
-                t: "Premium filtration.",
-                d: "A considered multi-stage filtration system designed for everyday clean-air comfort.",
-                i: ShieldCheck,
+                t: "Wireless freedom.",
+                d: "Reliable connectivity, designed for modern desks and on-the-move setups.",
+                i: DeviceMobile,
               },
               {
-                t: "Smart features — soon.",
-                d: "Future NavAir products may include auto modes that respond to your home's rhythm.",
-                i: Lightning,
-              },
-              {
-                t: "Comfort first.",
-                d: "Engineered to keep the air feeling fresh and the room feeling calm.",
-                i: Drop,
-              },
-              {
-                t: "Made to last.",
-                d: "Durable construction with thoughtful, modular parts.",
+                t: "Comfort-first design.",
+                d: "Crafted for long sessions — students, professionals, and creators alike.",
                 i: Heart,
+              },
+              {
+                t: "Quietly responsive.",
+                d: "Soft, satisfying input — designed to disappear into your flow.",
+                i: WaveSine,
+              },
+              {
+                t: "Premium materials.",
+                d: "A clean, modern finish built to keep up with everyday use.",
+                i: Sparkle,
               },
             ].map((it, i) => (
               <div
@@ -627,57 +566,111 @@ const Showcase = () => {
 };
 
 /* ============================================================
-   SPECS
+   COMPARISON TABLE
 ============================================================ */
-const Specs = () => {
+const Comparison = () => {
   const rows = [
-    ["Coverage", "Designed for modern living spaces"],
-    ["Filtration", "Premium multi-stage filtration"],
-    ["Acoustics", "Engineered for low-noise operation"],
-    ["Smart sensing", "Coming soon — future products"],
-    ["App connectivity", "Coming soon — future products"],
-    ["Voice features", "Coming soon — future products"],
-    ["Operation", "Energy-conscious design"],
-    ["Body", "Anodized aluminum + ceramic"],
+    ["Connectivity", "Wireless", "Wireless", "Wireless"],
+    ["Designed for", "Students & everyday use", "Modern professionals", "Power users & creators"],
+    ["Build quality", "Reliable", "Enhanced", "Premium"],
+    ["Comfort focus", "Standard", "Improved", "Flagship"],
+    ["Styling", "Clean", "Premium", "Flagship"],
+    ["Status", "Pre-Orders Open", "Pre-Orders Open", "Pre-Orders Open"],
+  ];
+  const cols = [
+    { name: "NavAir Essential", price: "₹1,799", badge: "Best Value", popular: false },
+    { name: "NavAir Performance", price: "₹2,499", badge: "Most Popular", popular: true },
+    { name: "NavAir Pro", price: "₹3,299", badge: "Flagship", popular: false },
   ];
   return (
     <section
-      id="specs"
-      data-testid="specs-section"
+      id="comparison"
+      data-testid="comparison-section"
       className="relative py-28 sm:py-36 px-6 sm:px-10 border-t border-white/5"
     >
-      <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-14">
-        <div className="lg:col-span-5">
+      <div className="max-w-7xl mx-auto">
+        <div className="max-w-3xl mb-14 sm:mb-20 text-center mx-auto">
           <div className="text-[11px] font-bold uppercase tracking-[0.22em] text-cyan-400 mb-5">
-            — Specifications
+            — Compare the combos
           </div>
-          <h2 className="font-display text-4xl sm:text-5xl font-light tracking-[-0.03em] text-white leading-[1.05]">
-            Considered{" "}
-            <span className="italic text-zinc-500">by design.</span>
+          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-light tracking-[-0.03em] text-white leading-[1.05]">
+            Find the combo that{" "}
+            <span className="italic bg-gradient-to-r from-cyan-200 to-emerald-300 bg-clip-text text-transparent">
+              fits you.
+            </span>
           </h2>
-          <p className="mt-6 text-zinc-400 max-w-md">
-            A premium product made for everyday calm. Final specifications
-            will be shared as we approach launch.
+          <p className="mt-6 text-zinc-400 max-w-xl mx-auto">
+            Three considered tiers. One simple promise — premium tech you&apos;ll
+            love using every day.
           </p>
         </div>
-        <div className="lg:col-span-7">
-          <div className="divide-y divide-white/5 border-y border-white/5">
-            {rows.map(([k, v], i) => (
+
+        <div className="rounded-3xl border border-white/10 bg-white/[0.02] backdrop-blur-xl overflow-hidden">
+          {/* Header row */}
+          <div className="grid grid-cols-4 border-b border-white/5">
+            <div className="p-5 sm:p-7 text-[11px] uppercase tracking-[0.22em] text-zinc-500 font-bold">
+              Feature
+            </div>
+            {cols.map((c, i) => (
               <div
                 key={i}
-                data-testid={`spec-row-${i}`}
-                className="grid grid-cols-2 py-5 group"
+                data-testid={`comparison-col-${i}`}
+                className={`p-5 sm:p-7 text-center relative ${
+                  c.popular
+                    ? "bg-gradient-to-b from-cyan-500/10 to-transparent"
+                    : ""
+                }`}
               >
-                <span className="text-zinc-500 text-sm uppercase tracking-[0.16em]">
-                  {k}
-                </span>
-                <span className="font-display text-lg sm:text-xl text-white group-hover:text-cyan-300 transition-colors">
-                  {v}
-                </span>
+                {c.popular && (
+                  <div className="absolute top-3 left-1/2 -translate-x-1/2 text-[10px] uppercase tracking-[0.22em] text-cyan-300 font-bold px-3 py-1 rounded-full border border-cyan-400/30 bg-cyan-400/5 whitespace-nowrap">
+                    {c.badge}
+                  </div>
+                )}
+                {!c.popular && (
+                  <div className="text-[10px] uppercase tracking-[0.22em] text-zinc-500 font-bold mb-1">
+                    {c.badge}
+                  </div>
+                )}
+                <div className="mt-4 font-display text-base sm:text-lg text-white tracking-tight">
+                  {c.name}
+                </div>
+                <div className="mt-2 font-display text-2xl sm:text-3xl text-white tracking-tighter">
+                  {c.price}
+                </div>
+              </div>
+            ))}
+          </div>
+          {/* Body rows */}
+          <div className="divide-y divide-white/5">
+            {rows.map(([label, ...vals], i) => (
+              <div
+                key={i}
+                data-testid={`comparison-row-${i}`}
+                className="grid grid-cols-4 items-center"
+              >
+                <div className="p-4 sm:p-5 text-[11px] uppercase tracking-[0.16em] text-zinc-500">
+                  {label}
+                </div>
+                {vals.map((v, j) => (
+                  <div
+                    key={j}
+                    className={`p-4 sm:p-5 text-center text-sm ${
+                      j === 1
+                        ? "bg-gradient-to-b from-cyan-500/[0.04] to-transparent text-white"
+                        : "text-zinc-300"
+                    }`}
+                  >
+                    {v}
+                  </div>
+                ))}
               </div>
             ))}
           </div>
         </div>
+
+        <p className="mt-8 text-center text-xs text-zinc-500 max-w-xl mx-auto">
+          Final detailed specifications will be shared as we approach launch.
+        </p>
       </div>
     </section>
   );
@@ -1047,7 +1040,7 @@ const PrebookModal = ({ onClose, product }) => {
 };
 
 /* ============================================================
-   PRICING TEASER
+   PRODUCTS — K&M COMBOS · Pre-Order
 ============================================================ */
 const Pricing = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -1059,7 +1052,7 @@ const Pricing = () => {
   };
   return (
     <section
-      id="pricing"
+      id="products"
       data-testid="pricing-section"
       className="relative py-28 sm:py-36 px-6 sm:px-10 overflow-hidden"
     >
@@ -1070,58 +1063,66 @@ const Pricing = () => {
       <div className="max-w-7xl mx-auto relative">
         <div className="text-center max-w-3xl mx-auto">
           <div className="text-[11px] font-bold uppercase tracking-[0.22em] text-cyan-400 mb-5">
-            — Accessible luxury
+            — Pre-Orders Open
           </div>
           <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-light tracking-[-0.03em] text-white leading-[1.05]">
-            Premium materials.{" "}
-            <span className="italic bg-gradient-to-r from-cyan-200 to-cyan-400 bg-clip-text text-transparent">
-              Honest pricing.
+            Keyboards & Mice,{" "}
+            <span className="italic bg-gradient-to-r from-cyan-200 to-emerald-300 bg-clip-text text-transparent">
+              done right.
             </span>
           </h2>
           <p className="mt-6 text-zinc-400 max-w-xl mx-auto">
-            We believe premium air purification should feel within reach for
-            modern homes.
+            Reserve your NavAir combo today. No charges, no card details — just
+            your spot in the first wave.
           </p>
         </div>
 
         <div className="mt-16 grid md:grid-cols-3 gap-5 sm:gap-6">
           {[
             {
-              tier: "NavAir Mini",
-              size: "For personal spaces",
-              price: "₹5,498",
-              old: "₹7,998",
+              tier: "NavAir Essential",
+              size: "Best Value",
+              price: "₹1,799",
               popular: false,
+              accent: "zinc",
+              desc: "A reliable wireless keyboard and mouse combo for students, office work, online learning, and everyday productivity.",
               perks: [
-                "Premium filtration",
-                "Quiet operation",
+                "Reliable wireless connectivity",
+                "Comfort-first key layout",
                 "Clean, modern design",
+                "Everyday durability",
               ],
+              cta: "Pre-Book Now",
             },
             {
-              tier: "NavAir 01",
-              size: "For living spaces",
-              price: "₹6,998",
-              old: "₹10,498",
+              tier: "NavAir Performance",
+              size: "Most Popular",
+              price: "₹2,499",
               popular: true,
+              accent: "cyan",
+              desc: "Enhanced comfort, premium styling, and improved wireless performance for modern users who spend their day at the desk.",
               perks: [
-                "Premium multi-stage filtration",
-                "Low-noise operation",
-                "Crafted aluminum body",
-                "Future app & smart features",
+                "Improved wireless performance",
+                "Enhanced comfort & ergonomics",
+                "Premium styling & materials",
+                "Designed for long sessions",
               ],
+              cta: "Pre-Book Now",
             },
             {
               tier: "NavAir Pro",
-              size: "For larger spaces",
-              price: "₹8,998",
-              old: "₹13,998",
+              size: "Flagship",
+              price: "₹3,299",
               popular: false,
+              accent: "emerald",
+              desc: "The flagship NavAir keyboard and mouse combo — built for professionals, creators, and productivity enthusiasts.",
               perks: [
-                "Advanced filtration system",
-                "Premium materials",
-                "Future smart connectivity",
+                "Flagship wireless experience",
+                "Premium finish & build",
+                "Considered ergonomics",
+                "Built for power users",
               ],
+              cta: "Pre-Book Now",
             },
           ].map((p, i) => (
             <div
@@ -1133,13 +1134,20 @@ const Pricing = () => {
                   : "bg-white/[0.02] border-white/5 hover:border-white/15"
               }`}
             >
-              {p.popular && (
-                <div className="absolute top-5 right-5 text-[10px] uppercase tracking-[0.22em] text-cyan-300 font-bold px-3 py-1 rounded-full border border-cyan-400/30 bg-cyan-400/5">
-                  Most loved
-                </div>
-              )}
-              <div className="text-[11px] uppercase tracking-[0.22em] text-zinc-500">
+              <div
+                data-testid={`pricing-badge-${i}`}
+                className={`absolute top-5 right-5 text-[10px] uppercase tracking-[0.22em] font-bold px-3 py-1 rounded-full ${
+                  p.popular
+                    ? "text-cyan-300 border border-cyan-400/40 bg-cyan-400/10"
+                    : p.accent === "emerald"
+                      ? "text-emerald-300 border border-emerald-400/40 bg-emerald-400/5"
+                      : "text-zinc-300 border border-white/15 bg-white/5"
+                }`}
+              >
                 {p.size}
+              </div>
+              <div className="text-[11px] uppercase tracking-[0.22em] text-zinc-500">
+                Pre-Orders Open
               </div>
               <div className="font-display text-2xl text-white mt-1">
                 {p.tier}
@@ -1148,8 +1156,10 @@ const Pricing = () => {
                 <span className="font-display text-5xl text-white tracking-tighter">
                   {p.price}
                 </span>
-                <span className="text-zinc-500 line-through">{p.old}</span>
               </div>
+              <p className="mt-4 text-sm text-zinc-400 leading-relaxed">
+                {p.desc}
+              </p>
               <ul className="mt-6 space-y-2.5">
                 {p.perks.map((perk, j) => (
                   <li
@@ -1159,7 +1169,13 @@ const Pricing = () => {
                     <CheckCircle
                       size={16}
                       weight="duotone"
-                      className="text-cyan-400 flex-shrink-0"
+                      className={
+                        p.popular
+                          ? "text-cyan-400 flex-shrink-0"
+                          : p.accent === "emerald"
+                            ? "text-emerald-300 flex-shrink-0"
+                            : "text-zinc-400 flex-shrink-0"
+                      }
                     />
                     {perk}
                   </li>
@@ -1175,21 +1191,361 @@ const Pricing = () => {
                     : "border border-white/15 text-white hover:bg-white/5"
                 }`}
               >
-                Reserve {p.tier.split(" ")[1]}
+                {p.cta}
                 <ArrowRight size={14} weight="bold" />
               </button>
             </div>
           ))}
         </div>
+
+        <p className="mt-10 text-center text-xs text-zinc-500">
+          Pre-booking secures your spot. No charges, no card details. Final
+          pricing locks when units ship.
+        </p>
       </div>
 
       {modalOpen && (
         <PrebookModal
           key={selected || "default"}
           onClose={() => setModalOpen(false)}
-          product={selected || "NavAir 01"}
+          product={selected || "NavAir Performance"}
         />
       )}
+    </section>
+  );
+};
+
+/* ============================================================
+   AIR PURIFICATION SERIES — Coming Soon
+============================================================ */
+const AirPurificationSeries = () => {
+  const [joined, setJoined] = useState(false);
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const notifyMe = async (e) => {
+    e.preventDefault();
+    if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      toast.error("Please enter a valid email.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await axios.post(`${API}/waitlist`, {
+        email,
+        source: "air-purification-series",
+      });
+      setJoined(true);
+      toast.success(res.data?.message || "You're on the list.");
+    } catch (err) {
+      toast.error("Something went wrong. Try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <section
+      id="air-purification"
+      data-testid="air-purification-section"
+      className="relative py-28 sm:py-36 px-6 sm:px-10 overflow-hidden border-t border-white/5"
+    >
+      <div
+        className="aurora bg-emerald-500/30"
+        style={{ width: 700, height: 700, top: "-20%", right: "-10%" }}
+      />
+      <div className="max-w-7xl mx-auto relative">
+        <div className="grid lg:grid-cols-12 gap-12 items-center">
+          {/* Left: copy */}
+          <div className="lg:col-span-7">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-emerald-400/30 bg-emerald-400/5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-[11px] font-bold uppercase tracking-[0.22em] text-emerald-300">
+                Future Product Line · Coming Soon
+              </span>
+            </div>
+            <h2 className="mt-6 font-display text-4xl sm:text-5xl md:text-6xl font-light tracking-[-0.03em] text-white leading-[1.05]">
+              NavAir Air{" "}
+              <span className="italic bg-gradient-to-r from-emerald-200 to-cyan-300 bg-clip-text text-transparent">
+                Purification Series.
+              </span>
+            </h2>
+            <p className="mt-6 text-zinc-400 leading-relaxed max-w-xl">
+              The NavAir Air Purification Series is currently under
+              development. Our upcoming air purification products will focus on
+              premium design, smart technology, and healthier indoor
+              environments — a core part of the NavAir vision.
+            </p>
+
+            <div className="mt-10 grid sm:grid-cols-3 gap-4">
+              {[
+                { i: Sparkle, l: "Premium Design" },
+                { i: Lightning, l: "Smart Technology" },
+                { i: Heart, l: "Healthier Indoors" },
+              ].map((it, i) => (
+                <div
+                  key={i}
+                  className="p-4 rounded-2xl border border-white/5 bg-white/[0.02]"
+                >
+                  <it.i
+                    size={20}
+                    weight="duotone"
+                    className="text-emerald-300"
+                  />
+                  <div className="mt-2 text-sm text-white font-medium">
+                    {it.l}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-10 flex flex-wrap items-center gap-3">
+              {!joined ? (
+                <form
+                  onSubmit={notifyMe}
+                  data-testid="air-notify-form"
+                  className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto"
+                >
+                  <input
+                    data-testid="air-notify-email-input"
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@home.com"
+                    className="flex-1 sm:w-72 bg-white/[0.03] border border-white/10 rounded-full px-5 py-3 text-white placeholder-zinc-500 focus:outline-none focus:border-emerald-400/60 focus:ring-2 focus:ring-emerald-400/20 transition-all"
+                  />
+                  <button
+                    data-testid="air-notify-button"
+                    type="submit"
+                    disabled={loading}
+                    className="inline-flex items-center justify-center gap-2 bg-emerald-400 text-black hover:bg-emerald-300 disabled:opacity-50 rounded-full px-6 py-3 font-semibold transition-all shadow-[0_0_40px_rgba(52,211,153,0.35)]"
+                  >
+                    {loading ? (
+                      <CircleNotch
+                        size={16}
+                        weight="bold"
+                        className="animate-spin"
+                      />
+                    ) : (
+                      <>
+                        Notify Me
+                        <ArrowRight size={14} weight="bold" />
+                      </>
+                    )}
+                  </button>
+                  <button
+                    type="submit"
+                    data-testid="air-join-waitlist"
+                    className="inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium border border-white/15 text-white hover:bg-white/5 transition-all"
+                  >
+                    Join Waitlist
+                  </button>
+                </form>
+              ) : (
+                <div
+                  data-testid="air-notify-success"
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-emerald-400/30 bg-emerald-400/5 text-emerald-200 text-sm"
+                >
+                  <CheckCircle size={18} weight="duotone" />
+                  You&apos;re on the list. We&apos;ll be in touch.
+                </div>
+              )}
+
+              <a
+                href="#faq"
+                data-testid="air-learn-more"
+                className="inline-flex items-center gap-2 text-sm text-zinc-300 hover:text-white px-5 py-3 transition-colors"
+              >
+                Learn More
+                <CaretRight size={14} weight="bold" />
+              </a>
+            </div>
+
+            <p className="mt-5 text-xs text-zinc-500">
+              No purchases or pre-orders for the Air Purification Series yet —
+              just a quiet hello when it&apos;s ready.
+            </p>
+          </div>
+
+          {/* Right: futuristic visual placeholder */}
+          <div className="lg:col-span-5">
+            <div className="relative aspect-square rounded-[2rem] border border-white/10 bg-gradient-to-br from-emerald-500/10 via-zinc-900/40 to-black overflow-hidden backdrop-blur-xl">
+              <div className="absolute inset-0 bg-grid opacity-30" />
+              <div className="absolute -top-32 -right-32 w-72 h-72 rounded-full bg-emerald-500/20 blur-3xl" />
+              <div className="absolute -bottom-32 -left-32 w-72 h-72 rounded-full bg-cyan-500/15 blur-3xl" />
+
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="relative">
+                  <div className="w-44 h-64 sm:w-52 sm:h-72 rounded-[2.5rem] bg-gradient-to-b from-zinc-700 via-zinc-800 to-zinc-950 shadow-[0_30px_80px_-20px_rgba(52,211,153,0.4)] border border-white/10 float">
+                    <div className="absolute top-6 left-1/2 -translate-x-1/2 w-20 h-20 rounded-full border-2 border-emerald-400/40 flex items-center justify-center">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-b from-emerald-300/40 to-emerald-500/10 backdrop-blur" />
+                    </div>
+                    <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[10px] uppercase tracking-[0.22em] text-emerald-300/80 font-bold">
+                      Concept
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="absolute top-5 left-5 inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/15 bg-black/40 backdrop-blur-xl">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-[10px] uppercase tracking-[0.22em] text-zinc-300 font-bold">
+                  In Development
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+/* ============================================================
+   ROADMAP — Coming Soon from NavAir
+============================================================ */
+const Roadmap = () => {
+  const items = [
+    { t: "Wireless Gaming Mouse", s: "Coming Soon", i: DeviceMobile },
+    { t: "Mechanical Keyboards", s: "Coming Soon", i: WaveSine },
+    { t: "Premium Desk Accessories", s: "Coming Soon", i: Sparkle },
+    { t: "Smart Productivity Devices", s: "Coming Soon", i: Lightning },
+    { t: "Air Purification Series", s: "In Development", i: Heart },
+  ];
+  return (
+    <section
+      id="roadmap"
+      data-testid="roadmap-section"
+      className="relative py-28 sm:py-36 px-6 sm:px-10 border-t border-white/5"
+    >
+      <div className="max-w-7xl mx-auto">
+        <div className="max-w-3xl text-center mx-auto mb-14 sm:mb-20">
+          <div className="text-[11px] font-bold uppercase tracking-[0.22em] text-cyan-400 mb-5">
+            — The journey ahead
+          </div>
+          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-light tracking-[-0.03em] text-white leading-[1.05]">
+            Coming soon from{" "}
+            <span className="italic bg-gradient-to-r from-cyan-200 to-emerald-300 bg-clip-text text-transparent">
+              NavAir.
+            </span>
+          </h2>
+          <p className="mt-6 text-zinc-400 max-w-xl mx-auto">
+            A growing ecosystem of premium technology — designed to enhance the
+            way you work, create, and live.
+          </p>
+        </div>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          {items.map((it, i) => {
+            const dev = it.s === "In Development";
+            return (
+              <div
+                key={i}
+                data-testid={`roadmap-item-${i}`}
+                className={`relative p-6 rounded-2xl border backdrop-blur-xl transition-all duration-500 hover:-translate-y-1 ${
+                  dev
+                    ? "bg-gradient-to-b from-emerald-500/10 to-transparent border-emerald-400/30"
+                    : "bg-white/[0.02] border-white/5 hover:border-white/15"
+                }`}
+              >
+                <it.i
+                  size={28}
+                  weight="duotone"
+                  className={dev ? "text-emerald-300" : "text-cyan-400"}
+                />
+                <div className="mt-5 font-display text-lg text-white tracking-tight">
+                  {it.t}
+                </div>
+                <div
+                  className={`mt-2 text-[11px] uppercase tracking-[0.22em] font-bold ${
+                    dev ? "text-emerald-300" : "text-zinc-500"
+                  }`}
+                >
+                  {it.s}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+/* ============================================================
+   ABOUT — Brand story
+============================================================ */
+const About = () => {
+  const ecosystem = [
+    "Wireless Keyboards",
+    "Wireless Mice",
+    "Desk Accessories",
+    "Smart Devices",
+    "Future Air Purification Solutions",
+  ];
+  return (
+    <section
+      id="about"
+      data-testid="about-section"
+      className="relative py-28 sm:py-36 px-6 sm:px-10 border-t border-white/5 overflow-hidden"
+    >
+      <div
+        className="aurora bg-blue-600/30"
+        style={{ width: 600, height: 600, bottom: "-30%", right: "-15%" }}
+      />
+      <div className="max-w-6xl mx-auto relative grid lg:grid-cols-12 gap-12 items-start">
+        <div className="lg:col-span-7">
+          <div className="text-[11px] font-bold uppercase tracking-[0.22em] text-cyan-400 mb-5">
+            — About NavAir
+          </div>
+          <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-light tracking-[-0.03em] text-white leading-[1.05]">
+            A premium tech startup, built for{" "}
+            <span className="italic bg-gradient-to-r from-cyan-200 to-emerald-300 bg-clip-text text-transparent">
+              modern living.
+            </span>
+          </h2>
+          <p className="mt-6 text-zinc-400 leading-relaxed max-w-xl">
+            NavAir is a premium technology startup focused on creating products
+            that enhance productivity, comfort, and modern digital lifestyles.
+            We believe great tech should feel as good as it looks — and earn a
+            place on your desk for years, not months.
+          </p>
+          <p className="mt-4 text-zinc-400 leading-relaxed max-w-xl">
+            Our goal: combine innovation, premium design, and reliability into
+            products people genuinely enjoy using every day.
+          </p>
+        </div>
+
+        <div className="lg:col-span-5">
+          <div className="p-7 sm:p-9 rounded-3xl border border-white/10 bg-white/[0.02] backdrop-blur-xl">
+            <div className="text-[11px] uppercase tracking-[0.22em] text-cyan-400 font-bold">
+              Our Growing Ecosystem
+            </div>
+            <ul className="mt-5 space-y-3">
+              {ecosystem.map((e, i) => (
+                <li
+                  key={i}
+                  data-testid={`about-ecosystem-${i}`}
+                  className="flex items-center gap-3 text-white"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                  {e}
+                </li>
+              ))}
+            </ul>
+            <div className="mt-7 pt-5 border-t border-white/5 text-xs text-zinc-500">
+              Get in touch ·{" "}
+              <a
+                href="mailto:nav.purify@gmail.com"
+                className="text-cyan-300 hover:text-cyan-200"
+              >
+                nav.purify@gmail.com
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   );
 };
@@ -1201,24 +1557,28 @@ const Faq = () => {
   const [openIdx, setOpenIdx] = useState(0);
   const faqs = [
     {
-      q: "When will NavAir start shipping?",
-      a: "We're in the final stretch of production. Reservations placed via the pricing section will be fulfilled in the order received once units ship.",
+      q: "What products is NavAir launching first?",
+      a: "Our first generation is the NavAir Keyboard & Mouse Combo lineup — Essential, Performance, and Pro. Each is designed for productivity, comfort, and modern living.",
     },
     {
-      q: "How is NavAir different from other air purifiers?",
-      a: "NavAir is built around design and quietness first. Premium materials, a considered form, and a thoughtful approach to indoor comfort — designed to feel at home in modern interiors.",
+      q: "How does pre-booking work?",
+      a: "Pick a combo, verify with a quick OTP (email or SMS), and you're in. No charges, no card details — just your spot in the first wave.",
     },
     {
-      q: "What about smart features and the mobile app?",
-      a: "Smart connectivity, ambient sensing and a companion app are part of our future roadmap. Final feature timing will be shared as we approach launch.",
+      q: "What happened to the NavAir Air Purifier?",
+      a: "The NavAir Air Purification Series is now part of our future product line and is under active development. It remains a core part of our long-term vision.",
     },
     {
-      q: "Do I pay anything when I pre-book?",
-      a: "No. Pre-booking only secures your spot — no charges, no card details. Final pricing is locked when units begin to ship.",
+      q: "What else is on the NavAir roadmap?",
+      a: "We're exploring wireless gaming mice, mechanical keyboards, premium desk accessories, smart productivity devices, and the Air Purification Series. See the roadmap section for more.",
+    },
+    {
+      q: "When will units ship?",
+      a: "We're finalising production timelines now. Pre-booking unlocks our launch updates — you'll be the first to know.",
     },
     {
       q: "What's the return and warranty policy?",
-      a: "Every NavAir is backed by a hassle-free return window and a manufacturer warranty. Final terms will accompany your shipping confirmation.",
+      a: "Every NavAir product is backed by a hassle-free return window and a manufacturer warranty. Final terms will accompany your shipping confirmation.",
     },
     {
       q: "How can I get in touch?",
@@ -1346,7 +1706,8 @@ const Footer = () => {
             <span className="font-display text-xl tracking-tight">NavAir</span>
           </div>
           <p className="mt-4 text-zinc-500 max-w-sm text-sm">
-            Premium air purification, thoughtfully designed for modern living.
+            Premium technology, thoughtfully designed for productivity,
+            comfort, and modern living.
           </p>
           <a
             href="mailto:nav.purify@gmail.com"
@@ -1359,12 +1720,12 @@ const Footer = () => {
         <div className="md:col-span-7 grid grid-cols-3 gap-8 text-sm">
           {[
             {
-              h: "Product",
-              l: ["NavAir Mini", "NavAir 01", "NavAir Pro", "Filters"],
+              h: "Products",
+              l: ["NavAir Essential", "NavAir Performance", "NavAir Pro", "Air Series (Soon)"],
             },
             {
               h: "Company",
-              l: ["About", "Sustainability", "Careers"],
+              l: ["About", "Roadmap", "Careers"],
             },
             {
               h: "Support",
@@ -1430,8 +1791,11 @@ export default function NavAirLanding() {
       <TrustStrip />
       <Features />
       <Showcase />
-      <Specs />
+      <Comparison />
       <Pricing />
+      <AirPurificationSeries />
+      <Roadmap />
+      <About />
       <Faq />
       <Footer />
     </main>

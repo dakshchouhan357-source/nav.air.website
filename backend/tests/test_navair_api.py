@@ -64,8 +64,94 @@ class TestPrebookStatus:
         data = r.json()
         assert "total" in data
         assert "twilio_enabled" in data
+        assert "email_enabled" in data
         assert isinstance(data["total"], int)
         assert isinstance(data["twilio_enabled"], bool)
+        assert isinstance(data["email_enabled"], bool)
+
+
+# ----------------------- Waitlist (air-purification-series) -----------------------
+
+class TestWaitlistAirSeries:
+    def test_air_series_source_persists(self, session):
+        email = f"TEST_air_{uuid.uuid4().hex[:8]}@example.com"
+        r = session.post(f"{API}/waitlist", json={"email": email, "source": "air-purification-series"}, timeout=15)
+        assert r.status_code == 200, r.text
+        d = r.json()
+        assert d["ok"] is True
+        assert d["already_joined"] is False
+        assert isinstance(d.get("position"), int)
+        # Duplicate
+        r2 = session.post(f"{API}/waitlist", json={"email": email, "source": "air-purification-series"}, timeout=15)
+        assert r2.status_code == 200
+        d2 = r2.json()
+        assert d2["already_joined"] is True
+
+
+# ----------------------- Email OTP -----------------------
+
+class TestEmailOtp:
+    def test_invalid_email_send(self, session):
+        r = session.post(f"{API}/prebook/send-email-otp", json={"email": "not-an-email"}, timeout=15)
+        assert r.status_code in (400, 422), r.text
+
+    def test_send_email_otp_ok(self, session):
+        """Hits live Gmail SMTP unless GMAIL_APP_PASSWORD empty. We use a
+        TEST_*@example.com address to avoid spamming a real inbox. The server
+        will attempt to send -- success or 502 is acceptable."""
+        email = f"TEST_{uuid.uuid4().hex[:10]}@example.com"
+        r = session.post(f"{API}/prebook/send-email-otp", json={"email": email, "product": "NavAir Essential"}, timeout=30)
+        # In live Gmail mode, the SMTP send may succeed even to a fake address (Gmail accepts),
+        # OR may 502 if Gmail rejects. In demo mode it always returns 200 with demo_code.
+        assert r.status_code in (200, 502), r.text
+        if r.status_code == 200:
+            d = r.json()
+            assert d.get("ok") is True
+            assert d.get("channel") in ("email", "demo")
+            assert d.get("email") == email.lower()
+
+    def test_verify_email_invalid_code(self, session):
+        email = f"TEST_{uuid.uuid4().hex[:10]}@example.com"
+        # Verify without sending
+        r = session.post(f"{API}/prebook/verify-email-otp", json={"email": email, "code": "123456"}, timeout=15)
+        # No OTP record -> 400
+        assert r.status_code == 400, r.text
+
+    def test_verify_email_bad_code_format(self, session):
+        email = f"TEST_{uuid.uuid4().hex[:10]}@example.com"
+        r = session.post(f"{API}/prebook/verify-email-otp", json={"email": email, "code": "abc"}, timeout=15)
+        assert r.status_code == 400, r.text
+
+
+class TestEmailOtpDemoE2E:
+    """Only meaningful when GMAIL_APP_PASSWORD is empty -> demo_code returned."""
+
+    @pytest.fixture(autouse=True)
+    def _ensure_email_demo_mode(self, session):
+        r = session.get(f"{API}/prebook/status", timeout=15)
+        if r.status_code != 200 or r.json().get("email_enabled"):
+            pytest.skip("Backend has Gmail enabled; skipping email demo E2E test")
+
+    def test_demo_email_send_and_verify(self, session):
+        email = f"TEST_{uuid.uuid4().hex[:10]}@example.com"
+        r = session.post(f"{API}/prebook/send-email-otp", json={"email": email, "product": "NavAir Essential"}, timeout=15)
+        assert r.status_code == 200, r.text
+        d = r.json()
+        assert d.get("channel") == "demo"
+        demo_code = d.get("demo_code")
+        assert demo_code and len(demo_code) == 6
+
+        # Wrong code
+        r_w = session.post(f"{API}/prebook/verify-email-otp", json={"email": email, "code": "000000", "product": "NavAir Essential"}, timeout=15)
+        assert r_w.status_code == 400
+
+        # Correct code
+        r_ok = session.post(f"{API}/prebook/verify-email-otp", json={"email": email, "code": demo_code, "product": "NavAir Essential", "name": "TestUser"}, timeout=15)
+        assert r_ok.status_code == 200, r_ok.text
+        ok = r_ok.json()
+        assert ok.get("verified") is True
+        assert "booking_id" in ok
+        assert isinstance(ok.get("position"), int)
 
 
 # ----------------------- Send OTP (mode-aware) -----------------------
