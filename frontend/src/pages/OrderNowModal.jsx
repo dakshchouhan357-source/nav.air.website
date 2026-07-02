@@ -17,6 +17,15 @@ const PRODUCTS = [
       { name: "Black",  hex: "#2A2A2A" },
       { name: "Blue",   hex: "#6B8EC8" },
       { name: "Silver", hex: "#C8C8D0" },
+    {
+      label: "NAVAIR Bloom Tumbler", price: 699,
+      colors: [
+        { name: "Blue Blossom",   hex: "#9BC4E2" },
+        { name: "Pink Garden",    hex: "#F9D0D8" },
+        { name: "Lavender Bloom", hex: "#C9B3D9" },
+        { name: "Rose Petal",     hex: "#F0A0B0" },
+      ],
+    },
     ],
   },
 ];
