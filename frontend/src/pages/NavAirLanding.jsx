@@ -991,6 +991,14 @@ const GLOW_COLORS = [
   { name: "Black", hex: "#2A2A2A", image: "/images/glow-colors.jpg", image2: "/images/glow 3.jpeg" },
 ];
 
+const CLOUD_COLORS = [
+  { name: "Pink",   hex: "#F4B8C0", image: "/images/headphones/headphones-pink.jpg",   image2: "/images/headphones/headphones-all.jpg" },
+  { name: "Green",  hex: "#7DC4A4", image: "/images/headphones/headphones-green.jpg",  image2: "/images/headphones/headphones-all.jpg" },
+  { name: "Black",  hex: "#2A2A2A", image: "/images/headphones/headphones-all.jpg",    image2: "/images/headphones/headphones-all.jpg" },
+  { name: "Blue",   hex: "#6B8EC8", image: "/images/headphones/headphones-blue.jpg",   image2: "/images/headphones/headphones-all.jpg" },
+  { name: "Silver", hex: "#C8C8D0", image: "/images/headphones/headphones-silver.jpg", image2: "/images/headphones/headphones-silver2.jpg" },
+];
+
 function ProductSection({ onOpenOrder }) {
   const products = [
     {
@@ -1021,6 +1029,20 @@ function ProductSection({ onOpenOrder }) {
       bullets: ["Mouse only", "Quiet, precise control", "Ergonomic comfort", "Cute pastel aesthetic"],
       modalProduct: "NAV AIR Glow (Mouse)",
     },
+    {
+      key: "cloud",
+      name: "NAVAIR Cloud Headphones",
+      price: "₹499",
+      badge: "New Arrival",
+      stock: 10,
+      image: "/images/headphones/headphones-all.jpg",
+      image2: "/images/headphones/headphones-silver.jpg",
+      images: ["/images/headphones/headphones-all.jpg", "/images/headphones/headphones-silver.jpg", "/images/headphones/headphones-blue.jpg", "/images/headphones/headphones-green.jpg"],
+      colors: CLOUD_COLORS,
+      desc: "Premium wireless headphones with deep bass and all-day comfort. Crystal-clear sound for music, gaming, and everything in between.",
+      bullets: ["Wireless Bluetooth 5.0", "Deep bass, clear highs", "Cushioned ear cups", "Foldable, travel-ready"],
+      modalProduct: "NAVAIR Cloud Headphones",
+    },
   ];
 
   return (
@@ -1030,11 +1052,11 @@ function ProductSection({ onOpenOrder }) {
       <div className="max-w-6xl mx-auto">
         <SectionHeading
           eyebrow="Available Now"
-          title={<>Bloom & Glow,<span className="gradient-kawaii-text italic"> pick your fave.</span></>}
-          subtitle="Premium pastel combos crafted for comfort and cute aesthetic. Online payment & COD both available."
+          title={<>Bloom, Glow & Cloud,<span className="gradient-kawaii-text italic"> pick yours.</span></>}
+          subtitle="Premium wireless gear crafted for comfort and cute aesthetic. Keyboard, mouse, and headphones — all kawaii."
         />
 
-        <div className="mt-14 grid md:grid-cols-2 gap-6 sm:gap-8">
+        <div className="mt-14 grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {products.map((p, idx) => (
             <ProductCard key={p.key} product={p} onOpenOrder={onOpenOrder} featured={idx === 0} />
           ))}
@@ -1088,6 +1110,12 @@ export default function NavAirLanding() {
               className="flex-shrink-0 rounded-2xl bg-gradient-to-r from-[#B8A9CC] to-[#A090BC] text-white px-4 py-3 text-xs font-bold font-cute shadow-lg"
             >
               Glow ₹459
+            </button>
+            <button
+              onClick={() => setOpenModalFor({ product: "NAVAIR Cloud Headphones", color: "" })}
+              className="flex-shrink-0 rounded-2xl bg-gradient-to-r from-[#6B8EC8] to-[#5A7DB8] text-white px-4 py-3 text-xs font-bold font-cute shadow-lg"
+            >
+              Cloud ₹499
             </button>
           </div>
         </div>
