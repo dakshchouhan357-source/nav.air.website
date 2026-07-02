@@ -1,13 +1,26 @@
 import emailjs from "@emailjs/browser";
 
-const SERVICE_ID          = import.meta.env.VITE_EMAILJS_SERVICE_ID   || "service_2k3w6db";
-const BUSINESS_TEMPLATE   = import.meta.env.VITE_EMAILJS_BIZ_TEMPLATE  || "template_hhb7lh4";
-const CUSTOMER_TEMPLATE   = import.meta.env.VITE_EMAILJS_CUST_TEMPLATE || "template_bfgfhxp";
-const PUBLIC_KEY          = import.meta.env.VITE_EMAILJS_PUBLIC_KEY    || "_o9dslQ73LPF7xmsU";
-const SITE_URL            = "https://www.getnavair.com";
-const QR_IMAGE_URL        = SITE_URL + "/payment-qr.png";
+const SERVICE_ID        = import.meta.env.VITE_EMAILJS_SERVICE_ID   || "service_2k3w6db";
+const BUSINESS_TEMPLATE = import.meta.env.VITE_EMAILJS_BIZ_TEMPLATE  || "template_hhb7lh4";
+const CUSTOMER_TEMPLATE = import.meta.env.VITE_EMAILJS_CUST_TEMPLATE || "template_bfgfhxp";
+const PUBLIC_KEY        = import.meta.env.VITE_EMAILJS_PUBLIC_KEY    || "_o9dslQ73LPF7xmsU";
+const SITE_URL          = "https://www.getnavair.com";
+const UPI_ID            = "9653820143@ptyes";
+const SUPPORT_EMAIL     = "air.navpure@gmail.com";
+const INSTAGRAM         = "https://www.instagram.com/shopnavair";
 
 emailjs.init({ publicKey: PUBLIC_KEY });
+
+/** Build a scannable UPI QR image URL (via qrserver.com) for the exact order total.
+ *  This URL works immediately in emails — no static file dependency. */
+function makeQrUrl(amount) {
+  const upiStr = "upi://pay?pa=" + UPI_ID + "&pn=NAVAIR&am=" + amount + "&cu=INR";
+  return (
+    "https://api.qrserver.com/v1/create-qr-code/" +
+    "?size=300x300&margin=12&color=3D6B52&bgcolor=F0FAF6" +
+    "&data=" + encodeURIComponent(upiStr)
+  );
+}
 
 export async function sendOrderEmails(orderData) {
   const {
@@ -18,13 +31,11 @@ export async function sendOrderEmails(orderData) {
 
   const total        = "Rs. " + (total_price || 0);
   const isCOD        = (payment_method || "").toLowerCase().includes("cod");
-  const pmLabel      = isCOD ? "Cash on Delivery (COD)" : "Online Payment (QR / Link)";
+  const pmLabel      = isCOD ? "Cash on Delivery (COD)" : "Online Payment (QR / UPI)";
   const colorLabel   = color || "Not specified";
   const deliveryAddr = address + ", " + city + ", " + state + " - " + pincode;
-
-  const paymentNextStep = isCOD
-    ? "Pay in cash to the delivery person when it arrives"
-    : "We will email you a payment QR code — scan and pay to confirm your order";
+  // Dynamic QR encodes exact amount — always accessible, no Vercel deploy required
+  const qrUrl        = isCOD ? "" : makeQrUrl(total_price || 0);
 
   const orderMsg =
     "===== NEW ORDER RECEIVED =====\n" +
@@ -55,7 +66,6 @@ export async function sendOrderEmails(orderData) {
     quantity         : String(quantity),
     total_amount     : total,
     payment_method   : pmLabel,
-    payment_next_step: paymentNextStep,
     delivery_address : deliveryAddr,
     address          : address,
     city             : city,
@@ -63,47 +73,56 @@ export async function sendOrderEmails(orderData) {
     pincode          : pincode,
     special_notes    : notes || "None",
     payment_status   : isCOD ? "COD CONFIRMED" : "PENDING PAYMENT",
-    qr_image_url     : isCOD ? "" : QR_IMAGE_URL,
-    upi_id           : "9653820143@ptyes",
-    support_email    : "air.navpure@gmail.com",
+    qr_image_url     : qrUrl,
+    upi_id           : UPI_ID,
+    support_email    : SUPPORT_EMAIL,
+    instagram_url    : INSTAGRAM,
     site_url         : SITE_URL,
     message          : orderMsg,
   };
 
-  // Business notification
+  /* Admin notification */
   const businessParams = {
     ...sharedParams,
-    to_email  : "air.navpure@gmail.com",
-    email     : "air.navpure@gmail.com",
+    to_email  : SUPPORT_EMAIL,
+    email     : SUPPORT_EMAIL,
     to_name   : "NavAir Admin",
     from_name : full_name,
     from_email: email,
     reply_to  : email,
+    subject   : "New Order #" + (order_id || "N/A") + " — " + product,
     title     : "New Order #" + (order_id || "N/A"),
     time      : new Date().toLocaleString("en-IN"),
   };
 
-  // Customer confirmation — Payment Pending message
-  const customerMessage = isCOD
-    ? "Thank you for your order! We have received your COD order and will dispatch it shortly."
-    : "Thank you for shopping with NAVAIR!\n\n" +
-      "We have received your order request successfully.\n\n" +
-      "Your order is currently reserved, but payment is still pending.\n\n" +
-      "Please complete your payment using the QR code below.\n\n" +
-      "Once our team manually verifies your payment, your order will be confirmed and prepared for shipping.\n\n" +
-      "If the QR does not work, pay using UPI ID: 9653820143@ptyes\n\n" +
-      "Support: air.navpure@gmail.com";
-
+  /* Customer email — Payment Pending for online, COD Confirmed for cash */
   const customerParams = {
     ...sharedParams,
     to_email  : email,
     email     : email,
     to_name   : full_name,
     from_name : "NAV AIR",
-    from_email: "air.navpure@gmail.com",
-    reply_to  : "air.navpure@gmail.com",
-    title     : isCOD ? "COD Order Confirmed" : "Payment Pending",
-    message   : customerMessage,
+    from_email: SUPPORT_EMAIL,
+    reply_to  : SUPPORT_EMAIL,
+    subject   : isCOD
+      ? "Your NAVAIR COD Order is Confirmed!"
+      : "Payment Pending — Complete Your NAVAIR Order",
+    title     : isCOD ? "Order Confirmed" : "Payment Pending",
+    message:
+      isCOD
+        ? "Thank you for your order! We have received your COD order for " +
+          product + " (" + colorLabel + "), qty " + quantity + ". " +
+          "Total payable on delivery: " + total + ". We will dispatch it shortly."
+        : "Thank you for your interest in NAVAIR!\n\n" +
+          "Your order for " + product + " (" + colorLabel + ") x" + quantity +
+          " has been reserved, but payment is still pending.\n\n" +
+          "Total amount to pay: " + total + "\n\n" +
+          "Please scan the QR code in this email with any UPI app " +
+          "(PhonePe, GPay, Paytm, etc.) to pay.\n\n" +
+          "UPI ID (manual entry): " + UPI_ID + "\n\n" +
+          "Once our team verifies your payment, your order will be confirmed " +
+          "and prepared for shipping.\n\n" +
+          "Questions? Contact us at " + SUPPORT_EMAIL,
   };
 
   let adminOk = false, customerOk = false;
