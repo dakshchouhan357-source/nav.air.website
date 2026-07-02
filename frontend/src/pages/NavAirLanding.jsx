@@ -607,7 +607,7 @@ function ComingSoon() {
   function FAQ() {
   const [openIdx, setOpenIdx] = useState(0);
   const faqs = [
-    { q: "Which products can I order right now?", a: "NAV AIR Bloom (Keyboard + Mouse Combo) and NAV AIR Glow (Mouse) are available now. Air Purifiers are coming soon!" },
+    { q: "Which products can I order right now?", a: "NAV AIR Bloom (Keyboard + Mouse Combo), NAV AIR Glow (Mouse), NAVAIR Cloud Headphones, and the new NAVAIR Bloom Tumbler (₹699) are all available now! Air Purifiers are coming soon!" },
     { q: "How does the ordering process work?", a: "Fill in your details in our cute order form, review your order, and confirm. No account creation or OTP required — just simple and easy!" },
     { q: "Do you accept Cash on Delivery?", a: "Yes! COD is available. You pay when your package arrives at your door." },
     { q: "When will my order be shipped?", a: "We'll share shipping timelines after your order is processed. We'll keep you informed every step of the way." },
@@ -744,7 +744,7 @@ function Footer() {
 
         <div className="md:col-span-7 grid grid-cols-3 gap-8 text-sm">
           {[
-            { h: "Products", l: [{ label: "NAV AIR Bloom", href: "#products" }, { label: "NAV AIR Glow", href: "#products" }, { label: "Air Purifiers ✨", href: "#air-purifiers" }] },
+            { h: "Products", l: [{ label: "NAV AIR Bloom", href: "#products" }, { label: "NAV AIR Glow", href: "#products" }, { label: "Bloom Tumbler", href: "#products" }, { label: "Air Purifiers ✨", href: "#air-purifiers" }] },
             { h: "Explore", l: [{ label: "Compare", href: "#comparison" }, { label: "FAQ", href: "#faq" }, { label: "Coming Soon", href: "#air-purifiers" }] },
             { h: "Support", l: [{ label: "Email Us", href: "mailto:air.navpure@gmail.com" }, { label: "Instagram", href: "https://instagram.com/shopnavair" }, { label: "FAQ", href: "#faq" }] },
           ].map((col, i) => (
@@ -999,6 +999,13 @@ const CLOUD_COLORS = [
   { name: "Silver", hex: "#C8C8D0", image: "/images/headphones/headphones-silver.jpg", image2: "/images/headphones/headphones-silver2.jpg" },
 ];
 
+  const TUMBLER_COLORS = [
+    { name: "Blue Blossom",    hex: "#9BC4E2", image: "/images/tumblers/tumbler-blue-blossom.png",    image2: "/images/tumblers/tumbler-blue-blossom.png" },
+    { name: "Pink Garden",     hex: "#F9D0D8", image: "/images/tumblers/tumbler-pink-garden.png",     image2: "/images/tumblers/tumbler-pink-garden.png" },
+    { name: "Lavender Bloom",  hex: "#C9B3D9", image: "/images/tumblers/tumbler-lavender-bloom.png",  image2: "/images/tumblers/tumbler-lavender-bloom.png" },
+    { name: "Rose Petal",      hex: "#F0A0B0", image: "/images/tumblers/tumbler-rose-petal.png",      image2: "/images/tumblers/tumbler-rose-petal.png" },
+  ];
+
 function ProductSection({ onOpenOrder }) {
   const products = [
     {
@@ -1043,6 +1050,25 @@ function ProductSection({ onOpenOrder }) {
       bullets: ["Wireless Bluetooth 5.0", "Deep bass, clear highs", "Cushioned ear cups", "Foldable, travel-ready"],
       modalProduct: "NAVAIR Cloud Headphones",
     },
+      {
+        key: "tumbler",
+        name: "NAVAIR Bloom Tumbler",
+        price: "₹699",
+        badge: "New Arrival",
+        stock: 15,
+        image: "/images/tumblers/tumbler-pink-garden.png",
+        image2: "/images/tumblers/tumbler-lavender-bloom.png",
+        images: [
+          "/images/tumblers/tumbler-pink-garden.png",
+          "/images/tumblers/tumbler-blue-blossom.png",
+          "/images/tumblers/tumbler-lavender-bloom.png",
+          "/images/tumblers/tumbler-rose-petal.png",
+        ],
+        colors: TUMBLER_COLORS,
+        desc: "Stay Hydrated. Stay Aesthetic. A 1200ml premium insulated tumbler designed for cute desk setups, college, office, and everyday use.",
+        bullets: ["1200 ml capacity", "Double wall insulated", "Keeps hot & cold", "Leak-resistant lid + straw"],
+        modalProduct: "NAVAIR Bloom Tumbler",
+      },
   ];
 
   return (
