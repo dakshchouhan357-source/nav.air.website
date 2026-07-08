@@ -5,22 +5,13 @@ const BUSINESS_TEMPLATE = import.meta.env.VITE_EMAILJS_BIZ_TEMPLATE  || "templat
 const CUSTOMER_TEMPLATE = import.meta.env.VITE_EMAILJS_CUST_TEMPLATE || "template_bfgfhxp";
 const PUBLIC_KEY        = import.meta.env.VITE_EMAILJS_PUBLIC_KEY    || "_o9dslQ73LPF7xmsU";
 const SITE_URL          = "https://www.getnavair.com";
-const UPI_ID            = "9653820143@ptyes";
+const UPI_ID            = "challengersevents-2@oksbi";
 const SUPPORT_EMAIL     = "air.navpure@gmail.com";
 const INSTAGRAM         = "https://www.instagram.com/shopnavair";
+// Static, hosted payment QR image shown on the site and sent in order emails.
+const QR_IMAGE_URL      = SITE_URL + "/images/payment-qr.png";
 
 emailjs.init({ publicKey: PUBLIC_KEY });
-
-/** Build a scannable UPI QR image URL (via qrserver.com) for the exact order total.
- *  This URL works immediately in emails — no static file dependency. */
-function makeQrUrl(amount) {
-  const upiStr = "upi://pay?pa=" + UPI_ID + "&pn=NAVAIR&am=" + amount + "&cu=INR";
-  return (
-    "https://api.qrserver.com/v1/create-qr-code/" +
-    "?size=300x300&margin=12&color=3D6B52&bgcolor=F0FAF6" +
-    "&data=" + encodeURIComponent(upiStr)
-  );
-}
 
 export async function sendOrderEmails(orderData) {
   const {
@@ -34,8 +25,7 @@ export async function sendOrderEmails(orderData) {
   const pmLabel      = isCOD ? "Cash on Delivery (COD)" : "Online Payment (QR / UPI)";
   const colorLabel   = color || "Not specified";
   const deliveryAddr = address + ", " + city + ", " + state + " - " + pincode;
-  // Dynamic QR encodes exact amount — always accessible, no Vercel deploy required
-  const qrUrl        = isCOD ? "" : makeQrUrl(total_price || 0);
+  const qrUrl        = isCOD ? "" : QR_IMAGE_URL;
 
   const orderMsg =
     "===== NEW ORDER RECEIVED =====\n" +

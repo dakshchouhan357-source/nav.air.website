@@ -179,9 +179,9 @@ function ProductCard({ product, onOpenOrder, featured }) {
         />
         <h3 className="mt-4 font-display text-2xl sm:text-3xl font-bold text-[#2D3B2D]">{product.name}</h3>
 
-        <div className="mt-3 flex items-baseline gap-2">
-          <span className="font-display text-4xl sm:text-5xl font-extrabold text-[#3D6B52]">{product.price}</span>
-          <span className="text-sm text-[#6B7B6B] font-cute">Online payment + COD</span>
+        <div className="mt-3 flex items-baseline gap-2 flex-wrap">
+          <span className={`font-display font-extrabold text-[#3D6B52] ${product.price.includes("/") ? "text-2xl sm:text-3xl" : "text-4xl sm:text-5xl"}`}>{product.price}</span>
+          {!product.price.includes("/") && <span className="text-sm text-[#6B7B6B] font-cute">Online payment + COD</span>}
         </div>
 
         <div className="mt-6 grid sm:grid-cols-2 gap-5 items-start">
@@ -607,7 +607,7 @@ function ComingSoon() {
   function FAQ() {
   const [openIdx, setOpenIdx] = useState(0);
   const faqs = [
-    { q: "Which products can I order right now?", a: "NAV AIR Bloom (Keyboard + Mouse Combo), NAV AIR Glow (Mouse), NAVAIR Cloud Headphones, and the new NAVAIR Bloom Tumbler (₹699) are all available now! Air Purifiers are coming soon!" },
+    { q: "Which products can I order right now?", a: "NAV AIR Bloom (Keyboard + Mouse Combo), NAV AIR Glow (Mouse), NAVAIR Cloud Headphones (₹579 Prepaid / ₹599 COD), and the new NAVAIR Bloom Tumbler (₹879 Prepaid / ₹899 COD) are all available now! Air Purifiers are coming soon!" },
     { q: "How does the ordering process work?", a: "Fill in your details in our cute order form, review your order, and confirm. No account creation or OTP required — just simple and easy!" },
     { q: "Do you accept Cash on Delivery?", a: "Yes! COD is available. You pay when your package arrives at your door." },
     { q: "When will my order be shipped?", a: "We'll share shipping timelines after your order is processed. We'll keep you informed every step of the way." },
@@ -1000,10 +1000,10 @@ const CLOUD_COLORS = [
 ];
 
   const TUMBLER_COLORS = [
-    { name: "Blue Blossom",    hex: "#9BC4E2", image: "/images/tumblers/tumbler-blue-blossom.png",    image2: "/images/tumblers/tumbler-blue-blossom.png" },
-    { name: "Pink Garden",     hex: "#F9D0D8", image: "/images/tumblers/tumbler-pink-garden.png",     image2: "/images/tumblers/tumbler-pink-garden.png" },
-    { name: "Lavender Bloom",  hex: "#C9B3D9", image: "/images/tumblers/tumbler-lavender-bloom.png",  image2: "/images/tumblers/tumbler-lavender-bloom.png" },
-    { name: "Rose Petal",      hex: "#F0A0B0", image: "/images/tumblers/tumbler-rose-petal.png",      image2: "/images/tumblers/tumbler-rose-petal.png" },
+    { name: "Blue Floral",    hex: "#9BC4E2", image: "/images/tumblers/tumbler-blue-floral.png",    image2: "/images/tumblers/tumbler-blue-floral.png" },
+    { name: "White Floral",   hex: "#FBF6F0", image: "/images/tumblers/tumbler-white-floral.png",   image2: "/images/tumblers/tumbler-white-floral.png" },
+    { name: "Purple Floral",  hex: "#C9B3D9", image: "/images/tumblers/tumbler-purple-floral.png",  image2: "/images/tumblers/tumbler-purple-floral.png" },
+    { name: "Pink Floral",    hex: "#F0A0B0", image: "/images/tumblers/tumbler-pink-floral.png",    image2: "/images/tumblers/tumbler-pink-floral.png" },
   ];
 
 function ProductSection({ onOpenOrder }) {
@@ -1039,7 +1039,7 @@ function ProductSection({ onOpenOrder }) {
     {
       key: "cloud",
       name: "NAVAIR Cloud Headphones",
-      price: "₹499",
+      price: "₹579 Prepaid / ₹599 COD",
       badge: "New Arrival",
       stock: 10,
       image: "/images/headphones/headphones-all.jpg",
@@ -1053,16 +1053,16 @@ function ProductSection({ onOpenOrder }) {
       {
         key: "tumbler",
         name: "NAVAIR Bloom Tumbler",
-        price: "₹699",
+        price: "₹879 Prepaid / ₹899 COD",
         badge: "New Arrival",
         stock: 15,
-        image: "/images/tumblers/tumbler-pink-garden.png",
-        image2: "/images/tumblers/tumbler-lavender-bloom.png",
+        image: "/images/tumblers/tumbler-pink-floral.png",
+        image2: "/images/tumblers/tumbler-purple-floral.png",
         images: [
-          "/images/tumblers/tumbler-pink-garden.png",
-          "/images/tumblers/tumbler-blue-blossom.png",
-          "/images/tumblers/tumbler-lavender-bloom.png",
-          "/images/tumblers/tumbler-rose-petal.png",
+          "/images/tumblers/tumbler-pink-floral.png",
+          "/images/tumblers/tumbler-blue-floral.png",
+          "/images/tumblers/tumbler-purple-floral.png",
+          "/images/tumblers/tumbler-white-floral.png",
         ],
         colors: TUMBLER_COLORS,
         desc: "Stay Hydrated. Stay Aesthetic. A 1200ml premium insulated tumbler designed for cute desk setups, college, office, and everyday use.",
@@ -1141,7 +1141,7 @@ export default function NavAirLanding() {
               onClick={() => setOpenModalFor({ product: "NAVAIR Cloud Headphones", color: "" })}
               className="flex-shrink-0 rounded-2xl bg-gradient-to-r from-[#6B8EC8] to-[#5A7DB8] text-white px-4 py-3 text-xs font-bold font-cute shadow-lg"
             >
-              Cloud ₹499
+              Cloud ₹579
             </button>
           </div>
         </div>

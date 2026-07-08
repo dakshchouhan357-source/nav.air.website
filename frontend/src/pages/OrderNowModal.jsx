@@ -6,31 +6,50 @@ import {
 } from "@phosphor-icons/react";
 
 /* ── Products catalogue ───────────────────────────────────────────── */
+/* Cloud Headphones & Bloom Tumbler have separate prepaid vs COD pricing;
+   Bloom & Glow keep a single flat price. */
 const PRODUCTS = [
   { label: "NAV AIR Bloom (Keyboard + Mouse Combo)", price: 849, colors: null },
   { label: "NAV AIR Glow (Mouse)",                   price: 459, colors: null },
   {
-    label: "NAVAIR Cloud Headphones", price: 499,
+    label: "NAVAIR Cloud Headphones",
+    pricePrepaid: 579,
+    priceCod: 599,
     colors: [
       { name: "Pink",   hex: "#F4B8C0" },
       { name: "Green",  hex: "#7DC4A4" },
       { name: "Black",  hex: "#2A2A2A" },
       { name: "Blue",   hex: "#6B8EC8" },
       { name: "Silver", hex: "#C8C8D0" },
-    {
-      label: "NAVAIR Bloom Tumbler", price: 699,
-      colors: [
-        { name: "Blue Blossom",   hex: "#9BC4E2" },
-        { name: "Pink Garden",    hex: "#F9D0D8" },
-        { name: "Lavender Bloom", hex: "#C9B3D9" },
-        { name: "Rose Petal",     hex: "#F0A0B0" },
-      ],
-    },
+    ],
+  },
+  {
+    label: "NAVAIR Bloom Tumbler",
+    pricePrepaid: 879,
+    priceCod: 899,
+    colors: [
+      { name: "Blue Floral",   hex: "#9BC4E2" },
+      { name: "White Floral",  hex: "#FBF6F0" },
+      { name: "Purple Floral", hex: "#C9B3D9" },
+      { name: "Pink Floral",   hex: "#F0A0B0" },
     ],
   },
 ];
 
+/** Unit price for a product given the selected payment method. */
+function priceFor(product, paymentMethod) {
+  if (product.price != null) return product.price;
+  return paymentMethod === "cod" ? product.priceCod : product.pricePrepaid;
+}
+
+/** Human-readable price label for the product dropdown. */
+function priceLabel(product) {
+  if (product.price != null) return "Rs. " + product.price;
+  return "Rs. " + product.pricePrepaid + " Prepaid / Rs. " + product.priceCod + " COD";
+}
+
 const INSTAGRAM_URL = "https://www.instagram.com/shopnavair";
+const PAYMENT_QR_IMAGE = "/images/payment-qr.png";
 
 function isValidEmail(v) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test((v || "").trim()); }
 function normalizeMobile(v) { return (v || "").replace(/\D/g, ""); }
@@ -91,7 +110,8 @@ export default function OrderNowModal({ onClose, product, initialColor }) {
   const currentProductData = useMemo(
     () => PRODUCTS.find((p) => p.label === selectedProduct) || PRODUCTS[0], [selectedProduct]
   );
-  const totalPrice = currentProductData.price * quantity;
+  const unitPrice = priceFor(currentProductData, paymentMethod);
+  const totalPrice = unitPrice * quantity;
   const hasColors = currentProductData.colors && currentProductData.colors.length > 0;
 
   // Reset color when product changes
@@ -135,7 +155,7 @@ export default function OrderNowModal({ onClose, product, initialColor }) {
         notes: notes?.trim() || "",
         total_price: totalPrice,
         order_id: id,
-        payment_method: paymentMethod === "cod" ? "Cash on Delivery (COD)" : "Online Payment (QR / Link)",
+        payment_method: paymentMethod === "cod" ? "Cash on Delivery (COD)" : "Online Payment (QR / UPI)",
       });
       try {
         localStorage.setItem("navair_order_" + id, JSON.stringify({
@@ -247,7 +267,7 @@ export default function OrderNowModal({ onClose, product, initialColor }) {
                   <div className="relative">
                     <select value={selectedProduct} onChange={e => setSelectedProduct(e.target.value)} className={inpY + " appearance-none"}>
                       {PRODUCTS.map(p => (
-                        <option key={p.label} value={p.label}>{p.label} — Rs. {p.price}</option>
+                        <option key={p.label} value={p.label}>{p.label} — {priceLabel(p)}</option>
                       ))}
                     </select>
                     <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
@@ -314,6 +334,12 @@ export default function OrderNowModal({ onClose, product, initialColor }) {
                   </div>
                 </div>
 
+                {currentProductData.price == null && (
+                  <p className="text-xs font-cute text-[#7B6020]">
+                    Rs. {currentProductData.pricePrepaid} on Online Payment · Rs. {currentProductData.priceCod} on COD
+                  </p>
+                )}
+
                 <KawaiiInput label="Notes (Optional)">
                   <input data-testid="order-notes" value={notes} onChange={e => setNotes(e.target.value)} placeholder="Special delivery instructions..." className={inpY} />
                 </KawaiiInput>
@@ -336,11 +362,20 @@ export default function OrderNowModal({ onClose, product, initialColor }) {
                         <span className="font-cute font-bold text-[#2D3B2D] text-sm">Online Payment</span>
                         <span className="px-2 py-0.5 rounded-full text-[10px] font-bold font-cute bg-[#7DC4A4] text-white">Recommended</span>
                       </div>
-                      <p className="font-cute text-xs text-[#4A5E4A] mt-1">We email you a QR code, you pay, we dispatch</p>
+                      <p className="font-cute text-xs text-[#4A5E4A] mt-1">Scan the QR below, pay via UPI, we verify &amp; dispatch</p>
                     </div>
                     <span className="text-xl flex-shrink-0">📲</span>
                   </div>
                 </button>
+
+                {isOnline && (
+                  <div className="p-4 rounded-2xl flex flex-col items-center gap-2 text-center" style={greenCard}>
+                    <img src={PAYMENT_QR_IMAGE} alt="Scan to pay via UPI" className="w-40 h-40 rounded-xl object-contain bg-white p-1.5 shadow-sm" />
+                    <p className="font-cute text-xs text-[#3D6B52]">
+                      Scan &amp; pay <strong>Rs. {totalPrice}</strong> with any UPI app, then fill in your address &amp; phone below.
+                    </p>
+                  </div>
+                )}
 
                 <button type="button" onClick={() => setPaymentMethod("cod")}
                   className={`w-full text-left p-4 rounded-2xl transition-all ${!isOnline ? "ring-2 ring-[#B8A9CC]" : "hover:bg-white/60"}`}
@@ -399,7 +434,7 @@ export default function OrderNowModal({ onClose, product, initialColor }) {
                     </div>
                   )}
                   <div className="flex justify-between"><span className="text-[#6B7B6B]">Quantity</span><span className="font-semibold text-[#2D3B2D]">{quantity}</span></div>
-                  <div className="flex justify-between"><span className="text-[#6B7B6B]">Unit Price</span><span className="font-semibold text-[#2D3B2D]">Rs. {currentProductData.price}</span></div>
+                  <div className="flex justify-between"><span className="text-[#6B7B6B]">Unit Price</span><span className="font-semibold text-[#2D3B2D]">Rs. {unitPrice}</span></div>
                   {notes && <div className="flex justify-between"><span className="text-[#6B7B6B]">Notes</span><span className="font-semibold text-[#2D3B2D] text-right max-w-[55%]">{notes}</span></div>}
                   <div className="flex justify-between pt-2 border-t border-[#F5DFA0]/40 font-bold text-base">
                     <span className="text-[#3D6B52]">Total Amount</span>
@@ -412,7 +447,7 @@ export default function OrderNowModal({ onClose, product, initialColor }) {
                 <span className="text-2xl">{isOnline ? "📲" : "💵"}</span>
                 <div>
                   <div className="font-cute font-bold text-sm text-[#2D3B2D]">{isOnline ? "Online Payment" : "Cash on Delivery (COD)"}</div>
-                  <div className="font-cute text-xs text-[#6B7B6B]">{isOnline ? "QR code will be emailed to you" : "Pay cash on delivery"}</div>
+                  <div className="font-cute text-xs text-[#6B7B6B]">{isOnline ? "Pay via the QR code shown at checkout" : "Pay cash on delivery"}</div>
                 </div>
               </div>
             </div>
@@ -436,16 +471,16 @@ export default function OrderNowModal({ onClose, product, initialColor }) {
               </div>
 
               {isOnline && (
-                <div className="p-5 rounded-2xl text-left" style={orangeCard}>
+                <div className="p-5 rounded-2xl text-left" style={greenCard}>
                   <div className="flex items-start gap-3">
-                    <span className="text-2xl flex-shrink-0">⏳</span>
+                    <span className="text-2xl flex-shrink-0">✅</span>
                     <div>
-                      <p className="font-cute font-bold text-[#8B4E2A] text-sm mb-2">PENDING PAYMENT — here is what happens next:</p>
-                      <ol className="space-y-1.5 font-cute text-sm text-[#5A3E2B] list-none">
-                        <li className="flex items-start gap-2"><span className="font-bold text-[#E8A87C] flex-shrink-0">1.</span>We email you our payment QR code</li>
-                        <li className="flex items-start gap-2"><span className="font-bold text-[#E8A87C] flex-shrink-0">2.</span>You scan and pay the amount shown</li>
-                        <li className="flex items-start gap-2"><span className="font-bold text-[#E8A87C] flex-shrink-0">3.</span>We confirm and dispatch your order 📦</li>
-                      </ol>
+                      <p className="font-cute font-bold text-[#3D6B52] text-sm mb-2">Payment Received Successfully!</p>
+                      <p className="font-cute text-sm text-[#2D3B2D]">
+                        Thank you for completing your payment. Our team is verifying it now, and a confirmation
+                        email with your order details will be sent to you shortly. Your order will then be
+                        packed and dispatched 📦
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -491,12 +526,10 @@ export default function OrderNowModal({ onClose, product, initialColor }) {
                   <div>
                     <div className="text-xs text-[#6B7B6B] font-cute uppercase tracking-wider mb-0.5">Payment Status</div>
                     <div className="inline-flex items-center gap-2 mt-1 px-3 py-1.5 rounded-full"
-                      style={isOnline
-                        ? { background: "rgba(255,236,200,0.90)", border: "1px solid rgba(232,168,124,0.50)" }
-                        : { background: "rgba(220,240,230,0.90)", border: "1px solid rgba(125,196,164,0.50)" }}>
-                      <span className={`w-2 h-2 rounded-full animate-pulse inline-block ${isOnline ? "bg-[#E8A87C]" : "bg-[#7DC4A4]"}`} />
-                      <span className={`font-cute font-bold text-sm ${isOnline ? "text-[#8B4E2A]" : "text-[#3D6B52]"}`}>
-                        {isOnline ? "PENDING PAYMENT" : "COD CONFIRMED"}
+                      style={{ background: "rgba(220,240,230,0.90)", border: "1px solid rgba(125,196,164,0.50)" }}>
+                      <span className="w-2 h-2 rounded-full animate-pulse inline-block bg-[#7DC4A4]" />
+                      <span className="font-cute font-bold text-sm text-[#3D6B52]">
+                        {isOnline ? "PAYMENT RECEIVED" : "COD CONFIRMED"}
                       </span>
                     </div>
                   </div>
@@ -511,7 +544,7 @@ export default function OrderNowModal({ onClose, product, initialColor }) {
                 <div className="p-4 rounded-2xl" style={lavCard}>
                   <div className="flex items-center justify-center gap-2 text-sm font-cute text-[#6B5A80]">
                     <Sparkle size={14} weight="fill" />
-                    Payment QR will be emailed to <strong>{email}</strong>
+                    A confirmation email will be sent to <strong>{email}</strong> once verified
                   </div>
                 </div>
               )}

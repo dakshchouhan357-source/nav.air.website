@@ -64,14 +64,14 @@ Copy the HTML below and paste it into your EmailJS dashboard for the customer em
 
         <!-- QR Code -->
         <div style="background: white; border-radius: 16px; padding: 20px; box-shadow: 0 8px 24px rgba(125,196,164,0.15); display: inline-block; margin-bottom: 16px;">
-          <img src="https://kommodo.ai/i/eqArG0WiPcliQ2hStW8q" alt="Payment QR Code" style="width: 220px; height: 220px; display: block; border-radius: 8px;" />
+          <img src="{{qr_image_url}}" alt="Payment QR Code" style="width: 220px; height: 220px; display: block; border-radius: 8px;" />
         </div>
 
         <!-- UPI ID -->
         <div style="margin-top: 20px;">
           <p style="color: #6B7B6B; font-size: 13px; margin: 0 0 8px 0; text-transform: uppercase; letter-spacing: 1px;">UPI ID</p>
           <p style="background: white; color: #3D6B52; font-size: 18px; font-weight: 700; padding: 12px 24px; border-radius: 12px; display: inline-block; margin: 0; border: 2px dashed #7DC4A4;">
-            9653820143@ptyes
+            {{upi_id}}
           </p>
         </div>
 
@@ -201,9 +201,11 @@ Copy the HTML below and paste it into your EmailJS dashboard for the customer em
 
 ## QR Code Image
 
-The QR code is hosted at: `https://kommodo.ai/i/eqArG0WiPcliQ2hStW8q`
+The QR code is passed in dynamically via the `{{qr_image_url}}` merge field
+(currently `https://www.getnavair.com/images/payment-qr.png`), so it always
+matches the live payment QR on the site — no need to hardcode it here.
 
-**UPI ID:** `9653820143@ptyes`
+**UPI ID:** passed in via `{{upi_id}}` (currently `challengersevents-2@oksbi`)
 
 ---
 
