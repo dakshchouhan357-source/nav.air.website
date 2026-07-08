@@ -475,11 +475,10 @@ export default function OrderNowModal({ onClose, product, initialColor }) {
                   <div className="flex items-start gap-3">
                     <span className="text-2xl flex-shrink-0">✅</span>
                     <div>
-                      <p className="font-cute font-bold text-[#3D6B52] text-sm mb-2">Payment Received Successfully!</p>
+                      <p className="font-cute font-bold text-[#3D6B52] text-sm mb-2">Order Placed — Verifying Your Payment</p>
                       <p className="font-cute text-sm text-[#2D3B2D]">
-                        Thank you for completing your payment. Our team is verifying it now, and a confirmation
-                        email with your order details will be sent to you shortly. Your order will then be
-                        packed and dispatched 📦
+                        Thanks for scanning the QR and paying via UPI! Our team is now checking our bank/UPI
+                        account for your payment. Once confirmed, we'll email you and dispatch your order 📦
                       </p>
                     </div>
                   </div>
@@ -526,10 +525,12 @@ export default function OrderNowModal({ onClose, product, initialColor }) {
                   <div>
                     <div className="text-xs text-[#6B7B6B] font-cute uppercase tracking-wider mb-0.5">Payment Status</div>
                     <div className="inline-flex items-center gap-2 mt-1 px-3 py-1.5 rounded-full"
-                      style={{ background: "rgba(220,240,230,0.90)", border: "1px solid rgba(125,196,164,0.50)" }}>
-                      <span className="w-2 h-2 rounded-full animate-pulse inline-block bg-[#7DC4A4]" />
-                      <span className="font-cute font-bold text-sm text-[#3D6B52]">
-                        {isOnline ? "PAYMENT RECEIVED" : "COD CONFIRMED"}
+                      style={isOnline
+                        ? { background: "rgba(232,244,255,0.90)", border: "1px solid rgba(107,163,216,0.50)" }
+                        : { background: "rgba(220,240,230,0.90)", border: "1px solid rgba(125,196,164,0.50)" }}>
+                      <span className={`w-2 h-2 rounded-full animate-pulse inline-block ${isOnline ? "bg-[#6BA3D8]" : "bg-[#7DC4A4]"}`} />
+                      <span className={`font-cute font-bold text-sm ${isOnline ? "text-[#2C5680]" : "text-[#3D6B52]"}`}>
+                        {isOnline ? "VERIFYING PAYMENT" : "COD CONFIRMED"}
                       </span>
                     </div>
                   </div>
