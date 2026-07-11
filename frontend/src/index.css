@@ -252,3 +252,25 @@ html {
         column-gap: inherit; row-gap: inherit; gap: inherit;
     }
 }
+
+/* Scroll-triggered reveal */
+@keyframes na-reveal-up {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.reveal-up {
+  animation: na-reveal-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Hide scrollbar utility */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Entrance animation for sticky bar */
+@keyframes na-slide-from-bottom {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.animate-slide-from-bottom {
+  animation: na-slide-from-bottom 0.4s ease-out forwards;
+}
