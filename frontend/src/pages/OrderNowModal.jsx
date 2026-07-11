@@ -25,8 +25,8 @@ const PRODUCTS = [
   },
   {
     label: "NAVAIR Bloom Tumbler",
-    pricePrepaid: 879,
-    priceCod: 899,
+    pricePrepaid: 779,
+    priceCod: 799,
     colors: [
       { name: "Blue Floral",   hex: "#9BC4E2" },
       { name: "White Floral",  hex: "#FBF6F0" },
@@ -49,6 +49,7 @@ function priceLabel(product) {
 }
 
 const INSTAGRAM_URL = "https://www.instagram.com/shopnavair";
+const SHIPPING_COST = 99;
 const PAYMENT_QR_IMAGE = "/images/payment-qr.png";
 
 function isValidEmail(v) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test((v || "").trim()); }
@@ -111,7 +112,7 @@ export default function OrderNowModal({ onClose, product, initialColor }) {
     () => PRODUCTS.find((p) => p.label === selectedProduct) || PRODUCTS[0], [selectedProduct]
   );
   const unitPrice = priceFor(currentProductData, paymentMethod);
-  const totalPrice = unitPrice * quantity;
+  const totalPrice = unitPrice * quantity + SHIPPING_COST;
   const hasColors = currentProductData.colors && currentProductData.colors.length > 0;
 
   // Reset color when product changes
@@ -330,6 +331,7 @@ export default function OrderNowModal({ onClose, product, initialColor }) {
                   <div className="px-4 py-3 rounded-2xl text-center min-w-[110px]"
                     style={{ background: "rgba(255,255,255,0.80)", border: "1px solid rgba(245,223,160,0.55)" }}>
                     <div className="text-xs text-[#6B7B6B] font-cute mb-0.5">Total Amount</div>
+                    <div className="text-xs text-[#6B7B6B] font-cute mt-1">(incl. ₹99 shipping)</div>
                     <div className="font-display text-2xl font-extrabold text-[#3D6B52]">Rs. {totalPrice}</div>
                   </div>
                 </div>
@@ -436,6 +438,7 @@ export default function OrderNowModal({ onClose, product, initialColor }) {
                   <div className="flex justify-between"><span className="text-[#6B7B6B]">Quantity</span><span className="font-semibold text-[#2D3B2D]">{quantity}</span></div>
                   <div className="flex justify-between"><span className="text-[#6B7B6B]">Unit Price</span><span className="font-semibold text-[#2D3B2D]">Rs. {unitPrice}</span></div>
                   {notes && <div className="flex justify-between"><span className="text-[#6B7B6B]">Notes</span><span className="font-semibold text-[#2D3B2D] text-right max-w-[55%]">{notes}</span></div>}
+                  <div className="flex justify-between"><span className="text-[#6B7B6B]">Shipping</span><span className="font-semibold text-[#2D3B2D]">₹99</span></div>
                   <div className="flex justify-between pt-2 border-t border-[#F5DFA0]/40 font-bold text-base">
                     <span className="text-[#3D6B52]">Total Amount</span>
                     <span className="text-[#3D6B52] font-display text-xl">Rs. {totalPrice}</span>
