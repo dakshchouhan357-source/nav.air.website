@@ -32,6 +32,246 @@ body {
     line-height: 1.6;
 }
 
+/* Scroll-led product worlds */
+.navair-page {
+    background: #f7f8fa;
+    isolation: isolate;
+}
+
+.tech-zone {
+    position: relative;
+    background:
+        radial-gradient(circle at 12% 8%, rgba(214, 232, 255, 0.8), transparent 26rem),
+        radial-gradient(circle at 90% 38%, rgba(232, 236, 242, 0.9), transparent 30rem),
+        linear-gradient(180deg, #f8fafc 0%, #f5f7fa 48%, #edf1f5 100%);
+    color: #18202a;
+}
+
+.tech-zone::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: .38;
+    background-image:
+        linear-gradient(rgba(28, 39, 52, .035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(28, 39, 52, .035) 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: linear-gradient(to bottom, black, transparent 92%);
+}
+
+.tech-zone .gradient-kawaii-text {
+    background: linear-gradient(110deg, #17202a 0%, #566575 54%, #8e9aa8 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+.tech-zone .navair-product-card {
+    border-color: rgba(120, 135, 151, .26) !important;
+    background: linear-gradient(145deg, rgba(255,255,255,.97), rgba(235,239,244,.92)) !important;
+    box-shadow: 0 24px 60px rgba(50, 64, 82, .1) !important;
+}
+
+.tech-zone .navair-product-card:hover {
+    box-shadow: 0 30px 70px rgba(50, 64, 82, .18) !important;
+}
+
+.tech-zone .navair-product-card h3,
+.tech-zone .navair-product-card .font-display {
+    color: #1d2732;
+}
+
+.tech-zone .navair-product-card .product-visual {
+    border-color: rgba(120, 135, 151, .2);
+    background: linear-gradient(145deg, #ffffff, #e4e9ee);
+}
+
+.tech-zone .navair-product-card button {
+    background: linear-gradient(100deg, #1c2732, #566575) !important;
+    box-shadow: 0 12px 24px rgba(28, 39, 50, .2) !important;
+}
+
+.product-icon-visual {
+    height: 100%;
+    display: grid;
+    place-items: center;
+    color: #607080;
+    background:
+        radial-gradient(circle at 50% 44%, rgba(255,255,255,.95), transparent 33%),
+        linear-gradient(145deg, #fefefe, #dde4ea);
+}
+
+.product-detail-chip {
+    position: absolute;
+    bottom: -1rem;
+    left: -1rem;
+    width: 5rem;
+    height: 5rem;
+    display: grid;
+    place-items: center;
+    border: 2px solid white;
+    border-radius: 1rem;
+    color: #667482;
+    background: linear-gradient(145deg, #e9eef2, #cbd4dc);
+    box-shadow: 0 10px 24px rgba(50, 64, 82, .17);
+}
+
+.tumbler-zone {
+    position: relative;
+    isolation: isolate;
+    min-height: 42rem;
+    background:
+        radial-gradient(circle at 18% 24%, rgba(255, 232, 213, .95), transparent 19rem),
+        radial-gradient(circle at 87% 74%, rgba(238, 213, 231, .9), transparent 24rem),
+        linear-gradient(180deg, #fff8f1 0%, #fff1eb 50%, #f9eaf0 100%);
+    color: #5b3b3b;
+}
+
+.tumbler-zone::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: .22;
+    background-image: radial-gradient(rgba(184, 117, 117, .22) 1px, transparent 1px);
+    background-size: 24px 24px;
+    mask-image: linear-gradient(90deg, black, transparent 78%);
+}
+
+.tumbler-panel {
+    position: relative;
+    z-index: 2;
+    padding: clamp(1.5rem, 5vw, 4.5rem);
+    border: 1px solid rgba(184, 117, 117, .2);
+    border-radius: 2.5rem;
+    background: rgba(255, 250, 246, .62);
+    box-shadow: 0 30px 90px rgba(155, 95, 95, .13);
+    backdrop-filter: blur(12px);
+}
+
+.tumbler-art {
+    position: relative;
+    min-height: 24rem;
+    display: grid;
+    place-items: center;
+}
+
+.tumbler-art__halo {
+    position: absolute;
+    width: min(23rem, 78vw);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f8d3b7, #e9b7c6 48%, #d9c8e9);
+    box-shadow: inset 0 0 0 18px rgba(255, 255, 255, .27), 0 28px 60px rgba(183, 117, 117, .16);
+}
+
+.tumbler-art__cup {
+    position: relative;
+    z-index: 1;
+    width: 10rem;
+    height: 14rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: .55rem;
+    color: #fffaf5;
+    border: 6px solid rgba(255, 255, 255, .72);
+    border-radius: 1.8rem 1.8rem 2.5rem 2.5rem;
+    background: linear-gradient(145deg, #c88686, #a9616b);
+    box-shadow: 16px 24px 35px rgba(125, 72, 76, .22), inset 8px 0 18px rgba(255, 255, 255, .2);
+    transform: rotate(-7deg);
+}
+
+.tumbler-art__cup::before {
+    content: "";
+    position: absolute;
+    top: -1.2rem;
+    width: 7.6rem;
+    height: 1.8rem;
+    border-radius: 50%;
+    border: 5px solid rgba(255, 255, 255, .76);
+    background: #7c4c57;
+}
+
+.tumbler-art__cup span {
+    font-family: "Cabinet Grotesk", sans-serif;
+    font-size: 1.2rem;
+    font-weight: 800;
+    line-height: .9;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+}
+
+.pastry-eyebrow {
+    color: #b87575;
+    font-family: "Nunito", sans-serif;
+    font-size: .72rem;
+    font-weight: 800;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+}
+
+.tumbler-gradient {
+    color: #b87575;
+    background: linear-gradient(110deg, #b87575, #d89b87 48%, #a681bd);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.pastry-pill {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid rgba(184, 117, 117, .22);
+    border-radius: 999px;
+    padding: .55rem .85rem;
+    color: #805b5b;
+    background: rgba(255, 255, 255, .62);
+    font-family: "Nunito", sans-serif;
+    font-size: .76rem;
+    font-weight: 700;
+}
+
+.pastry-sticker {
+    position: absolute;
+    z-index: 2;
+    padding: .6rem .85rem;
+    color: #805b5b;
+    border: 1px solid rgba(184, 117, 117, .2);
+    border-radius: .7rem;
+    background: #fffaf2;
+    box-shadow: 0 8px 20px rgba(130, 80, 80, .1);
+    font-family: "Nunito", sans-serif;
+    font-size: .7rem;
+    font-weight: 800;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+.pastry-sticker--top { top: 13%; right: 5%; transform: rotate(7deg); }
+.pastry-sticker--bottom { bottom: 10%; left: 7%; transform: rotate(-8deg); }
+
+.pastry-orbit {
+    position: absolute;
+    z-index: 1;
+    width: 5rem;
+    height: 5rem;
+    border: 10px solid rgba(255, 255, 255, .65);
+    border-radius: 50%;
+    box-shadow: 0 0 0 1px rgba(184, 117, 117, .12);
+}
+
+.pastry-orbit--one { top: 12%; right: 8%; }
+.pastry-orbit--two { bottom: 12%; left: 3%; width: 3.5rem; height: 3.5rem; border-width: 7px; }
+
+@media (max-width: 768px) {
+    .tumbler-art { min-height: 20rem; }
+    .tumbler-art__cup { transform: scale(.85) rotate(-7deg); }
+    .pastry-sticker--top { right: 0; }
+}
+
 .App {
     min-height: 100vh;
     overflow-x: hidden;
