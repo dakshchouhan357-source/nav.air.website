@@ -11,20 +11,23 @@ import {
   Wind,
   Mouse,
   Keyboard,
-  Headphones,
-  Coffee,
   Desktop,
   SmileySticker,
+  CaretLeft,
+  CaretRight,
+  Package,
+  Quotes,
 } from "@phosphor-icons/react";
 import { toast } from "sonner";
 import OrderNowModal from "@/pages/OrderNowModal";
+
 
 /* ============================================================
    DECORATIVE ELEMENTS
    ============================================================ */
 function FloatingDecorations() {
   return (
-    <div className="navair-floating-decorations pointer-events-none fixed inset-0 overflow-hidden z-0" aria-hidden="true">
+    <div className="pointer-events-none fixed inset-0 overflow-hidden z-0" aria-hidden="true">
       <div className="absolute top-[8%] left-[5%] text-[#B8A9CC] opacity-30 sparkle" style={{ animationDelay: "0s" }}>
         <Star size={18} weight="fill" />
       </div>
@@ -116,23 +119,57 @@ function FeatureCard({ icon: Icon, title, body, color = "mint" }) {
   );
 }
 
-function ProductCard({ product, onOpenOrder, featured, theme = "apple" }) {
+/* ============================================================
+   COLOR SWATCH
+   ============================================================ */
+function ColorSwatch({ colorVariant, selected, onSelect }) {
+  return (
+    <button
+      type="button"
+      title={colorVariant.name}
+      onClick={() => onSelect(colorVariant)}
+      className={`w-7 h-7 rounded-full border-2 transition-all duration-200 hover:scale-110 ${
+        selected
+          ? "border-[#7DC4A4] scale-110 shadow-md"
+          : "border-white/80 hover:border-[#7DC4A4]/60"
+      }`}
+      style={{ backgroundColor: colorVariant.hex, boxShadow: selected ? "0 0 0 2px rgba(125,196,164,0.5)" : "0 1px 3px rgba(0,0,0,0.15)" }}
+    />
+  );
+}
+
+/* ============================================================
+   PRODUCT CARD
+   ============================================================ */
+function ProductCard({ product, onOpenOrder, featured }) {
+    const [selectedColor, setSelectedColor] = useState(product.colors[0]);
+    const [imgIdx, setImgIdx] = useState(0);
+
+    const imgs = product.images || [product.image];
+    const activeImage = selectedColor.image || imgs[imgIdx];
+    const activeThumb = selectedColor.image2 || product.image2;
+    const nextImg = (e) => { e.stopPropagation(); setImgIdx(i => (i + 1) % imgs.length); };
+    const prevImg = (e) => { e.stopPropagation(); setImgIdx(i => (i - 1 + imgs.length) % imgs.length); };
+
   return (
     <div
-      className={`navair-product-card navair-product-card--${theme} relative rounded-3xl border overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl ${
+      className={`relative rounded-3xl border overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl ${
         featured
           ? "border-[#7DC4A4]/40 bg-gradient-to-br from-[#E8F5F0] via-white to-[#F0EBF8] shadow-xl shadow-[#7DC4A4]/15"
           : "border-[#B8A9CC]/30 bg-gradient-to-br from-[#F0EBF8] via-white to-[#FDF0E8] shadow-lg shadow-[#B8A9CC]/10"
       }`}
       data-testid={`product-card-${product.key}`}
     >
-      {featured && (
-        <div className="absolute top-5 right-5">
+      <div className="absolute top-5 right-5 flex flex-col items-end gap-2 z-10">
+        {featured && (
           <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#7DC4A4] text-white text-xs font-bold font-cute">
             <Star size={11} weight="fill" /> Best Seller
           </div>
+        )}
+        <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#E8A87C] text-white text-xs font-bold font-cute animate-pulse">
+          🔥 Only {product.stock} left!
         </div>
-      )}
+      </div>
 
       <div className="p-6 sm:p-8">
         <KawaiiBadge
@@ -142,29 +179,19 @@ function ProductCard({ product, onOpenOrder, featured, theme = "apple" }) {
         />
         <h3 className="mt-4 font-display text-2xl sm:text-3xl font-bold text-[#2D3B2D]">{product.name}</h3>
 
-        <div className="mt-3 flex items-baseline gap-2">
-          <span className="font-display text-4xl sm:text-5xl font-extrabold text-[#3D6B52]">{product.price}</span>
-          <span className="text-sm text-[#6B7B6B] font-cute">COD available</span>
+        <div className="mt-3 flex items-baseline gap-2 flex-wrap">
+          <span className={`font-display font-extrabold text-[#3D6B52] ${product.price.includes("/") ? "text-2xl sm:text-3xl" : "text-4xl sm:text-5xl"}`}>{product.price}</span>
+          {!product.price.includes("/") && <span className="text-sm text-[#6B7B6B] font-cute">Online payment + COD</span>}
         </div>
 
         <div className="mt-6 grid sm:grid-cols-2 gap-5 items-start">
           <div className="relative">
-            <div className="product-visual aspect-[4/3] rounded-2xl overflow-hidden border border-[#7DC4A4]/20 bg-gradient-to-br from-[#E8F5F0] to-[#F0FAF6] shadow-md">
-              {product.image ? (
-                <img src={product.image} alt={product.name} className="w-full h-full object-cover" loading="lazy" />
-              ) : (
-                <div className="product-icon-visual" aria-label={`${product.name} product illustration`}>
-                  <product.visualIcon size={76} weight="duotone" />
-                </div>
-              )}
+            <div className="aspect-[4/3] rounded-2xl overflow-hidden border border-[#7DC4A4]/20 bg-gradient-to-br from-[#E8F5F0] to-[#F0FAF6] shadow-md">
+              <img src={activeImage} alt={`${product.name} - ${selectedColor.name}`} className="w-full h-full object-cover transition-all duration-300" loading="lazy" />
             </div>
-            {product.image2 ? (
-              <div className="absolute -bottom-4 -left-4 w-20 h-20 rounded-2xl overflow-hidden border-2 border-white shadow-lg">
-                <img src={product.image2} alt={`${product.name} detail`} className="w-full h-full object-cover" loading="lazy" />
-              </div>
-            ) : (
-              <div className="product-detail-chip" aria-hidden="true"><Sparkle size={18} weight="fill" /></div>
-            )}
+            <div className="absolute -bottom-4 -left-4 w-20 h-20 rounded-2xl overflow-hidden border-2 border-white shadow-lg">
+              <img src={activeThumb} alt={`${product.name} detail`} className="w-full h-full object-cover transition-all duration-300" loading="lazy" />
+            </div>
           </div>
 
           <div>
@@ -180,18 +207,35 @@ function ProductCard({ product, onOpenOrder, featured, theme = "apple" }) {
               ))}
             </ul>
 
+            {/* Color selector */}
+            <div className="mt-5">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-xs font-bold font-cute text-[#3D6B52] uppercase tracking-wider">Color:</span>
+                <span className="text-xs font-cute font-semibold text-[#2D3B2D]">{selectedColor.name}</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {product.colors.map((c) => (
+                  <ColorSwatch
+                    key={c.name}
+                    colorVariant={c}
+                    selected={selectedColor.name === c.name}
+                    onSelect={setSelectedColor}
+                  />
+                ))}
+              </div>
+            </div>
+
             <button
               type="button"
-              onClick={() => product.available !== false && onOpenOrder(product.modalProduct)}
-              disabled={product.available === false}
-              className={`mt-6 w-full inline-flex items-center justify-center gap-2 rounded-full py-3.5 text-sm font-bold font-cute transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 ${
+              onClick={() => onOpenOrder({ product: product.modalProduct, color: selectedColor.name })}
+              className={`mt-5 w-full inline-flex items-center justify-center gap-2 rounded-full py-3.5 text-sm font-bold font-cute transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 ${
                 featured
                   ? "bg-gradient-to-r from-[#7DC4A4] to-[#6B9B7E] text-white shadow-lg shadow-[#7DC4A4]/35 hover:shadow-[#7DC4A4]/50"
                   : "bg-gradient-to-r from-[#B8A9CC] to-[#A090BC] text-white shadow-lg shadow-[#B8A9CC]/35 hover:shadow-[#B8A9CC]/50"
               }`}
             >
-              {product.available === false ? "Coming Soon" : "Order Now"}
-              {product.available !== false && <ArrowRight size={16} weight="bold" />}
+              Order Now
+              <ArrowRight size={16} weight="bold" />
             </button>
           </div>
         </div>
@@ -207,7 +251,7 @@ function TrustStrip() {
     "✦ Wireless Freedom",
     "✦ Comfort First",
     "✦ Fast Delivery",
-    "✦ COD Available",
+    "✦ Online & COD",
     "✦ Kawaii Design",
     "✦ Desk Goals",
   ];
@@ -361,56 +405,209 @@ function ComingSoon() {
   );
 }
 
-function TumblerSpotlight({ onOpenOrder }) {
-  return (
-    <section
-      id="tumbler"
-      data-testid="tumbler-section"
-      className="tumbler-zone relative py-24 sm:py-32 px-6 sm:px-10 overflow-hidden"
-    >
-      <div className="pastry-orbit pastry-orbit--one" aria-hidden="true" />
-      <div className="pastry-orbit pastry-orbit--two" aria-hidden="true" />
-      <div className="max-w-6xl mx-auto">
-        <div className="tumbler-panel grid lg:grid-cols-[0.9fr_1.1fr] gap-10 lg:gap-16 items-center">
-          <div className="tumbler-art" aria-hidden="true">
-            <div className="tumbler-art__halo" />
-            <div className="tumbler-art__cup">
-              <Coffee size={88} weight="duotone" />
-              <span>sweet<br />sips</span>
-            </div>
-            <span className="pastry-sticker pastry-sticker--top">freshly made</span>
-            <span className="pastry-sticker pastry-sticker--bottom">take it slow</span>
-          </div>
+/* ============================================================
+     CUSTOMER REVIEWS
+     ============================================================ */
+  const REVIEWS = [
+    { name: "Priya Sharma", city: "Delhi", product: "NAV AIR Bloom", rating: 5, color: "Pink", text: "Absolutely obsessed with my pink Bloom combo! The keyboard feels so smooth and the pastel colour looks stunning on my study table. Fast delivery too. 10/10!" },
+    { name: "Arjun Mehta", city: "Mumbai", product: "NAV AIR Glow", rating: 5, color: "Teal", text: "Got the teal Glow mouse and it's gorgeous! Silent clicks, super smooth, and it looks premium on my desk. Worth every rupee. Already recommended to 3 friends." },
+    { name: "Sneha Patel", city: "Ahmedabad", product: "NAV AIR Bloom", rating: 5, color: "White", text: "Ordered the white Bloom combo and my daughter is completely obsessed with it! Amazing quality for the price. The wireless range is also really good." },
+    { name: "Riya Singh", city: "Bengaluru", product: "NAV AIR Glow", rating: 5, color: "Pink", text: "Was a little nervous ordering online but the pink Glow mouse is really solid! Connects instantly and the battery lasts super long. So happy with this purchase!" },
+    { name: "Kavya Nair", city: "Chennai", product: "NAV AIR Bloom", rating: 5, color: "Navy", text: "My desk went from boring to adorable in one order. The navy Bloom combo is just *chef's kiss*. Typing feels satisfying and the mouse is so responsive." },
+    { name: "Ananya Gupta", city: "Pune", product: "NAV AIR Bloom", rating: 5, color: "Sage", text: "Bought the sage green Bloom for my WFH setup — best decision ever! Keys are so satisfying and the packaging was really cute. Great brand, will order again!" },
+    { name: "Rohan Verma", city: "Hyderabad", product: "NAV AIR Glow", rating: 5, color: "White", text: "Gifted the white Glow to my sister for her birthday and she absolutely loved it! Came super well packed and works flawlessly. NavAir customer support was also helpful." },
+    { name: "Divya Reddy", city: "Jaipur", product: "NAV AIR Bloom", rating: 5, color: "Teal", text: "Been using my teal Bloom for 2 months now and it's still going strong. Zero issues, looks beautiful, and my desk is now my favourite place. Highly recommend!" },
+  ];
 
-          <div>
-            <div className="pastry-eyebrow">The soft landing</div>
-            <h2 className="font-display text-4xl sm:text-5xl md:text-6xl font-extrabold text-[#5B3B3B] leading-[1.05]">
-              Meet the
-              <span className="block tumbler-gradient italic">sweet tumbler.</span>
-            </h2>
-            <p className="mt-6 max-w-xl text-[#805B5B] leading-relaxed font-cute">
-              A pastel companion for iced coffee, chai, and every little treat between busy moments. Scroll down and let the mood get softer.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              {["Pastel finish", "Easy to carry", "Made for slow sips"].map((item) => (
-                <span key={item} className="pastry-pill">{item}</span>
-              ))}
+  function StarRating({ n }) {
+    return (
+      <div className="flex gap-0.5">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Star key={i} size={13} weight={i < n ? "fill" : "regular"} className={i < n ? "text-[#F5DFA0]" : "text-[#D0D8D0]"} />
+        ))}
+      </div>
+    );
+  }
+
+  function Reviews() {
+    return (
+      <section id="reviews" className="relative py-20 sm:py-28 px-6 sm:px-10 overflow-hidden bg-gradient-to-b from-white to-[#F0EBF8]/30">
+        <div className="aurora bg-[#7DC4A4]/12" style={{ width: 500, height: 500, top: "-10%", left: "-10%" }} />
+        <div className="max-w-6xl mx-auto relative">
+          <SectionHeading
+            eyebrow="Happy Customers"
+            title={<>Real reviews from<span className="gradient-kawaii-text italic"> real people. 💖</span></>}
+            subtitle="Join hundreds of happy customers across India who love their NAV AIR setup."
+          />
+          <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {REVIEWS.map((r, i) => (
+              <div key={i} className="group bg-white rounded-3xl border border-[#7DC4A4]/20 p-5 shadow-sm hover:shadow-lg hover:border-[#7DC4A4]/40 hover:-translate-y-1 transition-all duration-300">
+                <div className="flex items-start gap-2 mb-3">
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#E8F5F0] to-[#D0EEE3] flex items-center justify-center flex-shrink-0 text-[#3D6B52] font-bold text-sm font-cute">
+                    {r.name[0]}
+                  </div>
+                  <div>
+                    <div className="font-cute font-bold text-[#2D3B2D] text-sm">{r.name}</div>
+                    <div className="text-xs text-[#6B7B6B] font-cute">{r.city}</div>
+                  </div>
+                </div>
+                <StarRating n={r.rating} />
+                <div className="mt-1.5 text-xs text-[#7DC4A4] font-cute font-semibold">{r.product} · {r.color}</div>
+                <div className="mt-3 relative">
+                  <Quotes size={16} weight="fill" className="text-[#7DC4A4]/30 absolute -top-1 -left-0.5" />
+                  <p className="text-[#4A5E4A] text-sm font-cute leading-relaxed pl-4">{r.text}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-10 flex justify-center items-center gap-6 text-center">
+            <div className="bg-white rounded-2xl border border-[#7DC4A4]/25 px-6 py-4 shadow-sm">
+              <div className="font-display text-3xl font-extrabold text-[#3D6B52]">4.9 ★</div>
+              <div className="text-xs font-cute text-[#6B7B6B] mt-1">Average Rating</div>
             </div>
-            <span className="mt-9 inline-flex items-center gap-2 rounded-full border border-[#B87575]/25 bg-white/55 px-6 py-3.5 text-sm font-bold font-cute text-[#9F5E64]">
-              Tumbler collection coming soon
-              <Sparkle size={16} weight="fill" />
-            </span>
+            <div className="bg-white rounded-2xl border border-[#7DC4A4]/25 px-6 py-4 shadow-sm">
+              <div className="font-display text-3xl font-extrabold text-[#3D6B52]">500+</div>
+              <div className="text-xs font-cute text-[#6B7B6B] mt-1">Happy Customers</div>
+            </div>
+            <div className="bg-white rounded-2xl border border-[#7DC4A4]/25 px-6 py-4 shadow-sm">
+              <div className="font-display text-3xl font-extrabold text-[#3D6B52]">India 🇮🇳</div>
+              <div className="text-xs font-cute text-[#6B7B6B] mt-1">Nationwide Delivery</div>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
-  );
-}
+      </section>
+    );
+  }
 
-function FAQ() {
+  /* ============================================================
+     INSTAGRAM SECTION
+     ============================================================ */
+  const INSTA_POSTS = [
+    { img: "/images/bloom 1.jpeg", alt: "NAV AIR Bloom white setup" },
+    { img: "/images/bloom 2.jpeg", alt: "NAV AIR Bloom keyboard close-up" },
+    { img: "/images/glow 2.jpeg", alt: "NAV AIR Glow mouse pink" },
+    { img: "/images/bloom 3.jpeg", alt: "NAV AIR Bloom desk setup" },
+    { img: "/images/glow 3.jpeg", alt: "NAV AIR Glow mouse teal" },
+    { img: "/images/bloom 4.jpeg", alt: "NAV AIR Bloom combo full view" },
+  ];
+
+  function InstagramSection() {
+    return (
+      <section className="relative py-20 sm:py-28 px-6 sm:px-10 overflow-hidden">
+        <div className="aurora bg-[#E8A87C]/10" style={{ width: 400, height: 400, top: "0%", right: "-5%" }} />
+        <div className="max-w-6xl mx-auto relative">
+          <SectionHeading
+            eyebrow="Follow Us"
+            title={<>We're on<span className="gradient-kawaii-text italic"> Instagram! 📸</span></>}
+            subtitle="Tag us @shopnavair to be featured. Follow for new drops, giveaways, and cute desk inspo."
+          />
+          <div className="mt-10 grid grid-cols-3 sm:grid-cols-6 gap-2.5 sm:gap-3">
+            {INSTA_POSTS.map((p, i) => (
+              <a
+                key={i}
+                href="https://instagram.com/shopnavair"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative aspect-square rounded-2xl overflow-hidden border border-[#7DC4A4]/20 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+              >
+                <img src={p.img} alt={p.alt} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-2">
+                  <InstagramLogo size={20} weight="fill" className="text-white" />
+                </div>
+              </a>
+            ))}
+          </div>
+          <div className="mt-8 flex justify-center">
+            <a
+              href="https://instagram.com/shopnavair"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2.5 rounded-full bg-gradient-to-r from-[#E1306C] to-[#F77737] text-white px-7 py-3.5 text-sm font-bold font-cute shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all"
+            >
+              <InstagramLogo size={18} weight="fill" />
+              Follow @shopnavair
+            </a>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  /* ============================================================
+     ORDER LOOKUP MODAL
+     ============================================================ */
+  function OrderLookupModal({ onClose }) {
+    const [orderId, setOrderId] = useState("");
+    const [result, setResult] = useState(null);
+
+    const lookup = () => {
+      if (!orderId.trim()) return;
+      const stored = localStorage.getItem("navair_order_" + orderId.trim().toUpperCase());
+      if (stored) {
+        setResult(JSON.parse(stored));
+      } else {
+        setResult({ notFound: true });
+      }
+    };
+
+    return (
+      <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+        <div className="relative bg-white rounded-3xl shadow-2xl p-7 sm:p-9 max-w-md w-full border border-[#7DC4A4]/30">
+          <button onClick={onClose} className="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#F0FAF6] flex items-center justify-center text-[#6B7B6B] hover:text-[#3D6B52] transition">✕</button>
+          <div className="flex items-center gap-3 mb-5">
+            <div className="w-10 h-10 rounded-2xl bg-[#E8F5F0] flex items-center justify-center">
+              <Package size={20} weight="duotone" className="text-[#7DC4A4]" />
+            </div>
+            <div>
+              <div className="font-display text-xl font-bold text-[#2D3B2D]">Track My Order</div>
+              <div className="text-xs font-cute text-[#6B7B6B]">Enter your Order ID to check status</div>
+            </div>
+          </div>
+
+          <div className="flex gap-2">
+            <input
+              value={orderId}
+              onChange={e => setOrderId(e.target.value.toUpperCase())}
+              onKeyDown={e => e.key === "Enter" && lookup()}
+              placeholder="e.g. ORD-ABC123"
+              className="flex-1 border border-[#7DC4A4]/40 rounded-xl px-4 py-3 text-sm font-cute text-[#2D3B2D] placeholder:text-[#A0B0A0] focus:outline-none focus:border-[#7DC4A4] focus:ring-2 focus:ring-[#7DC4A4]/20"
+            />
+            <button onClick={lookup} className="rounded-xl bg-gradient-to-r from-[#7DC4A4] to-[#6B9B7E] text-white px-5 py-3 text-sm font-bold font-cute hover:shadow-lg transition">
+              <MagnifyingGlass size={16} weight="bold" />
+            </button>
+          </div>
+
+          {result && !result.notFound && (
+            <div className="mt-5 rounded-2xl border border-[#7DC4A4]/30 bg-[#F0FAF6] p-5 space-y-2.5">
+              <div className="flex justify-between text-sm font-cute"><span className="text-[#6B7B6B]">Order ID</span><span className="font-bold text-[#2D3B2D]">{result.order_id}</span></div>
+              <div className="flex justify-between text-sm font-cute"><span className="text-[#6B7B6B]">Product</span><span className="font-bold text-[#2D3B2D]">{result.product}</span></div>
+              {result.color && <div className="flex justify-between text-sm font-cute"><span className="text-[#6B7B6B]">Color</span><span className="font-bold text-[#2D3B2D]">{result.color}</span></div>}
+              <div className="flex justify-between text-sm font-cute"><span className="text-[#6B7B6B]">Quantity</span><span className="font-bold text-[#2D3B2D]">{result.quantity}</span></div>
+              <div className="flex justify-between text-sm font-cute"><span className="text-[#6B7B6B]">Total</span><span className="font-bold text-[#3D6B52]">₹{result.total_price}</span></div>
+              <div className="mt-3 pt-3 border-t border-[#7DC4A4]/20">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#F5DFA0]/40 border border-[#F5DFA0]/60 text-xs font-bold font-cute text-[#7B6020]">
+                  ⏳ Pending Payment — Our team will contact you soon
+                </div>
+              </div>
+            </div>
+          )}
+
+          {result?.notFound && (
+            <div className="mt-5 rounded-2xl border border-[#E8A87C]/30 bg-[#FDF0E8] p-5 text-sm font-cute text-[#8B4E2A]">
+              <p className="font-bold mb-1">Order not found on this device.</p>
+              <p>If you placed the order on a different device, email us at <a href="mailto:air.navpure@gmail.com" className="underline">air.navpure@gmail.com</a> with your Order ID and we'll help you out!</p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  function FAQ() {
   const [openIdx, setOpenIdx] = useState(0);
   const faqs = [
-    { q: "Which products can I order right now?", a: "NAV AIR Bloom (Keyboard + Mouse Combo) and NAV AIR Glow (Mouse) are available now. Air Purifiers are coming soon!" },
+    { q: "Which products can I order right now?", a: "NAV AIR Bloom (Keyboard + Mouse Combo), NAV AIR Glow (Mouse), NAVAIR Cloud Headphones (₹579 Prepaid / ₹599 COD), and the new NAVAIR Bloom Tumbler (₹879 Prepaid / ₹899 COD) are all available now! Air Purifiers are coming soon!" },
     { q: "How does the ordering process work?", a: "Fill in your details in our cute order form, review your order, and confirm. No account creation or OTP required — just simple and easy!" },
     { q: "Do you accept Cash on Delivery?", a: "Yes! COD is available. You pay when your package arrives at your door." },
     { q: "When will my order be shipped?", a: "We'll share shipping timelines after your order is processed. We'll keep you informed every step of the way." },
@@ -547,7 +744,7 @@ function Footer() {
 
         <div className="md:col-span-7 grid grid-cols-3 gap-8 text-sm">
           {[
-            { h: "Products", l: [{ label: "NAV AIR Bloom", href: "#products" }, { label: "NAV AIR Glow", href: "#products" }, { label: "Air Purifiers ✨", href: "#air-purifiers" }] },
+            { h: "Products", l: [{ label: "NAV AIR Bloom", href: "#products" }, { label: "NAV AIR Glow", href: "#products" }, { label: "Bloom Tumbler", href: "#products" }, { label: "Air Purifiers ✨", href: "#air-purifiers" }] },
             { h: "Explore", l: [{ label: "Compare", href: "#comparison" }, { label: "FAQ", href: "#faq" }, { label: "Coming Soon", href: "#air-purifiers" }] },
             { h: "Support", l: [{ label: "Email Us", href: "mailto:air.navpure@gmail.com" }, { label: "Instagram", href: "https://instagram.com/shopnavair" }, { label: "FAQ", href: "#faq" }] },
           ].map((col, i) => (
@@ -637,7 +834,7 @@ function Header({ onOpenOrder }) {
 
         <button
           type="button"
-          onClick={() => onOpenOrder("NAV AIR Bloom (Keyboard + Mouse Combo)")}
+          onClick={() => onOpenOrder({ product: "NAV AIR Bloom (Keyboard + Mouse Combo)", color: "" })}
           data-testid="header-cta-button"
           className="hidden sm:inline-flex items-center gap-2 text-sm font-bold font-cute text-white bg-gradient-to-r from-[#7DC4A4] to-[#6B9B7E] hover:from-[#6B9B7E] hover:to-[#5A8B6E] rounded-full pl-5 pr-2 py-2 transition-all duration-300 shadow-md shadow-[#7DC4A4]/30 hover:shadow-[#7DC4A4]/45 hover:-translate-y-0.5"
         >
@@ -667,7 +864,7 @@ function Header({ onOpenOrder }) {
           ))}
           <button
             type="button"
-            onClick={() => { onOpenOrder("NAV AIR Bloom (Keyboard + Mouse Combo)"); setMobileOpen(false); }}
+            onClick={() => { onOpenOrder({ product: "NAV AIR Bloom (Keyboard + Mouse Combo)", color: "" }); setMobileOpen(false); }}
             className="w-full text-center py-3 rounded-full bg-gradient-to-r from-[#7DC4A4] to-[#6B9B7E] text-white text-sm font-bold font-cute"
           >
             Order Now
@@ -703,13 +900,13 @@ function Hero({ onOpenOrder }) {
         </h1>
 
         <p className="mt-8 text-base sm:text-lg text-[#6B7B6B] leading-relaxed max-w-2xl mx-auto font-cute">
-          NAV AIR Bloom, Glow & Sound — considered keyboard, mouse, and headphone essentials for a calm, beautiful desk setup.
+          NAV AIR Bloom & Glow — adorable wireless keyboards and mice designed for comfort, style, and the cutest desk aesthetic.
         </p>
 
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-in-up">
           <button
             type="button"
-            onClick={() => onOpenOrder("NAV AIR Bloom (Keyboard + Mouse Combo)")}
+            onClick={() => onOpenOrder({ product: "NAV AIR Bloom (Keyboard + Mouse Combo)", color: "" })}
             className="group inline-flex items-center gap-3 bg-gradient-to-r from-[#7DC4A4] to-[#6B9B7E] text-white hover:from-[#6B9B7E] hover:to-[#5A8B6E] rounded-full pl-7 pr-2.5 py-3 font-bold font-cute transition-all duration-300 shadow-xl shadow-[#7DC4A4]/35 hover:shadow-[#7DC4A4]/50 hover:-translate-y-1.5"
           >
             <span className="text-base">Order Bloom Combo</span>
@@ -731,7 +928,7 @@ function Hero({ onOpenOrder }) {
           {[
             { icon: Keyboard, v: "Wireless Keyboard", l: "Smooth & comfortable typing" },
             { icon: Mouse, v: "Wireless Mouse", l: "Precise & ergonomic feel" },
-            { icon: Headphones, v: "Wireless Audio", l: "Quiet focus, richer sound" },
+            { icon: Desktop, v: "Cute Desk Vibes", l: "Aesthetic pastel design" },
           ].map((s) => (
             <div key={s.v} className="text-center group">
               <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#E8F5F0] to-[#D0EEE3] border border-[#7DC4A4]/20 flex items-center justify-center mx-auto mb-3 group-hover:shadow-md transition-all">
@@ -759,47 +956,55 @@ function Features() {
         />
 
         <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          <FeatureCard
-            icon={Keyboard}
-            title="Wireless Freedom"
-            body="No cables, no clutter. Clean desk, happy mind — go anywhere and stay connected."
-            color="mint"
-          />
-          <FeatureCard
-            icon={Heart}
-            title="Comfort First"
-            body="Ergonomic shapes and soft-touch materials built for long study and work sessions."
-            color="peach"
-          />
-          <FeatureCard
-            icon={Star}
-            title="Kawaii Aesthetic"
-            body="Soft pastel finishes and adorable design that makes your desk look like a dream."
-            color="lavender"
-          />
-          <FeatureCard
-            icon={Mouse}
-            title="Smooth Precision"
-            body="Responsive, quiet, and silky-smooth inputs that keep you in the zone all day."
-            color="yellow"
-          />
-          <FeatureCard
-            icon={Sparkle}
-            title="Premium Materials"
-            body="Quality you can feel — durable construction with a soft, premium finish."
-            color="mint"
-          />
-          <FeatureCard
-            icon={CheckCircle}
-            title="Easy Ordering"
-            body="No accounts, no OTP, no hassle. Fill out the form, confirm, and you're done."
-            color="lavender"
-          />
+          <FeatureCard icon={Keyboard} title="Wireless Freedom" body="No cables, no clutter. Clean desk, happy mind — go anywhere and stay connected." color="mint" />
+          <FeatureCard icon={Heart} title="Comfort First" body="Ergonomic shapes and soft-touch materials built for long study and work sessions." color="peach" />
+          <FeatureCard icon={Star} title="Kawaii Aesthetic" body="Soft pastel finishes and adorable design that makes your desk look like a dream." color="lavender" />
+          <FeatureCard icon={Mouse} title="Smooth Precision" body="Responsive, quiet, and silky-smooth inputs that keep you in the zone all day." color="yellow" />
+          <FeatureCard icon={Sparkle} title="Premium Materials" body="Quality you can feel — durable construction with a soft, premium finish." color="mint" />
+          <FeatureCard icon={CheckCircle} title="Easy Ordering" body="No accounts, no OTP, no hassle. Fill out the form, confirm, and you're done." color="lavender" />
         </div>
       </div>
     </section>
   );
 }
+
+/* ============================================================
+   COLOR VARIANTS DATA
+   ============================================================ */
+const BLOOM_COLORS = [
+  { name: "White",       hex: "#F5F5F5", image: "/images/bloom 1.jpeg",    image2: "/images/bloom 2.jpeg" },
+  { name: "Black",       hex: "#2A2A2A", image: "/images/bloom-colors.jpg", image2: "/images/bloom 3.jpeg" },
+  { name: "Pink",        hex: "#F4A8B0", image: "/images/bloom 2.jpeg",    image2: "/images/bloom 1.jpeg" },
+  { name: "Teal",        hex: "#6EC8C8", image: "/images/bloom-colors.jpg", image2: "/images/bloom 4.jpeg" },
+  { name: "Light Green", hex: "#98D9A0", image: "/images/bloom 3.jpeg",    image2: "/images/bloom-colors.jpg" },
+  { name: "Dark Teal",   hex: "#2E8B84", image: "/images/bloom-colors.jpg", image2: "/images/bloom 4.jpeg" },
+  { name: "Blue",        hex: "#7B8EC8", image: "/images/bloom 4.jpeg",    image2: "/images/bloom-colors.jpg" },
+  { name: "Sage",        hex: "#8FAE9A", image: "/images/bloom-colors.jpg", image2: "/images/bloom 3.jpeg" },
+  { name: "Navy",        hex: "#3D5A8A", image: "/images/bloom-colors.jpg", image2: "/images/bloom 2.jpeg" },
+  { name: "Yellow",      hex: "#F0D87A", image: "/images/bloom-colors.jpg", image2: "/images/bloom 1.jpeg" },
+];
+
+const GLOW_COLORS = [
+  { name: "White", hex: "#F5F5F5", image: "/images/glow 2.jpeg",    image2: "/images/glow 3.jpeg" },
+  { name: "Pink",  hex: "#F4A8B0", image: "/images/glow 3.jpeg",    image2: "/images/glow-colors.jpg" },
+  { name: "Teal",  hex: "#6EC8C8", image: "/images/glow-colors.jpg", image2: "/images/glow 2.jpeg" },
+  { name: "Black", hex: "#2A2A2A", image: "/images/glow-colors.jpg", image2: "/images/glow 3.jpeg" },
+];
+
+const CLOUD_COLORS = [
+  { name: "Pink",   hex: "#F4B8C0", image: "/images/headphones/headphones-pink.jpg",   image2: "/images/headphones/headphones-all.jpg" },
+  { name: "Green",  hex: "#7DC4A4", image: "/images/headphones/headphones-green.jpg",  image2: "/images/headphones/headphones-all.jpg" },
+  { name: "Black",  hex: "#2A2A2A", image: "/images/headphones/headphones-all.jpg",    image2: "/images/headphones/headphones-all.jpg" },
+  { name: "Blue",   hex: "#6B8EC8", image: "/images/headphones/headphones-blue.jpg",   image2: "/images/headphones/headphones-all.jpg" },
+  { name: "Silver", hex: "#C8C8D0", image: "/images/headphones/headphones-silver.jpg", image2: "/images/headphones/headphones-silver2.jpg" },
+];
+
+  const TUMBLER_COLORS = [
+    { name: "Blue Floral",    hex: "#9BC4E2", image: "/images/tumblers/tumbler-blue-floral.png",    image2: "/images/tumblers/tumbler-blue-floral.png" },
+    { name: "White Floral",   hex: "#FBF6F0", image: "/images/tumblers/tumbler-white-floral.png",   image2: "/images/tumblers/tumbler-white-floral.png" },
+    { name: "Purple Floral",  hex: "#C9B3D9", image: "/images/tumblers/tumbler-purple-floral.png",  image2: "/images/tumblers/tumbler-purple-floral.png" },
+    { name: "Pink Floral",    hex: "#F0A0B0", image: "/images/tumblers/tumbler-pink-floral.png",    image2: "/images/tumblers/tumbler-pink-floral.png" },
+  ];
 
 function ProductSection({ onOpenOrder }) {
   const products = [
@@ -808,8 +1013,11 @@ function ProductSection({ onOpenOrder }) {
       name: "NAV AIR Bloom",
       price: "₹849",
       badge: "Available Now",
+      stock: 7,
       image: "/images/bloom 1.jpeg",
       image2: "/images/bloom 2.jpeg",
+      images: ["/images/bloom 1.jpeg", "/images/bloom 2.jpeg", "/images/bloom 3.jpeg", "/images/bloom 4.jpeg"],
+      colors: BLOOM_COLORS,
       desc: "A complete wireless keyboard + mouse combo for the ultimate cute desk setup. Soft, smooth, and made for long sessions.",
       bullets: ["Keyboard & mouse combo", "Wireless — no cables", "Comfort-first layout", "Soft pastel finish"],
       modalProduct: "NAV AIR Bloom (Keyboard + Mouse Combo)",
@@ -819,23 +1027,48 @@ function ProductSection({ onOpenOrder }) {
       name: "NAV AIR Glow",
       price: "₹459",
       badge: "Available Now",
+      stock: 12,
       image: "/images/glow 2.jpeg",
       image2: "/images/glow 3.jpeg",
+      images: ["/images/glow 2.jpeg", "/images/glow 3.jpeg", "/images/nav air bloob glow 1.jpeg"],
+      colors: GLOW_COLORS,
       desc: "A refined wireless mouse designed for calm, precise control — perfectly styled to elevate your desk aesthetic.",
       bullets: ["Mouse only", "Quiet, precise control", "Ergonomic comfort", "Cute pastel aesthetic"],
       modalProduct: "NAV AIR Glow (Mouse)",
     },
     {
-      key: "sound",
-      name: "NAV AIR Sound",
-      price: "Coming soon",
-      badge: "Next in the collection",
-      visualIcon: Headphones,
-      available: false,
-      desc: "A quiet, considered audio piece for focused work, late-night playlists, and the cleanest desk setup.",
-      bullets: ["Immersive everyday audio", "Comfort-first fit", "Clean, wireless setup", "Apple-inspired simplicity"],
-      modalProduct: "NAV AIR Sound (Headphones)",
+      key: "cloud",
+      name: "NAVAIR Cloud Headphones",
+      price: "₹579 Prepaid / ₹599 COD",
+      badge: "New Arrival",
+      stock: 10,
+      image: "/images/headphones/headphones-all.jpg",
+      image2: "/images/headphones/headphones-silver.jpg",
+      images: ["/images/headphones/headphones-all.jpg", "/images/headphones/headphones-silver.jpg", "/images/headphones/headphones-blue.jpg", "/images/headphones/headphones-green.jpg"],
+      colors: CLOUD_COLORS,
+      desc: "Premium wireless headphones with deep bass and all-day comfort. Crystal-clear sound for music, gaming, and everything in between.",
+      bullets: ["Wireless Bluetooth 5.0", "Deep bass, clear highs", "Cushioned ear cups", "Foldable, travel-ready"],
+      modalProduct: "NAVAIR Cloud Headphones",
     },
+      {
+        key: "tumbler",
+        name: "NAVAIR Bloom Tumbler",
+        price: "₹879 Prepaid / ₹899 COD",
+        badge: "New Arrival",
+        stock: 15,
+        image: "/images/tumblers/tumbler-pink-floral.png",
+        image2: "/images/tumblers/tumbler-purple-floral.png",
+        images: [
+          "/images/tumblers/tumbler-pink-floral.png",
+          "/images/tumblers/tumbler-blue-floral.png",
+          "/images/tumblers/tumbler-purple-floral.png",
+          "/images/tumblers/tumbler-white-floral.png",
+        ],
+        colors: TUMBLER_COLORS,
+        desc: "Stay Hydrated. Stay Aesthetic. A 1200ml premium insulated tumbler designed for cute desk setups, college, office, and everyday use.",
+        bullets: ["1200 ml capacity", "Double wall insulated", "Keeps hot & cold", "Leak-resistant lid + straw"],
+        modalProduct: "NAVAIR Bloom Tumbler",
+      },
   ];
 
   return (
@@ -844,14 +1077,14 @@ function ProductSection({ onOpenOrder }) {
 
       <div className="max-w-6xl mx-auto">
         <SectionHeading
-          eyebrow="The NAV AIR collection"
-          title={<>Designed to disappear into<span className="gradient-kawaii-text italic"> your day.</span></>}
-          subtitle="Clean, calm tech for your desk, your commute, and everything in between."
+          eyebrow="Available Now"
+          title={<>Bloom, Glow & Cloud,<span className="gradient-kawaii-text italic"> pick yours.</span></>}
+          subtitle="Premium wireless gear crafted for comfort and cute aesthetic. Keyboard, mouse, and headphones — all kawaii."
         />
 
-        <div className="mt-14 grid md:grid-cols-2 xl:grid-cols-3 gap-6 sm:gap-8">
+        <div className="mt-14 grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {products.map((p, idx) => (
-            <ProductCard key={p.key} product={p} onOpenOrder={onOpenOrder} featured={idx === 0} theme="apple" />
+            <ProductCard key={p.key} product={p} onOpenOrder={onOpenOrder} featured={idx === 0} />
           ))}
         </div>
       </div>
@@ -863,36 +1096,66 @@ function ProductSection({ onOpenOrder }) {
    MAIN EXPORT
    ============================================================ */
 export default function NavAirLanding() {
-  const [openModalFor, setOpenModalFor] = useState(null);
+    const [openModalFor, setOpenModalFor] = useState(null);
+    const [showLookup, setShowLookup] = useState(false);
 
-  return (
-    <main
-      className="navair-page relative min-h-screen overflow-x-hidden"
-      data-testid="navair-landing"
-    >
-      <FloatingDecorations />
-
-      <div className="relative z-10">
-        <Header onOpenOrder={(p) => setOpenModalFor(p)} />
-        <div className="tech-zone">
-          <Hero onOpenOrder={(p) => setOpenModalFor(p)} />
+    return (
+      <div id="top" className="relative min-h-screen bg-[#FAFDF9] overflow-x-hidden">
+        <FloatingDecorations />
+        <Header onOpenOrder={setOpenModalFor} />
+        <main>
+          <Hero onOpenOrder={setOpenModalFor} />
           <TrustStrip />
           <Features />
-          <ProductSection onOpenOrder={(p) => setOpenModalFor(p)} />
+          <ProductSection onOpenOrder={setOpenModalFor} />
           <Comparison />
-        </div>
-        <TumblerSpotlight onOpenOrder={(p) => setOpenModalFor(p)} />
-        <ComingSoon />
-        <FAQ />
+          <Reviews />
+          <InstagramSection />
+          <ComingSoon />
+          <FAQ />
+        </main>
         <Footer />
-      </div>
 
-      {openModalFor !== null && (
-        <OrderNowModal
-          onClose={() => setOpenModalFor(null)}
-          product={openModalFor}
-        />
-      )}
-    </main>
-  );
-}
+        {/* Sticky mobile Order Now + Track buttons */}
+        <div className="fixed bottom-0 left-0 right-0 z-50 sm:hidden">
+          <div className="p-3 flex gap-2 bg-white/92 backdrop-blur border-t border-[#7DC4A4]/20 shadow-2xl">
+            <button
+              onClick={() => setShowLookup(true)}
+              className="flex-shrink-0 rounded-2xl border border-[#7DC4A4]/40 bg-white text-[#3D6B52] px-4 py-3 text-xs font-bold font-cute flex items-center gap-1.5 shadow-sm"
+            >
+              <Package size={14} weight="duotone" /> Track
+            </button>
+            <button
+              onClick={() => setOpenModalFor({ product: "NAV AIR Bloom (Keyboard + Mouse Combo)", color: "White" })}
+              className="flex-1 rounded-2xl bg-gradient-to-r from-[#7DC4A4] to-[#6B9B7E] text-white py-3 text-sm font-bold font-cute shadow-lg flex items-center justify-center gap-1.5"
+            >
+              Bloom ₹849 <ArrowRight size={14} weight="bold" />
+            </button>
+            <button
+              onClick={() => setOpenModalFor({ product: "NAV AIR Glow (Mouse)", color: "White" })}
+              className="flex-shrink-0 rounded-2xl bg-gradient-to-r from-[#B8A9CC] to-[#A090BC] text-white px-4 py-3 text-xs font-bold font-cute shadow-lg"
+            >
+              Glow ₹459
+            </button>
+            <button
+              onClick={() => setOpenModalFor({ product: "NAVAIR Cloud Headphones", color: "" })}
+              className="flex-shrink-0 rounded-2xl bg-gradient-to-r from-[#6B8EC8] to-[#5A7DB8] text-white px-4 py-3 text-xs font-bold font-cute shadow-lg"
+            >
+              Cloud ₹579
+            </button>
+          </div>
+        </div>
+
+        {openModalFor && (
+          <OrderNowModal
+            product={openModalFor.product}
+            initialColor={openModalFor.color}
+            onClose={() => setOpenModalFor(null)}
+          />
+        )}
+
+        {showLookup && <OrderLookupModal onClose={() => setShowLookup(false)} />}
+      </div>
+    );
+  }
+  
