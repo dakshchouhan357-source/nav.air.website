@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import {
   ArrowRight,
   Sparkle,
@@ -22,7 +22,9 @@ import {
 import { toast } from "sonner";
 import OrderNowModal from "@/pages/OrderNowModal";
 
-/* PRODUCT DATA */
+/* ═══════════════════════════════════════════════════════════════════
+   PRODUCT DATA — DO NOT MODIFY (prices, images, colors preserved)
+   ═══════════════════════════════════════════════════════════════════ */
 const CLOUD_HEADPHONES_COLORS = [
   { name: "Pink", hex: "#F4B8C0", image: "/images/headphones/headphones-pink.jpg", image2: "/images/headphones/headphones-all.jpg" },
   { name: "Green", hex: "#7DC4A4", image: "/images/headphones/headphones-green.jpg", image2: "/images/headphones/headphones-all.jpg" },
@@ -58,19 +60,27 @@ const TUMBLER_COLORS = [
   { name: "Pink Floral", hex: "#F0A0B0", image: "/images/tumblers/tumbler-pink-floral.png", image2: "/images/tumblers/tumbler-pink-floral.png" },
 ];
 
-/* UI COMPONENTS */
+/* ═══════════════════════════════════════════════════════════════════
+   UI COMPONENTS — Cinematic Luxury Redesign
+   ═══════════════════════════════════════════════════════════════════ */
+
 function ColorSwatch({ colorVariant, selected, onSelect }) {
   return (
     <button
       type="button"
       title={colorVariant.name}
       onClick={() => onSelect(colorVariant)}
-      className={`w-7 h-7 rounded-full border-2 transition-all duration-200 hover:scale-110 ${
+      className={`w-8 h-8 rounded-full border-2 transition-all duration-300 hover:scale-125 ${
         selected
-          ? "border-white scale-110 shadow-md"
-          : "border-white/30 hover:border-gray-400"
+          ? "border-[#c8a97e] scale-110 ring-2 ring-[#c8a97e]/30"
+          : "border-white/20 hover:border-white/50"
       }`}
-      style={{ backgroundColor: colorVariant.hex, boxShadow: selected ? "0 0 0 2px rgba(255,255,255,0.12)" : "0 1px 3px rgba(0,0,0,0.15)" }}
+      style={{ 
+        backgroundColor: colorVariant.hex, 
+        boxShadow: selected 
+          ? "0 0 20px rgba(200,169,126,0.3), 0 4px 12px rgba(0,0,0,0.3)" 
+          : "0 2px 8px rgba(0,0,0,0.3)" 
+      }}
     />
   );
 }
@@ -78,77 +88,106 @@ function ColorSwatch({ colorVariant, selected, onSelect }) {
 function ProductCard({ product, onOpenOrder, featured }) {
   const [selectedColor, setSelectedColor] = useState(product.colors[0]);
   const [imgIdx, setImgIdx] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
 
   const imgs = product.images || [product.image];
   const activeImage = selectedColor.image || imgs[imgIdx];
   const activeThumb = selectedColor.image2 || product.image2;
 
   const isTumbler = product.key === "tumbler";
-  const isDark = !isTumbler;
 
   return (
     <div
-      className={`relative rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl ${isTumbler ? "pastel-card" : "dark-card"}`}
+      className={`relative rounded-3xl overflow-hidden transition-all duration-700 hover:-translate-y-3 ${isTumbler ? "pastel-card" : "dark-card"}`}
       data-testid={`product-card-${product.key}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
+      {/* Ambient glow on hover */}
+      <div 
+        className="absolute inset-0 opacity-0 transition-opacity duration-700 pointer-events-none rounded-3xl"
+        style={{ 
+          opacity: isHovered ? 0.4 : 0,
+          background: "radial-gradient(ellipse at 50% 0%, rgba(200,169,126,0.08) 0%, transparent 70%)" 
+        }}
+      />
+
+      {/* Tags */}
       <div className="absolute top-5 right-5 flex flex-col items-end gap-2 z-10">
         {featured && (
-          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full badge text-xs font-bold">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#c8a97e]/10 border border-[#c8a97e]/20 text-xs font-bold text-[#e8c998]">
             <Star size={11} weight="fill" /> Premium
           </div>
         )}
-        <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-red-500 text-white text-xs font-bold animate-pulse">
+        <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-bold">
           🔥 Only {product.stock} left!
         </div>
       </div>
 
-      <div className={`${isDark ? 'p-6 sm:p-8' : 'p-6 sm:p-8'}`}>
-        <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full badge text-xs font-semibold mb-4 ${isDark ? 'text-gray-200' : 'text-gray-700'}`}>
-          ✓ {product.badge}
+      <div className="p-6 sm:p-8">
+        {/* Badge */}
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.03] border border-white/[0.06] text-xs font-semibold text-white/60 mb-4">
+          <CheckCircle size={12} weight="fill" className="text-[#c8a97e]" />
+          {product.badge}
         </div>
-        <h3 className={`mt-4 text-2xl sm:text-3xl font-bold ${isDark ? 'text-white' : 'text-black'}`}>{product.name}</h3>
 
-        <div className="mt-3 flex items-baseline gap-2 flex-wrap">
+        {/* Product name */}
+        <h3 className="mt-4 text-2xl sm:text-3xl font-bold text-white tracking-tight">{product.name}</h3>
+
+        {/* Price */}
+        <div className="mt-3 flex items-baseline gap-3 flex-wrap">
           {product.price.includes("/") ? (
             <>
-              <span className={`text-lg line-through price-mrp ${isDark ? 'text-white/60' : 'text-gray-500'}`}>₹{product.mrp}</span>
-              <span className={`text-3xl font-bold price-launch ${isDark ? 'text-white' : 'text-black'}`}>₹{product.launchPrice}</span>
-              <span className={`text-xs ${isDark ? 'bg-white/10 text-white' : 'bg-red-100 text-red-700'} px-2 py-1 rounded-full font-semibold`}>Launch Offer</span>
+              <span className="text-lg line-through text-white/30">₹{product.mrp}</span>
+              <span className="text-3xl font-bold text-[#e8c998]">₹{product.launchPrice}</span>
+              <span className="text-[10px] bg-[#c8a97e]/10 border border-[#c8a97e]/20 text-[#e8c998] px-2.5 py-1 rounded-full font-bold uppercase tracking-wider">Launch Offer</span>
             </>
           ) : (
-            <span className={`text-4xl sm:text-5xl font-bold ${isDark ? 'text-white' : 'text-black'}`}>{product.price}</span>
+            <span className="text-4xl sm:text-5xl font-bold text-white">{product.price}</span>
           )}
         </div>
 
-        <div className="mt-6 grid sm:grid-cols-2 gap-5 items-start">
-          <div className="relative">
-            <div className={`aspect-[4/3] rounded-2xl overflow-hidden border ${isDark ? 'border-transparent bg-transparent' : 'border-gray-200 bg-gray-50'} shadow-md`}>
-              <img src={activeImage} alt={`${product.name} - ${selectedColor.name}`} className={`w-full h-full object-cover transition-all duration-300 ${isDark ? 'dark-image-spot' : ''}`} loading="lazy" />
+        {/* Product content grid */}
+        <div className="mt-8 grid sm:grid-cols-2 gap-6 items-start">
+          {/* Image section */}
+          <div className="relative group">
+            <div className="aspect-[4/3] rounded-2xl overflow-hidden border border-white/[0.06] bg-black/30">
+              <img 
+                src={activeImage} 
+                alt={`${product.name} - ${selectedColor.name}`} 
+                className="w-full h-full object-cover transition-all duration-500 group-hover:scale-105" 
+                loading="lazy" 
+              />
+              {/* Cinematic overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-60" />
             </div>
-            <div className="absolute -bottom-4 -left-4 w-20 h-20 rounded-2xl overflow-hidden border-2 border-white shadow-lg">
-              <img src={activeThumb} alt={`${product.name} detail`} className="w-full h-full object-cover transition-all duration-300" loading="lazy" />
+            {/* Thumbnail */}
+            <div className="absolute -bottom-3 -left-3 w-16 h-16 rounded-xl overflow-hidden border border-white/10 shadow-2xl ring-2 ring-black/50">
+              <img src={activeThumb} alt={`${product.name} detail`} className="w-full h-full object-cover" loading="lazy" />
             </div>
           </div>
 
+          {/* Details section */}
           <div>
-            <p className={`${isDark ? 'text-gray-300' : 'text-gray-700'} leading-relaxed text-sm`}>{product.desc}</p>
-            <ul className="mt-4 space-y-2">
+            <p className="text-white/50 leading-relaxed text-sm">{product.desc}</p>
+            <ul className="mt-4 space-y-2.5">
               {product.bullets.map((b, i) => (
-                <li key={i} className={`flex items-center gap-2 text-sm ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-                  <span className={`w-5 h-5 rounded-full ${isDark ? 'bg-white/6' : 'bg-gray-100'} flex items-center justify-center flex-shrink-0`}>
-                    <CheckCircle size={13} weight="fill" className={`${isDark ? 'text-white/80' : 'text-black'}`} />
+                <li key={i} className="flex items-center gap-2.5 text-sm text-white/70">
+                  <span className="w-5 h-5 rounded-full bg-[#c8a97e]/10 flex items-center justify-center flex-shrink-0">
+                    <CheckCircle size={12} weight="fill" className="text-[#c8a97e]" />
                   </span>
                   {b}
                 </li>
               ))}
             </ul>
 
-            <div className="mt-5">
-              <div className="flex items-center gap-2 mb-2">
-                <span className={`text-xs font-bold uppercase tracking-wider ${isDark ? 'text-white' : 'text-black'}`}>Color:</span>
-                <span className={`text-xs font-semibold ${isDark ? 'text-gray-200' : 'text-gray-700'}`}>{selectedColor.name}</span>
+            {/* Color picker */}
+            <div className="mt-6">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/40">Color</span>
+                <span className="text-xs font-medium text-[#c8a97e]">{selectedColor.name}</span>
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2.5">
                 {product.colors.map((c) => (
                   <ColorSwatch
                     key={c.name}
@@ -160,10 +199,11 @@ function ProductCard({ product, onOpenOrder, featured }) {
               </div>
             </div>
 
+            {/* CTA */}
             <button
               type="button"
               onClick={() => onOpenOrder({ product: product.modalProduct, color: selectedColor.name })}
-              className={`mt-5 w-full inline-flex items-center justify-center gap-2 rounded-full py-3.5 text-sm font-bold transition-all duration-300 hover:-translate-y-0.5 ${isDark ? 'bg-black text-white shadow-lg hover:shadow-xl hover:bg-gray-900' : 'bg-white text-black border border-gray-200 hover:bg-gray-50'}`}
+              className="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-full py-3.5 text-sm font-bold transition-all duration-300 hover:-translate-y-0.5 bg-gradient-to-r from-[#c8a97e] to-[#a08050] text-black hover:shadow-[0_8px_30px_rgba(200,169,126,0.3)]"
             >
               Order Now
               <ArrowRight size={16} weight="bold" />
@@ -186,70 +226,78 @@ function Header({ onOpenOrder }) {
   }, []);
 
   const links = useMemo(() => [
-    { id: "products", label: "Products" },
+    { id: "products", label: "Collection" },
     { id: "faq", label: "FAQ" },
   ], []);
 
   return (
     <header
       data-testid="site-header"
-      className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${scrolled ? "backdrop-blur-xl bg-black/70 border-b border-gray-800 shadow-sm" : "bg-transparent"}`}
+      className={`fixed top-0 inset-x-0 z-50 transition-all duration-700 ${
+        scrolled 
+          ? "backdrop-blur-2xl bg-black/80 border-b border-white/[0.04] shadow-[0_4px_30px_rgba(0,0,0,0.3)]" 
+          : "bg-transparent"
+      }`}
     >
-      <div className="max-w-6xl mx-auto px-6 sm:px-10 h-16 sm:h-20 flex items-center justify-between">
-        <a href="#top" className="flex items-center gap-2 group" data-testid="brand-logo">
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 h-16 sm:h-20 flex items-center justify-between">
+        {/* Logo */}
+        <a href="#top" className="flex items-center gap-3 group" data-testid="brand-logo">
           <span className="relative inline-flex">
-            <span className="absolute inset-0 rounded-full bg-white/8 blur-sm dot-pulse" />
-            <span className="relative w-2.5 h-2.5 rounded-full bg-white" />
+            <span className="absolute inset-0 rounded-full bg-[#c8a97e]/40 blur-md dot-pulse" />
+            <span className="relative w-2 h-2 rounded-full bg-[#c8a97e]" />
           </span>
-          <span className="text-xl font-bold text-white tracking-tight">NAV AIR</span>
-          <span className="text-sm text-white/80">✦</span>
+          <span className="text-lg font-bold text-white tracking-[0.1em] uppercase">NAV AIR</span>
         </a>
 
-        <nav className="hidden md:flex items-center gap-8">
+        {/* Desktop nav */}
+        <nav className="hidden md:flex items-center gap-10">
           {links.map((l) => (
             <a
               key={l.id}
               href={`#${l.id}`}
               data-testid={`nav-link-${l.id}`}
-              className="text-sm text-white/80 hover:text-white transition-colors font-medium"
+              className="text-[13px] text-white/50 hover:text-[#c8a97e] transition-colors duration-300 font-medium uppercase tracking-wider"
             >
               {l.label}
             </a>
           ))}
         </nav>
 
+        {/* CTA button */}
         <button
           type="button"
           onClick={() => onOpenOrder({ product: "NAV AIR Cloud Headphones Pro", color: "" })}
           data-testid="header-cta-button"
-          className="hidden sm:inline-flex items-center gap-2 text-sm font-bold text-white bg-black hover:bg-gray-900 rounded-full px-6 py-2.5 transition-all"
+          className="hidden sm:inline-flex items-center gap-2 text-[13px] font-bold text-black bg-gradient-to-r from-[#c8a97e] to-[#a08050] rounded-full px-6 py-2.5 transition-all duration-300 hover:shadow-[0_4px_20px_rgba(200,169,126,0.3)] hover:-translate-y-0.5"
         >
           Shop Now
-          <ArrowRight size={14} weight="bold" />
+          <ArrowRight size={13} weight="bold" />
         </button>
 
+        {/* Mobile hamburger */}
         <button
           type="button"
           onClick={() => setMobileOpen(!mobileOpen)}
           className="md:hidden w-9 h-9 rounded-lg border border-white/10 bg-transparent flex flex-col items-center justify-center gap-1.5"
         >
-          <span className="w-4 h-0.5 bg-white rounded" />
-          <span className="w-4 h-0.5 bg-white rounded" />
-          <span className="w-4 h-0.5 bg-white rounded" />
+          <span className="w-4 h-0.5 bg-white/70 rounded" />
+          <span className="w-4 h-0.5 bg-white/70 rounded" />
+          <span className="w-4 h-0.5 bg-white/70 rounded" />
         </button>
       </div>
 
+      {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden bg-black/90 border-b border-gray-800 px-6 py-4 flex flex-col gap-4">
+        <div className="md:hidden bg-black/95 backdrop-blur-2xl border-b border-white/[0.04] px-6 py-6 flex flex-col gap-5">
           {links.map((l) => (
-            <a key={l.id} href={`#${l.id}`} className="text-sm font-medium text-white" onClick={() => setMobileOpen(false)}>
+            <a key={l.id} href={`#${l.id}`} className="text-sm font-medium text-white/80 uppercase tracking-wider" onClick={() => setMobileOpen(false)}>
               {l.label}
             </a>
           ))}
           <button
             type="button"
             onClick={() => { onOpenOrder({ product: "NAV AIR Cloud Headphones Pro", color: "" }); setMobileOpen(false); }}
-            className="w-full text-center py-3 rounded-full bg-white text-black text-sm font-bold"
+            className="w-full text-center py-3.5 rounded-full bg-gradient-to-r from-[#c8a97e] to-[#a08050] text-black text-sm font-bold"
           >
             Shop Now
           </button>
@@ -264,37 +312,62 @@ function Hero({ onOpenOrder }) {
     <section
       id="top"
       data-testid="hero-section"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-28 pb-20 bg-black"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-28 pb-20"
+      style={{ background: "linear-gradient(180deg, #000000 0%, #050505 50%, #0a0a0a 100%)" }}
     >
-      <div className="absolute inset-0 opacity-40 bg-gradient-to-b from-black via-transparent to-black/60" />
+      {/* Cinematic ambient glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] pointer-events-none"
+        style={{ background: "radial-gradient(ellipse at center, rgba(200,169,126,0.06) 0%, transparent 70%)" }}
+      />
+      <div className="absolute bottom-0 left-0 right-0 h-48 pointer-events-none"
+        style={{ background: "linear-gradient(to top, #0a0a0a, transparent)" }}
+      />
 
-      <div className="relative z-10 max-w-5xl mx-auto text-center animate-fade-in">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/6 text-xs font-semibold text-white/80 mb-6">
-          ✨ Premium Audio & Accessories
+      {/* Content */}
+      <div className="relative z-10 max-w-5xl mx-auto text-center">
+        {/* Tagline pill */}
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.03] border border-white/[0.06] text-[11px] font-semibold text-white/50 mb-8 uppercase tracking-[0.2em] animate-fade-in">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#c8a97e] animate-pulse" />
+          Premium Audio & Lifestyle
         </div>
 
-        <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-[1.0] text-white">
+        {/* Main heading */}
+        <h1 className="text-5xl sm:text-7xl md:text-8xl font-bold tracking-tighter leading-[0.9] text-white animate-fade-in">
           Elevate
           <br />
-          <span className="italic font-bold text-white/90">Every Moment</span>
+          <span className="font-['Playfair_Display'] italic font-normal text-[#c8a97e]/90">Every Moment</span>
         </h1>
 
-        <p className="mt-8 text-base sm:text-lg text-white/70 leading-relaxed max-w-2xl mx-auto">
-          Premium wireless headphones, keyboards, mice, and tumblers designed for those who demand the best.
+        {/* Subtitle */}
+        <p className="mt-8 text-base sm:text-lg text-white/40 leading-relaxed max-w-2xl mx-auto font-light animate-fade-in">
+          Premium wireless headphones, keyboards, mice, and tumblers 
+          designed for those who demand excellence.
         </p>
 
-        <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-in-up">
+        {/* CTA buttons */}
+        <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-in-up">
           <button
             type="button"
             onClick={() => onOpenOrder({ product: "NAV AIR Cloud Headphones Pro", color: "" })}
-            className="group inline-flex items-center gap-3 bg-white text-black rounded-full pl-7 pr-2.5 py-3 font-bold transition-all"
+            className="group inline-flex items-center gap-3 bg-gradient-to-r from-[#c8a97e] to-[#a08050] text-black rounded-full pl-7 pr-3 py-3.5 font-bold transition-all duration-300 hover:shadow-[0_8px_40px_rgba(200,169,126,0.3)] hover:-translate-y-1"
           >
-            <span className="text-base">Explore Collection</span>
-            <span className="w-10 h-10 rounded-full bg-black/8 inline-flex items-center justify-center transition-transform group-hover:translate-x-0.5">
-              <ArrowRight size={15} weight="bold" />
+            <span className="text-sm">Explore Collection</span>
+            <span className="w-9 h-9 rounded-full bg-black/10 inline-flex items-center justify-center transition-transform duration-300 group-hover:translate-x-0.5">
+              <ArrowRight size={14} weight="bold" />
             </span>
           </button>
+
+          <a
+            href="#products"
+            className="inline-flex items-center gap-2 text-sm text-white/50 hover:text-[#c8a97e] transition-colors duration-300 font-medium"
+          >
+            View Products
+            <ArrowRight size={13} weight="bold" />
+          </a>
         </div>
+
+        {/* Decorative line */}
+        <div className="mt-20 cinematic-divider w-32 mx-auto" />
       </div>
     </section>
   );
@@ -364,14 +437,25 @@ function ProductSection({ onOpenOrder }) {
   ];
 
   return (
-    <section id="products" data-testid="products-section" className="relative py-20 sm:py-28 px-6 sm:px-10 overflow-hidden border-t border-gray-800 bg-black">
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-14">
-          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white leading-[1.1]">Our Collection</h2>
+    <section id="products" data-testid="products-section" className="relative py-24 sm:py-32 px-6 sm:px-10 overflow-hidden bg-[#0a0a0a]">
+      {/* Section ambient glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-[300px] pointer-events-none"
+        style={{ background: "radial-gradient(ellipse at center top, rgba(200,169,126,0.04) 0%, transparent 70%)" }}
+      />
+
+      <div className="max-w-7xl mx-auto relative">
+        {/* Section header */}
+        <div className="text-center mb-16">
+          <span className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#c8a97e]/60 block mb-4">Our Products</span>
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tighter text-white leading-[1.0]">
+            The Collection
+          </h2>
+          <div className="mt-6 cinematic-divider w-24 mx-auto" />
         </div>
 
-        <div className="mt-14 grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {products.map((p, idx) => (
+        {/* Product grid */}
+        <div className="mt-16 grid md:grid-cols-2 gap-6 sm:gap-8">
+          {products.map((p) => (
             <ProductCard key={p.key} product={p} onOpenOrder={onOpenOrder} featured={p.featured} />
           ))}
         </div>
@@ -394,24 +478,28 @@ function FAQ() {
     <section
       id="faq"
       data-testid="faq-section"
-      className="relative py-24 sm:py-32 px-6 sm:px-10 overflow-hidden bg-black"
+      className="relative py-24 sm:py-32 px-6 sm:px-10 overflow-hidden bg-[#0a0a0a]"
     >
       <div className="max-w-3xl mx-auto relative">
-        <div className="text-center mb-10">
-          <h2 className="text-4xl sm:text-5xl font-bold text-white">Questions?</h2>
-          <p className="mt-4 text-white/70">Everything you need to know</p>
+        {/* Header */}
+        <div className="text-center mb-12">
+          <span className="text-[11px] font-bold uppercase tracking-[0.25em] text-[#c8a97e]/60 block mb-4">Support</span>
+          <h2 className="text-4xl sm:text-5xl font-bold text-white tracking-tighter">Questions?</h2>
+          <p className="mt-4 text-white/40 text-sm">Everything you need to know</p>
+          <div className="mt-6 cinematic-divider w-20 mx-auto" />
         </div>
 
-        <div className="mt-10 space-y-3">
+        {/* FAQ items */}
+        <div className="mt-12 space-y-3">
           {faqs.map((f, i) => {
             const open = openIdx === i;
             return (
               <div
                 key={i}
-                className={`rounded-xl border transition-all duration-300 overflow-hidden ${
+                className={`rounded-2xl border transition-all duration-500 overflow-hidden ${
                   open
-                    ? "border-white bg-white/4"
-                    : "border-gray-800 bg-transparent hover:border-gray-700"
+                    ? "border-[#c8a97e]/20 bg-white/[0.02]"
+                    : "border-white/[0.04] bg-transparent hover:border-white/[0.08]"
                 }`}
               >
                 <button
@@ -420,23 +508,23 @@ function FAQ() {
                   className="w-full flex items-center justify-between text-left px-6 py-5 transition-all"
                   aria-expanded={open}
                 >
-                  <span className={`font-semibold text-base transition-colors ${open ? "text-white" : "text-white/90"}`}>
+                  <span className={`font-medium text-[15px] transition-colors ${open ? "text-white" : "text-white/70"}`}>
                     {f.q}
                   </span>
                   <span
-                    className={`ml-4 shrink-0 w-8 h-8 rounded-full border flex items-center justify-center transition-all duration-300 ${
+                    className={`ml-4 shrink-0 w-8 h-8 rounded-full border flex items-center justify-center transition-all duration-500 ${
                       open
-                        ? "border-white bg-white text-black rotate-45"
-                        : "border-gray-600 text-white/80"
+                        ? "border-[#c8a97e] bg-[#c8a97e] text-black rotate-45"
+                        : "border-white/10 text-white/40"
                     }`}
                   >
-                    <Plus size={14} weight="bold" />
+                    <Plus size={13} weight="bold" />
                   </span>
                 </button>
 
-                <div className={`grid transition-all duration-400 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
+                <div className={`grid transition-all duration-500 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
                   <div className="overflow-hidden">
-                    <p className="text-white/70 leading-relaxed px-6 pb-5 text-sm">{f.a}</p>
+                    <p className="text-white/50 leading-relaxed px-6 pb-5 text-sm">{f.a}</p>
                   </div>
                 </div>
               </div>
@@ -451,26 +539,31 @@ function FAQ() {
 function Footer() {
   return (
     <footer
-      className="relative border-t border-gray-800 px-6 sm:px-10 py-14 bg-black text-white"
+      className="relative border-t border-white/[0.04] px-6 sm:px-10 py-16 bg-black text-white"
       data-testid="site-footer"
     >
-      <div className="max-w-6xl mx-auto grid md:grid-cols-12 gap-10">
+      {/* Ambient glow at top */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-px"
+        style={{ background: "linear-gradient(90deg, transparent 0%, rgba(200,169,126,0.3) 50%, transparent 100%)" }}
+      />
+
+      <div className="max-w-7xl mx-auto grid md:grid-cols-12 gap-12">
+        {/* Brand column */}
         <div className="md:col-span-5">
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-3">
             <span className="relative">
-              <span className="absolute inset-0 rounded-full bg-white/40 blur-md dot-pulse" />
-              <span className="relative w-3 h-3 rounded-full bg-white" />
+              <span className="absolute inset-0 rounded-full bg-[#c8a97e]/40 blur-md dot-pulse" />
+              <span className="relative w-2.5 h-2.5 rounded-full bg-[#c8a97e]" />
             </span>
-            <span className="text-xl font-bold tracking-tight">NAV AIR</span>
-            <span className="text-lg">✦</span>
+            <span className="text-lg font-bold tracking-[0.1em] uppercase">NAV AIR</span>
           </div>
-          <p className="mt-4 text-gray-400 max-w-sm text-sm leading-relaxed">
-            Premium audio, keyboards, mice, and lifestyle products designed for excellence.
+          <p className="mt-5 text-white/30 max-w-sm text-sm leading-relaxed">
+            Premium audio, keyboards, mice, and lifestyle products designed for those who expect nothing less.
           </p>
-          <div className="mt-5 flex flex-col gap-2">
+          <div className="mt-6 flex flex-col gap-3">
             <a
               href="mailto:air.navpure@gmail.com"
-              className="inline-flex items-center gap-2 text-sm text-gray-300 hover:text-white transition-colors"
+              className="inline-flex items-center gap-2 text-sm text-white/40 hover:text-[#c8a97e] transition-colors duration-300"
             >
               <EnvelopeSimple size={15} weight="bold" />
               air.navpure@gmail.com
@@ -479,7 +572,7 @@ function Footer() {
               href="https://instagram.com/shopnavair"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm text-gray-300 hover:text-white transition-colors"
+              className="inline-flex items-center gap-2 text-sm text-white/40 hover:text-[#c8a97e] transition-colors duration-300"
             >
               <InstagramLogo size={15} weight="fill" />
               @shopnavair
@@ -487,6 +580,7 @@ function Footer() {
           </div>
         </div>
 
+        {/* Links */}
         <div className="md:col-span-7 grid grid-cols-3 gap-8 text-sm">
           {[
             { h: "Products", l: [{ label: "Cloud Headphones Pro", href: "#products" }, { label: "Bloom", href: "#products" }, { label: "Glow", href: "#products" }, { label: "Tumblers", href: "#products" }] },
@@ -494,13 +588,13 @@ function Footer() {
             { h: "Follow", l: [{ label: "Instagram", href: "https://instagram.com/shopnavair" }] },
           ].map((col, i) => (
             <div key={i}>
-              <div className="text-xs uppercase tracking-widest text-gray-400 font-bold mb-4">{col.h}</div>
-              <ul className="space-y-2.5">
+              <div className="text-[10px] uppercase tracking-[0.2em] text-[#c8a97e]/50 font-bold mb-5">{col.h}</div>
+              <ul className="space-y-3">
                 {col.l.map((item, j) => (
                   <li key={j}>
                     <a
                       href={item.href}
-                      className="text-gray-300 hover:text-white transition-colors text-sm"
+                      className="text-white/35 hover:text-white transition-colors duration-300 text-sm"
                       target={item.href.startsWith("http") ? "_blank" : undefined}
                       rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
                     >
@@ -514,35 +608,39 @@ function Footer() {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto mt-12 pt-6 border-t border-gray-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-gray-400">
-        <div>© {new Date().getFullYear()} NAV AIR. All rights reserved.</div>
-        <div className="flex gap-6">
-          <a href="#" className="hover:text-white transition-colors">Privacy</a>
-          <a href="#" className="hover:text-white transition-colors">Terms</a>
-        </div>
+      {/* Copyright */}
+      <div className="mt-16 pt-8 border-t border-white/[0.04] max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+        <span className="text-[11px] text-white/20">© 2025 NAV AIR. All rights reserved.</span>
+        <span className="text-[11px] text-white/20">Designed in India.</span>
       </div>
     </footer>
   );
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   MAIN PAGE COMPONENT
+   ═══════════════════════════════════════════════════════════════════ */
+
 export default function NavAirLanding() {
   const [openModalFor, setOpenModalFor] = useState(null);
-  const [showLookup, setShowLookup] = useState(false);
+
+  const handleOpenOrder = ({ product, color }) => {
+    setOpenModalFor({ product, color });
+  };
 
   return (
-    <div id="top" className="relative min-h-screen bg-black text-white overflow-x-hidden">
-      <Header onOpenOrder={setOpenModalFor} />
-      <main>
-        <Hero onOpenOrder={setOpenModalFor} />
-        <ProductSection onOpenOrder={setOpenModalFor} />
-        <FAQ />
-      </main>
+    <div className="min-h-screen bg-black text-white overflow-x-hidden">
+      <Header onOpenOrder={handleOpenOrder} />
+      <Hero onOpenOrder={handleOpenOrder} />
+      <ProductSection onOpenOrder={handleOpenOrder} />
+      <FAQ />
       <Footer />
 
+      {/* Order Modal */}
       {openModalFor && (
         <OrderNowModal
           product={openModalFor.product}
-          initialColor={openModalFor.color}
+          color={openModalFor.color}
           onClose={() => setOpenModalFor(null)}
         />
       )}
