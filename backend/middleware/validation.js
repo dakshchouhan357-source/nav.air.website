@@ -1,6 +1,3 @@
-/**
- * Validate order data
- */
 export const validateOrderData = (orderData) => {
   const errors = [];
 
@@ -42,8 +39,15 @@ export const validateOrderData = (orderData) => {
     errors.push('PIN code must be 6 digits');
   }
 
-  // Product
-  const validProducts = ['NAV AIR Bloom', 'NAV AIR Glow'];
+  // Product — expanded to include preserved products
+  const validProducts = [
+    'NAV AIR Bloom',
+    'NAV AIR Glow',
+    'NAV AIR Cloud Headphones Pro',
+    'NAV AIR Bloom (Keyboard + Mouse Combo)',
+    'NAV AIR Glow (Mouse)',
+    'NAV AIR Bloom Tumbler',
+  ];
   if (!validProducts.includes(orderData.product)) {
     errors.push('Invalid product selected');
   }
