@@ -1,19 +1,33 @@
-/* App.css — updated for premium Apple-inspired luxury theme */
+/* App.css — NAV AIR Cinematic Luxury Theme */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&display=swap');
+
 :root {
     --black: #000000;
-    --charcoal: #0b0b0b;
-    --dark-gray: #1f1f1f;
+    --charcoal: #0a0a0a;
+    --dark-gray: #141414;
+    --surface: #0d0d0d;
+    --surface-elevated: #181818;
     --white: #ffffff;
     --muted: #f6f6f7;
-    --glass: rgba(255,255,255,0.6);
-    --glass-dark: rgba(10,10,10,0.5);
-    --accent: #0a84ff; /* subtle blue accent */
-    --accent-strong: #0071e3;
-
+    --glass: rgba(255,255,255,0.03);
+    --glass-border: rgba(255,255,255,0.06);
+    --glass-dark: rgba(10,10,10,0.8);
+    
+    /* Cinematic accent palette */
+    --accent: #c8a97e; /* warm gold */
+    --accent-glow: rgba(200,169,126,0.15);
+    --accent-strong: #e8c998;
+    --accent-subtle: rgba(200,169,126,0.08);
+    
     --pastel-pink: #FFEBF2;
     --pastel-blue: #F0FAFF;
     --pastel-purple: #F7F3FF;
     --pastel-mint: #F7FFF8;
+
+    /* Gradient overlays */
+    --gradient-radial: radial-gradient(ellipse at 50% 0%, rgba(200,169,126,0.08) 0%, transparent 60%);
+    --gradient-hero: linear-gradient(180deg, #000000 0%, #080808 40%, #0a0a0a 100%);
+    --gradient-section: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(200,169,126,0.02) 50%, rgba(0,0,0,0) 100%);
 }
 
 * {
@@ -27,22 +41,23 @@ html {
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Segoe UI', 'Inter', 'Nunito', sans-serif;
-    background: linear-gradient(180deg, #ffffff 0%, #fbfbfd 100%);
-    color: var(--charcoal);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'San Francisco', 'Segoe UI', sans-serif;
+    background: var(--charcoal);
+    color: #ffffff;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
 }
 
 .App {
     min-height: 100vh;
     overflow-x: hidden;
     position: relative;
-    background: transparent;
+    background: var(--charcoal);
 }
 
-/* Subtle grain kept but very light */
+/* Film grain texture overlay */
 .grain::before {
     content: '';
     position: fixed;
@@ -53,79 +68,184 @@ body {
     background-image: url('data:image/svg+xml,<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctave="3"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)"/></svg>');
     pointer-events: none;
     z-index: 1;
-    mix-blend-mode: multiply;
-    opacity: 0.01;
+    mix-blend-mode: soft-light;
+    opacity: 0.03;
 }
 
-/* Floating shapes reduced for premium minimal look */
 .floating-shapes { display: none; }
 
 /* Glass / elevated cards */
 .card-glass {
-  background: linear-gradient(180deg, rgba(255,255,255,0.6), rgba(255,255,255,0.55));
-  backdrop-filter: blur(8px) saturate(1.05);
-  border-radius: 16px;
-  border: 1px solid rgba(0,0,0,0.06);
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+  backdrop-filter: blur(20px) saturate(1.2);
+  border-radius: 24px;
+  border: 1px solid var(--glass-border);
 }
 
-/* Dark product card (electronics) */
+/* Dark product card (electronics) — cinematic */
 .dark-card {
-  background: linear-gradient(180deg, #0b0b0b, #0f0f10);
+  background: linear-gradient(180deg, #111111 0%, #0a0a0a 100%);
   color: #ffffff;
-  border: none;
-  box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+  border: 1px solid rgba(255,255,255,0.04);
+  box-shadow: 
+    0 20px 60px rgba(0,0,0,0.5),
+    0 0 0 1px rgba(255,255,255,0.03) inset;
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.dark-card:hover {
+  border-color: rgba(200,169,126,0.15);
+  box-shadow: 
+    0 30px 80px rgba(0,0,0,0.6),
+    0 0 60px rgba(200,169,126,0.05),
+    0 0 0 1px rgba(200,169,126,0.08) inset;
 }
 
 .dark-card .badge {
-  background: rgba(255,255,255,0.06);
-  color: #e6e6e6;
+  background: rgba(200,169,126,0.08);
+  border: 1px solid rgba(200,169,126,0.15);
+  color: var(--accent-strong);
 }
 
-.dark-card .price-mrp { color: rgba(255,255,255,0.6); }
-.dark-card .price-launch { color: #ffffff; font-weight: 800; }
+.dark-card .price-mrp { color: rgba(255,255,255,0.4); }
+.dark-card .price-launch { color: var(--accent-strong); font-weight: 800; }
 
-/* Pastel product card (tumblers) */
+/* Pastel product card (tumblers) — refined for cinematic theme */
 .pastel-card {
-  background: linear-gradient(180deg, var(--pastel-pink), #ffffff);
-  border: 1px solid rgba(0,0,0,0.03);
-  color: var(--charcoal);
-  box-shadow: 0 8px 24px rgba(20,20,20,0.06);
+  background: linear-gradient(180deg, #1a1a1a 0%, #111111 100%);
+  border: 1px solid rgba(255,255,255,0.05);
+  color: #ffffff;
+  box-shadow: 
+    0 20px 60px rgba(0,0,0,0.4),
+    0 0 0 1px rgba(255,255,255,0.03) inset;
+  transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.pastel-card:hover {
+  border-color: rgba(200,169,126,0.12);
+  box-shadow: 
+    0 30px 80px rgba(0,0,0,0.5),
+    0 0 40px rgba(200,169,126,0.04);
 }
 
 .pastel-card .badge {
-  background: rgba(255,255,255,0.9);
-  color: var(--charcoal);
+  background: rgba(200,169,126,0.08);
+  border: 1px solid rgba(200,169,126,0.15);
+  color: var(--accent-strong);
 }
 
 /* Buttons */
 .btn-primary {
-  background: linear-gradient(180deg, var(--black), #111);
-  color: white;
+  background: linear-gradient(180deg, var(--accent) 0%, #a08050 100%);
+  color: #000000;
   border-radius: 999px;
-  padding: 12px 22px;
+  padding: 14px 28px;
   font-weight: 700;
-  box-shadow: 0 8px 18px rgba(2,6,23,0.45);
+  box-shadow: 0 8px 24px rgba(200,169,126,0.3);
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(200,169,126,0.4);
 }
 
 .btn-ghost {
   background: transparent;
   border-radius: 999px;
-  padding: 10px 18px;
-  border: 1px solid rgba(0,0,0,0.06);
-  color: var(--charcoal);
+  padding: 12px 22px;
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #ffffff;
+  transition: all 0.3s ease;
+}
+
+.btn-ghost:hover {
+  border-color: rgba(200,169,126,0.3);
+  color: var(--accent-strong);
 }
 
 /* Headings */
-h1, h2, h3 { letter-spacing: -0.02em; }
+h1, h2, h3 { letter-spacing: -0.03em; }
 
 /* Hero tweaks */
-#top { padding-top: 92px; }
+#top { padding-top: 0; }
 
-/* Product images in dark cards should have subtle spotlight */
-.dark-image-spot { box-shadow: 0 30px 80px rgba(2,6,23,0.6) inset; }
+/* Product images — cinematic spotlight */
+.dark-image-spot { 
+  box-shadow: 0 30px 80px rgba(0,0,0,0.7) inset;
+  border-radius: 16px;
+}
 
 /* Small utility */
 .visually-hidden { position: absolute !important; height: 1px; width: 1px; overflow: hidden; clip: rect(1px, 1px, 1px, 1px); }
 
-/* Footer dark style kept in component CSS but ensure links visible */
 footer a { text-decoration: none; }
+
+/* Cinematic animations */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 1s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+.animate-slide-in-up {
+  animation: fadeInUp 1.2s cubic-bezier(0.23, 1, 0.32, 1) 0.3s forwards;
+  opacity: 0;
+}
+
+.dot-pulse {
+  animation: glow-pulse 2.5s ease-in-out infinite;
+}
+
+/* Cinematic divider line */
+.cinematic-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(200,169,126,0.3) 50%, transparent 100%);
+}
+
+/* Gold accent text */
+.text-accent {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--charcoal); }
+::-webkit-scrollbar-thumb { background: rgba(200,169,126,0.3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(200,169,126,0.5); }
+
+/* Selection */
+::selection {
+  background: rgba(200,169,126,0.25);
+  color: #ffffff;
+}
