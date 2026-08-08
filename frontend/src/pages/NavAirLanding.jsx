@@ -67,10 +67,10 @@ function ColorSwatch({ colorVariant, selected, onSelect }) {
       onClick={() => onSelect(colorVariant)}
       className={`w-7 h-7 rounded-full border-2 transition-all duration-200 hover:scale-110 ${
         selected
-          ? "border-black scale-110 shadow-md"
-          : "border-white/80 hover:border-gray-400"
+          ? "border-white scale-110 shadow-md"
+          : "border-white/30 hover:border-gray-400"
       }`}
-      style={{ backgroundColor: colorVariant.hex, boxShadow: selected ? "0 0 0 2px rgba(0,0,0,0.3)" : "0 1px 3px rgba(0,0,0,0.15)" }}
+      style={{ backgroundColor: colorVariant.hex, boxShadow: selected ? "0 0 0 2px rgba(255,255,255,0.12)" : "0 1px 3px rgba(0,0,0,0.15)" }}
     />
   );
 }
@@ -83,18 +83,17 @@ function ProductCard({ product, onOpenOrder, featured }) {
   const activeImage = selectedColor.image || imgs[imgIdx];
   const activeThumb = selectedColor.image2 || product.image2;
 
+  const isTumbler = product.key === "tumbler";
+  const isDark = !isTumbler;
+
   return (
     <div
-      className={`relative rounded-2xl border overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl ${
-        featured
-          ? "border-gray-200 bg-white shadow-xl"
-          : "border-gray-100 bg-white shadow-lg"
-      }`}
+      className={`relative rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl ${isTumbler ? "pastel-card" : "dark-card"}`}
       data-testid={`product-card-${product.key}`}
     >
       <div className="absolute top-5 right-5 flex flex-col items-end gap-2 z-10">
         {featured && (
-          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black text-white text-xs font-bold">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full badge text-xs font-bold">
             <Star size={11} weight="fill" /> Premium
           </div>
         )}
@@ -103,28 +102,28 @@ function ProductCard({ product, onOpenOrder, featured }) {
         </div>
       </div>
 
-      <div className="p-6 sm:p-8">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gray-100 text-xs font-semibold text-gray-700 mb-4">
+      <div className={`${isDark ? 'p-6 sm:p-8' : 'p-6 sm:p-8'}`}>
+        <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full badge text-xs font-semibold mb-4 ${isDark ? 'text-gray-200' : 'text-gray-700'}`}>
           ✓ {product.badge}
         </div>
-        <h3 className="mt-4 text-2xl sm:text-3xl font-bold text-black">{product.name}</h3>
+        <h3 className={`mt-4 text-2xl sm:text-3xl font-bold ${isDark ? 'text-white' : 'text-black'}`}>{product.name}</h3>
 
         <div className="mt-3 flex items-baseline gap-2 flex-wrap">
           {product.price.includes("/") ? (
             <>
-              <span className="text-lg text-gray-500 line-through">₹{product.mrp}</span>
-              <span className="text-3xl font-bold text-black">₹{product.launchPrice}</span>
-              <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full font-semibold">Launch Offer</span>
+              <span className={`text-lg line-through price-mrp ${isDark ? 'text-white/60' : 'text-gray-500'}`}>₹{product.mrp}</span>
+              <span className={`text-3xl font-bold price-launch ${isDark ? 'text-white' : 'text-black'}`}>₹{product.launchPrice}</span>
+              <span className={`text-xs ${isDark ? 'bg-white/10 text-white' : 'bg-red-100 text-red-700'} px-2 py-1 rounded-full font-semibold`}>Launch Offer</span>
             </>
           ) : (
-            <span className="text-4xl sm:text-5xl font-bold text-black">{product.price}</span>
+            <span className={`text-4xl sm:text-5xl font-bold ${isDark ? 'text-white' : 'text-black'}`}>{product.price}</span>
           )}
         </div>
 
         <div className="mt-6 grid sm:grid-cols-2 gap-5 items-start">
           <div className="relative">
-            <div className="aspect-[4/3] rounded-2xl overflow-hidden border border-gray-200 bg-gray-50 shadow-md">
-              <img src={activeImage} alt={`${product.name} - ${selectedColor.name}`} className="w-full h-full object-cover transition-all duration-300" loading="lazy" />
+            <div className={`aspect-[4/3] rounded-2xl overflow-hidden border ${isDark ? 'border-transparent bg-transparent' : 'border-gray-200 bg-gray-50'} shadow-md`}>
+              <img src={activeImage} alt={`${product.name} - ${selectedColor.name}`} className={`w-full h-full object-cover transition-all duration-300 ${isDark ? 'dark-image-spot' : ''}`} loading="lazy" />
             </div>
             <div className="absolute -bottom-4 -left-4 w-20 h-20 rounded-2xl overflow-hidden border-2 border-white shadow-lg">
               <img src={activeThumb} alt={`${product.name} detail`} className="w-full h-full object-cover transition-all duration-300" loading="lazy" />
@@ -132,12 +131,12 @@ function ProductCard({ product, onOpenOrder, featured }) {
           </div>
 
           <div>
-            <p className="text-gray-700 leading-relaxed text-sm">{product.desc}</p>
+            <p className={`${isDark ? 'text-gray-300' : 'text-gray-700'} leading-relaxed text-sm`}>{product.desc}</p>
             <ul className="mt-4 space-y-2">
               {product.bullets.map((b, i) => (
-                <li key={i} className="flex items-center gap-2 text-sm text-gray-700">
-                  <span className="w-5 h-5 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
-                    <CheckCircle size={13} weight="fill" className="text-black" />
+                <li key={i} className={`flex items-center gap-2 text-sm ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                  <span className={`w-5 h-5 rounded-full ${isDark ? 'bg-white/6' : 'bg-gray-100'} flex items-center justify-center flex-shrink-0`}>
+                    <CheckCircle size={13} weight="fill" className={`${isDark ? 'text-white/80' : 'text-black'}`} />
                   </span>
                   {b}
                 </li>
@@ -146,8 +145,8 @@ function ProductCard({ product, onOpenOrder, featured }) {
 
             <div className="mt-5">
               <div className="flex items-center gap-2 mb-2">
-                <span className="text-xs font-bold text-black uppercase tracking-wider">Color:</span>
-                <span className="text-xs font-semibold text-gray-700">{selectedColor.name}</span>
+                <span className={`text-xs font-bold uppercase tracking-wider ${isDark ? 'text-white' : 'text-black'}`}>Color:</span>
+                <span className={`text-xs font-semibold ${isDark ? 'text-gray-200' : 'text-gray-700'}`}>{selectedColor.name}</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {product.colors.map((c) => (
@@ -164,11 +163,7 @@ function ProductCard({ product, onOpenOrder, featured }) {
             <button
               type="button"
               onClick={() => onOpenOrder({ product: product.modalProduct, color: selectedColor.name })}
-              className={`mt-5 w-full inline-flex items-center justify-center gap-2 rounded-full py-3.5 text-sm font-bold transition-all duration-300 hover:-translate-y-0.5 ${
-                featured
-                  ? "bg-black text-white shadow-lg hover:shadow-xl hover:bg-gray-900"
-                  : "bg-gray-100 text-black border border-gray-200 hover:bg-gray-200"
-              }`}
+              className={`mt-5 w-full inline-flex items-center justify-center gap-2 rounded-full py-3.5 text-sm font-bold transition-all duration-300 hover:-translate-y-0.5 ${isDark ? 'bg-black text-white shadow-lg hover:shadow-xl hover:bg-gray-900' : 'bg-white text-black border border-gray-200 hover:bg-gray-50'}`}
             >
               Order Now
               <ArrowRight size={16} weight="bold" />
@@ -198,20 +193,16 @@ function Header({ onOpenOrder }) {
   return (
     <header
       data-testid="site-header"
-      className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${
-        scrolled
-          ? "backdrop-blur-xl bg-white/95 border-b border-gray-200 shadow-sm"
-          : "bg-white"
-      }`}
+      className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${scrolled ? "backdrop-blur-xl bg-black/70 border-b border-gray-800 shadow-sm" : "bg-transparent"}`}
     >
       <div className="max-w-6xl mx-auto px-6 sm:px-10 h-16 sm:h-20 flex items-center justify-between">
         <a href="#top" className="flex items-center gap-2 group" data-testid="brand-logo">
           <span className="relative inline-flex">
-            <span className="absolute inset-0 rounded-full bg-black/30 blur-sm dot-pulse" />
-            <span className="relative w-2.5 h-2.5 rounded-full bg-black" />
+            <span className="absolute inset-0 rounded-full bg-white/8 blur-sm dot-pulse" />
+            <span className="relative w-2.5 h-2.5 rounded-full bg-white" />
           </span>
-          <span className="text-xl font-bold text-black tracking-tight">NAV AIR</span>
-          <span className="text-sm">✦</span>
+          <span className="text-xl font-bold text-white tracking-tight">NAV AIR</span>
+          <span className="text-sm text-white/80">✦</span>
         </a>
 
         <nav className="hidden md:flex items-center gap-8">
@@ -220,7 +211,7 @@ function Header({ onOpenOrder }) {
               key={l.id}
               href={`#${l.id}`}
               data-testid={`nav-link-${l.id}`}
-              className="text-sm text-gray-600 hover:text-black transition-colors font-medium"
+              className="text-sm text-white/80 hover:text-white transition-colors font-medium"
             >
               {l.label}
             </a>
@@ -240,25 +231,25 @@ function Header({ onOpenOrder }) {
         <button
           type="button"
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="md:hidden w-9 h-9 rounded-lg border border-gray-200 bg-white flex flex-col items-center justify-center gap-1.5"
+          className="md:hidden w-9 h-9 rounded-lg border border-white/10 bg-transparent flex flex-col items-center justify-center gap-1.5"
         >
-          <span className="w-4 h-0.5 bg-black rounded" />
-          <span className="w-4 h-0.5 bg-black rounded" />
-          <span className="w-4 h-0.5 bg-black rounded" />
+          <span className="w-4 h-0.5 bg-white rounded" />
+          <span className="w-4 h-0.5 bg-white rounded" />
+          <span className="w-4 h-0.5 bg-white rounded" />
         </button>
       </div>
 
       {mobileOpen && (
-        <div className="md:hidden bg-white border-b border-gray-200 px-6 py-4 flex flex-col gap-4">
+        <div className="md:hidden bg-black/90 border-b border-gray-800 px-6 py-4 flex flex-col gap-4">
           {links.map((l) => (
-            <a key={l.id} href={`#${l.id}`} className="text-sm font-medium text-black" onClick={() => setMobileOpen(false)}>
+            <a key={l.id} href={`#${l.id}`} className="text-sm font-medium text-white" onClick={() => setMobileOpen(false)}>
               {l.label}
             </a>
           ))}
           <button
             type="button"
             onClick={() => { onOpenOrder({ product: "NAV AIR Cloud Headphones Pro", color: "" }); setMobileOpen(false); }}
-            className="w-full text-center py-3 rounded-full bg-black text-white text-sm font-bold"
+            className="w-full text-center py-3 rounded-full bg-white text-black text-sm font-bold"
           >
             Shop Now
           </button>
@@ -273,25 +264,22 @@ function Hero({ onOpenOrder }) {
     <section
       id="top"
       data-testid="hero-section"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-28 pb-20"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-28 pb-20 bg-black"
     >
-      <div className="absolute inset-0 opacity-50">
-        <div className="aurora bg-gray-400/30" style={{ width: 550, height: 550, top: -80, left: -80 }} />
-        <div className="aurora bg-purple-300/20" style={{ width: 500, height: 500, bottom: -100, right: -80 }} />
-      </div>
+      <div className="absolute inset-0 opacity-40 bg-gradient-to-b from-black via-transparent to-black/60" />
 
       <div className="relative z-10 max-w-5xl mx-auto text-center animate-fade-in">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 text-xs font-semibold text-gray-700 mb-6">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/6 text-xs font-semibold text-white/80 mb-6">
           ✨ Premium Audio & Accessories
         </div>
 
-        <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-[1.0] text-black">
+        <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-[1.0] text-white">
           Elevate
           <br />
-          <span className="gradient-kawaii-text italic font-bold">Every Moment</span>
+          <span className="italic font-bold text-white/90">Every Moment</span>
         </h1>
 
-        <p className="mt-8 text-base sm:text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
+        <p className="mt-8 text-base sm:text-lg text-white/70 leading-relaxed max-w-2xl mx-auto">
           Premium wireless headphones, keyboards, mice, and tumblers designed for those who demand the best.
         </p>
 
@@ -299,10 +287,10 @@ function Hero({ onOpenOrder }) {
           <button
             type="button"
             onClick={() => onOpenOrder({ product: "NAV AIR Cloud Headphones Pro", color: "" })}
-            className="group inline-flex items-center gap-3 bg-black text-white hover:bg-gray-900 rounded-full pl-7 pr-2.5 py-3 font-bold transition-all"
+            className="group inline-flex items-center gap-3 bg-white text-black rounded-full pl-7 pr-2.5 py-3 font-bold transition-all"
           >
             <span className="text-base">Explore Collection</span>
-            <span className="w-10 h-10 rounded-full bg-white/20 inline-flex items-center justify-center transition-transform group-hover:translate-x-0.5">
+            <span className="w-10 h-10 rounded-full bg-black/8 inline-flex items-center justify-center transition-transform group-hover:translate-x-0.5">
               <ArrowRight size={15} weight="bold" />
             </span>
           </button>
@@ -327,7 +315,7 @@ function ProductSection({ onOpenOrder }) {
       images: ["/images/headphones/headphones-all.jpg", "/images/headphones/headphones-silver.jpg", "/images/headphones/headphones-blue.jpg", "/images/headphones/headphones-green.jpg"],
       colors: CLOUD_HEADPHONES_COLORS,
       desc: "Premium wireless headphones with deep bass and all-day comfort. Crystal-clear sound for music, gaming, and everything in between.",
-      bullets: ["Wireless Bluetooth 5.3", "Deep Bass + Clear Audio", "Soft Ear Cushions", "Foldable Design", "Long Battery Life"],
+      bullets: ["Wireless Bluetooth 5.3", "Deep Bass + Clear Audio", "Soft Ear Cushions", "Foldable Design", "Long Battery Life", "Crystal-Clear Audio", "All-Day Comfort", "Travel Ready"],
       modalProduct: "NAV AIR Cloud Headphones Pro",
       featured: true,
     },
@@ -376,12 +364,10 @@ function ProductSection({ onOpenOrder }) {
   ];
 
   return (
-    <section id="products" data-testid="products-section" className="relative py-20 sm:py-28 px-6 sm:px-10 overflow-hidden border-t border-gray-200">
+    <section id="products" data-testid="products-section" className="relative py-20 sm:py-28 px-6 sm:px-10 overflow-hidden border-t border-gray-800 bg-black">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-14">
-          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-black leading-[1.1]">
-            Our Collection
-          </h2>
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white leading-[1.1]">Our Collection</h2>
         </div>
 
         <div className="mt-14 grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
@@ -408,12 +394,12 @@ function FAQ() {
     <section
       id="faq"
       data-testid="faq-section"
-      className="relative py-24 sm:py-32 px-6 sm:px-10 overflow-hidden"
+      className="relative py-24 sm:py-32 px-6 sm:px-10 overflow-hidden bg-black"
     >
       <div className="max-w-3xl mx-auto relative">
         <div className="text-center mb-10">
-          <h2 className="text-4xl sm:text-5xl font-bold text-black">Questions?</h2>
-          <p className="mt-4 text-gray-600">Everything you need to know</p>
+          <h2 className="text-4xl sm:text-5xl font-bold text-white">Questions?</h2>
+          <p className="mt-4 text-white/70">Everything you need to know</p>
         </div>
 
         <div className="mt-10 space-y-3">
@@ -424,8 +410,8 @@ function FAQ() {
                 key={i}
                 className={`rounded-xl border transition-all duration-300 overflow-hidden ${
                   open
-                    ? "border-black bg-gray-50"
-                    : "border-gray-200 bg-white hover:border-gray-300"
+                    ? "border-white bg-white/4"
+                    : "border-gray-800 bg-transparent hover:border-gray-700"
                 }`}
               >
                 <button
@@ -434,27 +420,23 @@ function FAQ() {
                   className="w-full flex items-center justify-between text-left px-6 py-5 transition-all"
                   aria-expanded={open}
                 >
-                  <span className={`font-semibold text-base transition-colors ${
-                    open ? "text-black" : "text-gray-900"
-                  }`}>
+                  <span className={`font-semibold text-base transition-colors ${open ? "text-white" : "text-white/90"}`}>
                     {f.q}
                   </span>
                   <span
                     className={`ml-4 shrink-0 w-8 h-8 rounded-full border flex items-center justify-center transition-all duration-300 ${
                       open
-                        ? "border-black bg-black text-white rotate-45"
-                        : "border-gray-300 text-gray-600"
+                        ? "border-white bg-white text-black rotate-45"
+                        : "border-gray-600 text-white/80"
                     }`}
                   >
                     <Plus size={14} weight="bold" />
                   </span>
                 </button>
 
-                <div className={`grid transition-all duration-400 ease-out ${
-                  open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-                }`}>
+                <div className={`grid transition-all duration-400 ease-out ${open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}>
                   <div className="overflow-hidden">
-                    <p className="text-gray-600 leading-relaxed px-6 pb-5 text-sm">{f.a}</p>
+                    <p className="text-white/70 leading-relaxed px-6 pb-5 text-sm">{f.a}</p>
                   </div>
                 </div>
               </div>
@@ -469,7 +451,7 @@ function FAQ() {
 function Footer() {
   return (
     <footer
-      className="relative border-t border-gray-200 px-6 sm:px-10 py-14 bg-black text-white"
+      className="relative border-t border-gray-800 px-6 sm:px-10 py-14 bg-black text-white"
       data-testid="site-footer"
     >
       <div className="max-w-6xl mx-auto grid md:grid-cols-12 gap-10">
@@ -548,7 +530,7 @@ export default function NavAirLanding() {
   const [showLookup, setShowLookup] = useState(false);
 
   return (
-    <div id="top" className="relative min-h-screen bg-white overflow-x-hidden">
+    <div id="top" className="relative min-h-screen bg-black text-white overflow-x-hidden">
       <Header onOpenOrder={setOpenModalFor} />
       <main>
         <Hero onOpenOrder={setOpenModalFor} />
