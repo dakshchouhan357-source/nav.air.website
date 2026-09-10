@@ -239,6 +239,31 @@ function Header({ onOpenOrder }) {
           : "bg-transparent"
       }`}
     >
+      {/* Promotional Banner */}
+      <div
+        style={{
+          background: "linear-gradient(90deg, #c8a97e 0%, #a08050 50%, #c8a97e 100%)",
+          padding: "8px 16px",
+          textAlign: "center",
+        }}
+      >
+        <a
+          href="#products"
+          style={{
+            margin: 0,
+            fontSize: "12px",
+            fontWeight: 700,
+            letterSpacing: "0.08em",
+            color: "#000",
+            textDecoration: "none",
+            textTransform: "uppercase",
+            display: "block",
+          }}
+        >
+          NAV AIR BLOOM | 1200ML TUMBLER | ONLY ₹749 — SHOP NOW
+        </a>
+      </div>
+
       <div className="max-w-7xl mx-auto px-6 sm:px-10 h-16 sm:h-20 flex items-center justify-between">
         {/* Logo */}
         <a href="#top" className="flex items-center gap-3 group" data-testid="brand-logo">
@@ -312,7 +337,7 @@ function Hero({ onOpenOrder }) {
     <section
       id="top"
       data-testid="hero-section"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-28 pb-20"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-36 pb-20"
       style={{ background: "linear-gradient(180deg, #000000 0%, #050505 50%, #0a0a0a 100%)" }}
     >
       {/* Cinematic ambient glow */}
@@ -423,7 +448,7 @@ function ProductSection({ onOpenOrder }) {
     {
       key: "tumbler",
       name: "NAV AIR Bloom Tumbler",
-      price: "₹849 / ₹899",
+      price: "₹749",
       badge: "New",
       stock: 15,
       image: "/images/tumblers/tumbler-pink-floral.png",
@@ -467,7 +492,7 @@ function ProductSection({ onOpenOrder }) {
 function FAQ() {
   const [openIdx, setOpenIdx] = useState(0);
   const faqs = [
-    { q: "What products are available?", a: "NAV AIR Cloud Headphones Pro (₹1,299 Launch Offer), Bloom Keyboard+Mouse (₹849), Glow Mouse (₹459), and Bloom Tumblers (₹849)." },
+    { q: "What products are available?", a: "NAV AIR Cloud Headphones Pro (₹1,299 Launch Offer), Bloom Keyboard+Mouse (₹849), Glow Mouse (₹459), and Bloom Tumblers (₹749)." },
     { q: "How does ordering work?", a: "Fill in your details in our order form, review your order, and confirm. No account creation required." },
     { q: "Do you accept Cash on Delivery?", a: "Yes! COD is available. You pay when your package arrives." },
     { q: "What's your shipping timeline?", a: "We'll share shipping timelines after your order is processed." },
