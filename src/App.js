@@ -1,6 +1,6 @@
 import "@/App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import NavAirLanding from "@/pages/NavAirLanding";
+import { NavAirLanding } from "@/pages/NavAirLanding";
 import { Toaster } from "@/components/ui/sonner";
 
 function App() {
