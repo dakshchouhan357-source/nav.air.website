@@ -48,7 +48,7 @@ export default function OrderNowModal({ product, color, onClose }) {
     setLoading(true);
     try {
       const backendUrl = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
-      const response = await fetch(`${backendUrl}/api/orders`, {
+      const response = await fetch(`${backendUrl}/api/orders/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -81,21 +81,21 @@ export default function OrderNowModal({ product, color, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={onClose}>
-      <div className="relative w-full max-w-md bg-gradient-to-b from-[#111111] to-[#0a0a0a] rounded-3xl border border-white/[0.06] shadow-2xl" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="relative w-full max-w-md bg-white rounded-3xl border border-gray-200 shadow-2xl" onClick={(e) => e.stopPropagation()}>
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors z-10"
+          className="absolute top-4 right-4 w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors z-10"
         >
-          <X size={18} weight="bold" className="text-white/60" />
+          <X size={18} weight="bold" className="text-gray-600" />
         </button>
 
         {/* Step 1: Order Form */}
         {step === 1 && (
           <div className="p-8">
-            <h2 className="text-2xl font-bold text-white mb-1">Order {product}</h2>
-            <p className="text-white/40 text-sm mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 mb-1">Order {product}</h2>
+            <p className="text-gray-500 text-sm mb-6">
               {color ? `Color: ${color}` : "Complete your order"}
             </p>
 
@@ -106,7 +106,7 @@ export default function OrderNowModal({ product, color, onClose }) {
                 placeholder="Full Name"
                 value={formData.fullName}
                 onChange={handleChange}
-                className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-[#c8a97e] focus:ring-1 focus:ring-[#c8a97e] transition-all"
+                className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
               />
               <input
                 type="email"
@@ -114,7 +114,7 @@ export default function OrderNowModal({ product, color, onClose }) {
                 placeholder="Email Address"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-[#c8a97e] focus:ring-1 focus:ring-[#c8a97e] transition-all"
+                className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
               />
               <input
                 type="tel"
@@ -122,7 +122,7 @@ export default function OrderNowModal({ product, color, onClose }) {
                 placeholder="Phone (10 digits)"
                 value={formData.phone}
                 onChange={handleChange}
-                className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-[#c8a97e] focus:ring-1 focus:ring-[#c8a97e] transition-all"
+                className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
               />
               <input
                 type="text"
@@ -130,7 +130,7 @@ export default function OrderNowModal({ product, color, onClose }) {
                 placeholder="Full Address"
                 value={formData.address}
                 onChange={handleChange}
-                className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-[#c8a97e] focus:ring-1 focus:ring-[#c8a97e] transition-all"
+                className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
               />
               <input
                 type="text"
@@ -138,7 +138,7 @@ export default function OrderNowModal({ product, color, onClose }) {
                 placeholder="Landmark (optional)"
                 value={formData.landmark}
                 onChange={handleChange}
-                className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-[#c8a97e] focus:ring-1 focus:ring-[#c8a97e] transition-all"
+                className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
               />
               <input
                 type="text"
@@ -146,7 +146,7 @@ export default function OrderNowModal({ product, color, onClose }) {
                 placeholder="City"
                 value={formData.city}
                 onChange={handleChange}
-                className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-[#c8a97e] focus:ring-1 focus:ring-[#c8a97e] transition-all"
+                className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
               />
               <input
                 type="text"
@@ -154,7 +154,7 @@ export default function OrderNowModal({ product, color, onClose }) {
                 placeholder="State"
                 value={formData.state}
                 onChange={handleChange}
-                className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-[#c8a97e] focus:ring-1 focus:ring-[#c8a97e] transition-all"
+                className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
               />
               <input
                 type="text"
@@ -162,16 +162,16 @@ export default function OrderNowModal({ product, color, onClose }) {
                 placeholder="PIN Code (6 digits)"
                 value={formData.pin}
                 onChange={handleChange}
-                className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-[#c8a97e] focus:ring-1 focus:ring-[#c8a97e] transition-all"
+                className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
               />
               <select
                 name="quantity"
                 value={formData.quantity}
                 onChange={handleChange}
-                className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#c8a97e] focus:ring-1 focus:ring-[#c8a97e] transition-all"
+                className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
               >
                 {[1, 2, 3, 4, 5].map((q) => (
-                  <option key={q} value={q} className="bg-black">
+                  <option key={q} value={q}>
                     Quantity: {q}
                   </option>
                 ))}
@@ -182,14 +182,14 @@ export default function OrderNowModal({ product, color, onClose }) {
                 value={formData.notes}
                 onChange={handleChange}
                 rows="3"
-                className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-[#c8a97e] focus:ring-1 focus:ring-[#c8a97e] transition-all resize-none"
+                className="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition-all"
               />
             </div>
 
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="w-full mt-6 bg-gradient-to-r from-[#c8a97e] to-[#a08050] text-black font-bold py-3.5 rounded-full transition-all duration-300 hover:shadow-lg disabled:opacity-50"
+              className="w-full mt-6 bg-gradient-to-r from-teal-500 to-orange-400 text-white font-bold py-3.5 rounded-full transition-all duration-300 hover:shadow-lg disabled:opacity-50"
             >
               {loading ? "Processing..." : "Place Order"}
             </button>
@@ -199,18 +199,18 @@ export default function OrderNowModal({ product, color, onClose }) {
         {/* Step 2: Success */}
         {step === 2 && orderData && (
           <div className="p-8 text-center">
-            <div className="w-16 h-16 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center mx-auto mb-4">
-              <CheckCircle size={32} weight="fill" className="text-green-400" />
+            <div className="w-16 h-16 rounded-full bg-green-100 border border-green-300 flex items-center justify-center mx-auto mb-4">
+              <CheckCircle size={32} weight="fill" className="text-green-600" />
             </div>
-            <h2 className="text-2xl font-bold text-white mb-2">Order Confirmed!</h2>
-            <p className="text-white/60 text-sm mb-6">Your order has been placed successfully.</p>
-            <div className="bg-white/[0.02] rounded-2xl p-4 mb-6 text-left">
-              <p className="text-white/40 text-xs mb-1">Order ID</p>
-              <p className="text-white font-mono text-sm break-all">{orderData.orderId}</p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Order Confirmed!</h2>
+            <p className="text-gray-600 text-sm mb-6">Your order has been placed successfully.</p>
+            <div className="bg-gray-50 rounded-2xl p-4 mb-6 text-left border border-gray-200">
+              <p className="text-gray-500 text-xs mb-1">Order ID</p>
+              <p className="text-gray-900 font-mono text-sm break-all">{orderData.orderId}</p>
             </div>
             <button
               onClick={onClose}
-              className="w-full bg-gradient-to-r from-[#c8a97e] to-[#a08050] text-black font-bold py-3.5 rounded-full transition-all duration-300 hover:shadow-lg"
+              className="w-full bg-gradient-to-r from-teal-500 to-orange-400 text-white font-bold py-3.5 rounded-full transition-all duration-300 hover:shadow-lg"
             >
               Close
             </button>
