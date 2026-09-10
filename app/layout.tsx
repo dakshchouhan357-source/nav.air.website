@@ -4,7 +4,7 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: 'NAV AIR — Everyday essentials, with a little lift',
-  description: 'Meet NAV AIR Bloom and Cloud: beautifully made essentials for your everyday rituals.',
+  description: 'Shop NAV AIR everyday essentials: Bloom Tumblers, Cloud Headphones, desk accessories, and more.',
   generator: 'NAV AIR',
 }
 
