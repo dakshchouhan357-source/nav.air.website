@@ -52,7 +52,16 @@ export default function OrderNowModal({ product, color, onClose }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          ...formData,
+          fullName: formData.fullName,
+          email: formData.email,
+          mobile: formData.phone,
+          address: formData.address,
+          landmark: formData.landmark,
+          city: formData.city,
+          state: formData.state,
+          pincode: formData.pin,
+          quantity: formData.quantity,
+          notes: formData.notes,
           product,
           color,
         }),
@@ -197,7 +206,7 @@ export default function OrderNowModal({ product, color, onClose }) {
             <p className="text-white/60 text-sm mb-6">Your order has been placed successfully.</p>
             <div className="bg-white/[0.02] rounded-2xl p-4 mb-6 text-left">
               <p className="text-white/40 text-xs mb-1">Order ID</p>
-              <p className="text-white font-mono text-sm break-all">{orderData.id}</p>
+              <p className="text-white font-mono text-sm break-all">{orderData.orderId}</p>
             </div>
             <button
               onClick={onClose}
