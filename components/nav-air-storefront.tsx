@@ -1,164 +1,76 @@
 'use client'
 
-import { useMemo, useState } from 'react'
-import {
-  ArrowUpRight,
-  Check,
-  ChevronDown,
-  ChevronRight,
-  Headphones,
-  Menu,
-  Minus,
-  Plus,
-  ShoppingBag,
-  Sparkles,
-  X,
-} from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
+import { ArrowRight, ChevronDown, Menu, Minus, Plus, Search, ShoppingBag, Sparkles, X } from 'lucide-react'
 
-type Product = {
-  id: string
-  name: string
-  shortName: string
-  price: number
-  description: string
-  image: string
-  accent: string
-}
+type Product = { id: string; name: string; price: number; image: string; description: string; category: string }
+type CartItem = Product & { quantity: number; variant?: string }
 
-type Variant = {
-  name: string
-  image: string
-  tone: string
-  note: string
-}
-
-const imageRoot = 'https://www.getnavair.com'
-
-const variants: Variant[] = [
-  { name: 'Blue Floral', image: `${imageRoot}/images/tumblers/tumbler-blue-floral.png`, tone: 'blue', note: 'Cool, calm, collected' },
-  { name: 'White Floral', image: `${imageRoot}/images/tumblers/tumbler-white-floral.png`, tone: 'white', note: 'A soft everyday classic' },
-  { name: 'Purple Floral', image: `${imageRoot}/images/tumblers/tumbler-purple-floral.png`, tone: 'purple', note: 'A little extra magic' },
-  { name: 'Pink Floral', image: `${imageRoot}/images/tumblers/tumbler-pink-floral.png`, tone: 'pink', note: 'Make every sip bloom' },
-]
+const variants = [
+  ['Blue Floral', '/images/tumblers/tumbler-blue-floral.png'],
+  ['White Floral', '/images/tumblers/tumbler-white-floral.png'],
+  ['Purple Floral', '/images/tumblers/tumbler-purple-floral.png'],
+  ['Pink Floral', '/images/tumblers/tumbler-pink-floral.png'],
+] as const
 
 const products: Product[] = [
-  {
-    id: 'bloom',
-    name: 'NAV AIR Bloom Tumbler',
-    shortName: 'Bloom Tumbler',
-    price: 749,
-    description: '1200 ml of good energy, finished with our signature floral print.',
-    image: variants[0].image,
-    accent: 'lilac',
-  },
-  {
-    id: 'cloud',
-    name: 'NAV AIR Cloud Headphones',
-    shortName: 'Cloud Headphones',
-    price: 799,
-    description: 'Lightweight sound, soft-touch comfort, and your own little cloud.',
-    image: `${imageRoot}/images/headphones/headphones-pink.jpg`,
-    accent: 'peach',
-  },
+  { id: 'bloom', name: 'Bloom Tumbler', price: 749, image: variants[0][1], description: '1200 ml stainless steel tumbler with a reusable straw.', category: 'Drinkware' },
+  { id: 'cloud', name: 'Cloud Headphones', price: 799, image: '/images/headphones/headphones-pink.jpg', description: 'Wireless Bluetooth sound with soft, comfortable cushions.', category: 'Audio' },
+  { id: 'desk', name: 'Bloom Keyboard + Mouse', price: 849, image: '/images/bloom 1.jpeg', description: 'A soft pastel desk set for a calmer workspace.', category: 'Gaming / Desk' },
+  { id: 'mouse', name: 'Glow Mouse', price: 459, image: '/images/glow 2.jpeg', description: 'A compact wireless mouse with a little more personality.', category: 'Accessories' },
 ]
-
 const formatPrice = (value: number) => `₹${value.toLocaleString('en-IN')}`
 
-export function NavAirStorefront() {
-  const [activeVariant, setActiveVariant] = useState(0)
+export default function NavAirStorefront() {
+  const [variant, setVariant] = useState(0)
+  const [slide, setSlide] = useState(0)
   const [menuOpen, setMenuOpen] = useState(false)
   const [cartOpen, setCartOpen] = useState(false)
-  const [cart, setCart] = useState<Record<string, number>>({})
-  const [openFaq, setOpenFaq] = useState<number | null>(0)
+  const [checkoutOpen, setCheckoutOpen] = useState(false)
+  const [cart, setCart] = useState<CartItem[]>([])
+  const [faq, setFaq] = useState<number | null>(0)
 
-  const cartItems = useMemo(
-    () => Object.entries(cart).map(([id, quantity]) => ({ product: products.find((product) => product.id === id)!, quantity })).filter((item) => item.product),
-    [cart],
-  )
-  const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0)
-  const subtotal = cartItems.reduce((total, item) => total + item.product.price * item.quantity, 0)
-  const shipping = cartCount ? 99 : 0
+  const promos = [
+    { label: 'Bloom Tumbler', kicker: 'A brighter way to hydrate', image: variants[variant][1], price: 749, tone: 'mint' },
+    { label: 'Cloud Headphones', kicker: 'Soft sound for loud days', image: products[1].image, price: 799, tone: 'sky' },
+    { label: 'Keyboard + Mouse', kicker: 'Refresh your desk setup', image: products[2].image, price: 849, tone: 'peach' },
+    { label: 'Glow Mouse', kicker: 'Small move, big mood', image: products[3].image, price: 459, tone: 'lilac' },
+  ]
+
+  useEffect(() => { const timer = setInterval(() => setSlide((value) => (value + 1) % promos.length), 5000); return () => clearInterval(timer) }, [promos.length])
+  const subtotal = useMemo(() => cart.reduce((sum, item) => sum + item.price * item.quantity, 0), [cart])
+  const shipping = cart.length ? 99 : 0
   const total = subtotal + shipping
+  const count = cart.reduce((sum, item) => sum + item.quantity, 0)
 
-  function addToCart(productId: string) {
-    setCart((current) => ({ ...current, [productId]: (current[productId] || 0) + 1 }))
-    setCartOpen(true)
-  }
+  function add(product: Product, selectedVariant?: string) { setCart((items) => { const key = `${product.id}-${selectedVariant || ''}`; const existing = items.find((item) => `${item.id}-${item.variant || ''}` === key); return existing ? items.map((item) => item === existing ? { ...item, quantity: item.quantity + 1 } : item) : [...items, { ...product, quantity: 1, variant: selectedVariant }] }); setCartOpen(true) }
+  function change(item: CartItem, amount: number) { setCart((items) => items.flatMap((current) => current === item ? (current.quantity + amount > 0 ? [{ ...current, quantity: current.quantity + amount }] : []) : [current])) }
 
-  function changeQuantity(productId: string, amount: number) {
-    setCart((current) => {
-      const next = Math.max(0, (current[productId] || 0) + amount)
-      const updated = { ...current }
-      if (next === 0) delete updated[productId]
-      else updated[productId] = next
-      return updated
-    })
-  }
+  return <div className="storefront" id="top">
+    <div className="announcement"><Sparkles size={14} /> Bloom Tumbler · 1200 ml · ₹749 <a href="#shop">Shop now <ArrowRight size={14} /></a></div>
+    <header className="store-header"><a className="logo" href="#top">NAV<span />AIR</a><nav className={menuOpen ? 'nav-links open' : 'nav-links'}><a href="#shop" onClick={() => setMenuOpen(false)}>Shop</a><a href="#categories" onClick={() => setMenuOpen(false)}>Categories</a><a href="#bloom" onClick={() => setMenuOpen(false)}>Tumblers</a><a href="#cloud" onClick={() => setMenuOpen(false)}>Audio</a><a href="#about" onClick={() => setMenuOpen(false)}>About</a></nav><div className="header-tools"><button aria-label="Search"><Search size={19} /></button><button onClick={() => setCartOpen(true)} aria-label={`Cart with ${count} items`}><ShoppingBag size={19} />{count > 0 && <b>{count}</b>}</button><button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-label="Open menu">{menuOpen ? <X size={21} /> : <Menu size={21} />}</button></div></header>
 
-  return (
-    <div className="nav-air-site">
-      <div className="promo-bar">
-        <span>NAV AIR BLOOM · 1200 ML TUMBLER · ONLY ₹749</span>
-        <a href="#shop">Shop now <ArrowUpRight size={14} /></a>
-      </div>
+    <main>
+      <section className="hero section-wrap"><div className="hero-copy"><p className="eyebrow">Modern products for everyday life</p><h1>Make everyday<br /><em>feel lighter.</em></h1><p>Thoughtfully selected essentials for your desk, commute, and daily rituals.</p><div className="hero-actions"><a className="primary-button" href="#shop">Shop the collection <ArrowRight size={16} /></a><a className="under-link" href="#about">Why NAV AIR</a></div></div><div className="hero-visual"><div className="hero-orbit" /><span className="hero-tag">NEW<br /><strong>DROP</strong></span><img src={variants[variant][1]} alt={`${variants[variant][0]} Bloom Tumbler`} /><div className="hero-label"><span>01 / 04</span><strong>{variants[variant][0]}</strong><small>Bloom Tumbler · {formatPrice(749)}</small></div><div className="swatches">{variants.map(([name], index) => <button key={name} className={variant === index ? 'selected' : ''} onClick={() => setVariant(index)} aria-label={`Select ${name}`}><i className={`swatch s${index}`} /></button>)}</div></div></section>
 
-      <header className="site-header">
-        <a className="brand-lockup" href="#top" aria-label="NAV AIR home"><span>NAV</span><i /> <span>AIR</span></a>
-        <nav className={`desktop-nav ${menuOpen ? 'is-open' : ''}`} aria-label="Primary navigation">
-          <a href="#shop" onClick={() => setMenuOpen(false)}>Shop</a>
-          <a href="#bloom" onClick={() => setMenuOpen(false)}>Bloom Tumbler</a>
-          <a href="#cloud" onClick={() => setMenuOpen(false)}>Cloud Headphones</a>
-          <a href="#about" onClick={() => setMenuOpen(false)}>About</a>
-        </nav>
-        <div className="header-actions">
-          <button className="cart-button" type="button" onClick={() => setCartOpen(true)} aria-label={`Open cart, ${cartCount} items`}><ShoppingBag size={18} /><span>Cart</span>{cartCount > 0 && <b>{cartCount}</b>}</button>
-          <button className="menu-button" type="button" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">{menuOpen ? <X size={22} /> : <Menu size={22} />}</button>
-        </div>
-      </header>
+      <section className="promo-carousel section-wrap" aria-label="Promotions"><div className={`promo-card ${promos[slide].tone}`}><div><p className="eyebrow">NAV AIR edit · 0{slide + 1}</p><h2>{promos[slide].label}</h2><p>{promos[slide].kicker}</p><strong>{formatPrice(promos[slide].price)}</strong><a className="primary-button" href="#shop">Shop now <ArrowRight size={16} /></a></div><img src={promos[slide].image} alt={promos[slide].label} /></div><div className="carousel-controls">{promos.map((promo, index) => <button key={promo.label} onClick={() => setSlide(index)} className={slide === index ? 'active' : ''} aria-label={`Show ${promo.label}`} />)}</div></section>
 
-      <main id="top">
-        <section className="hero-section section-shell">
-          <div className="hero-copy">
-            <p className="eyebrow"><Sparkles size={14} /> Everyday objects, elevated</p>
-            <h1>Small rituals.<br /><em>Big mood.</em></h1>
-            <p className="hero-description">Beautifully made essentials for the in-between moments that make your day feel like yours.</p>
-            <div className="hero-actions"><a className="button button-dark" href="#shop">Shop the edit <ArrowUpRight size={16} /></a><a className="text-link" href="#bloom">Meet Bloom <ChevronRight size={16} /></a></div>
-            <div className="hero-proof"><div className="avatar-stack"><span>n</span><span>n</span><span>n</span></div><span>4.9/5 from 1,000+ happy sippers</span></div>
-          </div>
-          <div className="hero-art" aria-label="NAV AIR Bloom tumbler in blue floral">
-            <div className="hero-sun" />
-            <span className="hero-sticker">new<br /><strong>drop</strong></span>
-            <img src={variants[activeVariant].image} alt={`${variants[activeVariant].name} NAV AIR Bloom tumbler`} />
-            <div className="hero-caption"><span>01 / 04</span><strong>{variants[activeVariant].name}</strong><span>{variants[activeVariant].note}</span></div>
-            <div className="variant-dots">{variants.map((variant, index) => <button key={variant.name} className={activeVariant === index ? 'selected' : ''} onClick={() => setActiveVariant(index)} aria-label={`Show ${variant.name}`}><span className={`dot dot-${variant.tone}`} /></button>)}</div>
-          </div>
-        </section>
+      <section className="shop section-wrap" id="shop"><div className="section-intro"><div><p className="eyebrow">The collection</p><h2>Good things,<br /><em>ready to go.</em></h2></div><p>Compact, useful, and designed to bring a little lift to the everyday.</p></div><div className="product-grid">{products.map((product) => <article className="product-card" key={product.id}><div className="product-image"><span>{product.category}</span><img src={product.image} alt={product.name} /><button onClick={() => add(product, product.id === 'bloom' ? variants[variant][0] : undefined)} aria-label={`Add ${product.name} to cart`}><Plus size={18} /></button></div><div className="product-info"><div><h3>NAV AIR {product.name}</h3><p>{product.description}</p></div><strong>{formatPrice(product.price)}</strong></div><button className="add-link" onClick={() => add(product, product.id === 'bloom' ? variants[variant][0] : undefined)}>Add to cart <ArrowRight size={15} /></button></article>)}</div></section>
 
-        <section className="marquee-band" aria-label="NAV AIR benefits"><div><span>FEEL GOOD</span><i>✦</i><span>LOOK GOOD</span><i>✦</i><span>DO MORE</span><i>✦</i><span>FEEL GOOD</span><i>✦</i></div></section>
+      <section className="feature bloom-feature section-wrap" id="bloom"><div><p className="eyebrow">01 · Drinkware</p><h2>Hydration,<br /><em>with personality.</em></h2><p>Bloom is a 1200 ml stainless steel tumbler made for hot and cold drinks, busy commutes, slow mornings, and everything between.</p><a className="light-button" href="#shop">Shop Bloom <ArrowRight size={15} /></a></div><img src={variants[variant][1]} alt="NAV AIR Bloom floral tumbler" /><div className="feature-points"><span><b>1200</b>ML CAPACITY</span><span><b>HOT + COLD</b>READY</span><span><b>4</b>FLORAL COLORS</span></div></section>
+      <section className="variant-row section-wrap"><div className="section-intro centered"><div><p className="eyebrow">Find your flower</p><h2>Pick your<br /><em>colour story.</em></h2></div><p>Blue, white, purple, or pink. Your everyday, your way.</p></div><div className="variant-grid">{variants.map(([name, image], index) => <button className={`variant ${variant === index ? 'chosen' : ''}`} key={name} onClick={() => setVariant(index)}><img src={image} alt={name} /><strong>{name}</strong><small>{formatPrice(749)}</small></button>)}</div></section>
+      <section className="feature cloud-feature section-wrap" id="cloud"><div className="cloud-image"><img src={products[1].image} alt="NAV AIR Cloud Headphones" /></div><div><p className="eyebrow">02 · Audio</p><h2>Your own<br /><em>little cloud.</em></h2><p>Wireless Bluetooth sound, deep bass, soft ear cushions, and a lightweight foldable build for wherever the day takes you.</p><div className="chips"><span>Wireless</span><span>Deep bass</span><span>Foldable</span></div><button className="primary-button" onClick={() => add(products[1])}>Add to cart · {formatPrice(799)}</button></div></section>
+      <section className="categories section-wrap" id="categories"><div className="section-intro centered"><div><p className="eyebrow">Shop by category</p><h2>Find your<br /><em>next favourite.</em></h2></div></div><div className="category-grid"><a href="#shop"><span>Drinkware</span><small>Bloom Tumbler</small><ArrowRight size={18} /></a><a href="#cloud"><span>Audio</span><small>Cloud Headphones</small><ArrowRight size={18} /></a><a href="#shop"><span>Gaming / Desk</span><small>Keyboard + Mouse</small><ArrowRight size={18} /></a><a href="#shop"><span>Accessories</span><small>Glow Mouse</small><ArrowRight size={18} /></a></div></section>
+      <section className="about section-wrap" id="about"><div className="about-badge">na<span>✦</span></div><div><p className="eyebrow">Why NAV AIR</p><h2>Useful can be<br /><em>beautiful too.</em></h2><p>We look for modern, practical products that earn their place in your day. No noise, no clutter — just things that feel good to use.</p></div><ul><li>Thoughtfully selected products</li><li>Modern everyday design</li><li>Shopping made simple</li></ul></section>
+      <section className="faq section-wrap"><div><p className="eyebrow">Good to know</p><h2>Questions,<br /><em>answered.</em></h2></div><div>{['How much is shipping?', 'What is Bloom made for?', 'Can I choose a different Bloom colour?'].map((question, index) => <div className="faq-item" key={question}><button onClick={() => setFaq(faq === index ? null : index)}><span>{question}</span><ChevronDown size={18} /></button>{faq === index && <p>{index === 0 ? 'Standard shipping is ₹99 per order across India.' : index === 1 ? 'Bloom is made for hot and cold drinks and holds 1200 ml.' : 'Yes. Select your preferred colour before adding Bloom to your cart.'}</p>}</div>)}</div></section>
+    </main>
+    <footer><div className="footer-main"><a className="logo" href="#top">NAV<span />AIR</a><p>Everyday essentials,<br /><em>with a little lift.</em></p><a className="primary-button" href="#shop">Shop everything <ArrowRight size={15} /></a></div><div className="footer-bottom"><span>© 2026 NAV AIR</span><span>Support · Policies · Contact</span><span>Made for the everyday</span></div></footer>
 
-        <section className="shop-section section-shell" id="shop">
-          <div className="section-heading"><div><p className="eyebrow">The NAV AIR edit</p><h2>Things you&apos;ll<br /><em>reach for daily.</em></h2></div><p>Designed to add a little more joy to your desk, your commute, and everywhere in between.</p></div>
-          <div className="product-grid">
-            {products.map((product, index) => <article className={`product-card product-${product.accent}`} key={product.id}><div className="product-image-wrap"><span className="product-index">0{index + 1}</span><img src={product.image} alt={product.name} /><button className="quick-add" onClick={() => addToCart(product.id)} aria-label={`Add ${product.name} to cart`}><Plus size={18} /></button></div><div className="product-meta"><div><h3>{product.name}</h3><p>{product.description}</p></div><strong>{formatPrice(product.price)}</strong></div><button className="card-link" onClick={() => addToCart(product.id)}>Add to cart <ArrowUpRight size={16} /></button></article>)}
-          </div>
-        </section>
-
-        <section className="bloom-feature section-shell" id="bloom"><div className="feature-copy"><p className="eyebrow">01 · Bloom Tumbler</p><h2>Hydration,<br /><em>but make it art.</em></h2><p>Meet your new sidekick. A generous 1200 ml tumbler with a leak-resistant lid, reusable straw, and a floral print that refuses to be boring.</p><a className="button button-light" href="#variants">Explore Bloom <ArrowUpRight size={16} /></a></div><div className="feature-stats"><span><b>1200</b><small>ML CAPACITY</small></span><span><b>HOT + COLD</b><small>ALL-DAY READY</small></span><span><b>100%</b><small>LEAK-RESISTANT</small></span><span><b>01</b><small>REUSABLE STRAW</small></span></div><div className="feature-image"><img src={variants[activeVariant].image} alt="NAV AIR Bloom floral tumbler" /></div></section>
-
-        <section className="variants-section section-shell" id="variants"><div className="section-heading centered"><p className="eyebrow">Find your flower</p><h2>Which one<br /><em>is yours?</em></h2><p>Four moods. One very good tumbler.</p></div><div className="variant-grid">{variants.map((variant, index) => <button className={`variant-card variant-card-${variant.tone} ${activeVariant === index ? 'active' : ''}`} key={variant.name} onClick={() => setActiveVariant(index)}><span className="variant-number">0{index + 1}</span><img src={variant.image} alt={variant.name} /><div><strong>{variant.name}</strong><small>{variant.note}</small></div>{activeVariant === index && <span className="variant-check"><Check size={14} /></span>}</button>)}</div></section>
-
-        <section className="cloud-section section-shell" id="cloud"><div className="cloud-art"><div className="cloud-ring" /><img src={products[1].image} alt="NAV AIR Cloud pink headphones" /><span className="cloud-label">soft sound<br />for loud days</span></div><div className="cloud-copy"><p className="eyebrow"><Headphones size={14} /> 02 · Cloud Headphones</p><h2>Your own<br /><em>little cloud.</em></h2><p>Sink into soft-touch comfort and crisp, easy listening. Your everyday soundtrack just got an upgrade.</p><div className="cloud-details"><span>Wireless</span><span>Soft-touch finish</span><span>All-day comfort</span></div><div className="cloud-buy"><strong>{formatPrice(products[1].price)}</strong><button className="button button-dark" onClick={() => addToCart('cloud')}>Add to cart <ArrowUpRight size={16} /></button></div></div></section>
-
-        <section className="about-section section-shell" id="about"><div className="about-mark">na<span>✦</span></div><div><p className="eyebrow">Why NAV AIR</p><h2>Make room for<br /><em>more little joys.</em></h2><p>We believe the things you use every day should feel as good as the moments they hold. NAV AIR is a growing edit of playful, practical design for a life in full colour.</p></div><div className="about-note"><span>01</span><p>Good design is not extra. It is a daily reminder to enjoy the ordinary.</p></div></section>
-
-        <section className="faq-section section-shell"><div><p className="eyebrow">Good to know</p><h2>Questions,<br /><em>answered.</em></h2></div><div className="faq-list">{['How much is shipping?', 'What is the Bloom tumbler made for?', 'Can I change my colour after ordering?'].map((question, index) => <div className={`faq-item ${openFaq === index ? 'open' : ''}`} key={question}><button onClick={() => setOpenFaq(openFaq === index ? null : index)}><span>{question}</span><ChevronDown size={18} /></button>{openFaq === index && <p>{index === 0 ? 'Shipping is a flat ₹99 per order across India.' : index === 1 ? 'Bloom is built for hot and cold drinks, with a 1200 ml capacity and a reusable straw.' : 'Send us a note as soon as possible and our team will help you with the next best step.'}</p>}</div>)}</div></section>
-      </main>
-
-      <footer className="site-footer"><div className="footer-top"><a className="brand-lockup" href="#top"><span>NAV</span><i /><span>AIR</span></a><p>Everyday essentials,<br /><em>with a little lift.</em></p><a className="button button-dark" href="#shop">Shop everything <ArrowUpRight size={16} /></a></div><div className="footer-bottom"><span>© 2025 NAV AIR</span><span>Made for the everyday</span><span>Instagram&nbsp;&nbsp; Contact</span></div></footer>
-
-      {cartOpen && <div className="drawer-backdrop" onClick={() => setCartOpen(false)}><aside className="cart-drawer" onClick={(event) => event.stopPropagation()} aria-label="Shopping cart"><div className="drawer-header"><div><p className="eyebrow">Your bag</p><h2>{cartCount ? `${cartCount} ${cartCount === 1 ? 'item' : 'items'}` : 'It is quiet in here'}</h2></div><button onClick={() => setCartOpen(false)} aria-label="Close cart"><X size={20} /></button></div>{cartItems.length ? <><div className="drawer-items">{cartItems.map(({ product, quantity }) => <div className="drawer-item" key={product.id}><img src={product.image} alt="" /><div><strong>{product.shortName}</strong><span>{formatPrice(product.price)}</span><div className="quantity"><button onClick={() => changeQuantity(product.id, -1)} aria-label="Decrease quantity"><Minus size={13} /></button><span>{quantity}</span><button onClick={() => changeQuantity(product.id, 1)} aria-label="Increase quantity"><Plus size={13} /></button></div></div></div>)}</div><div className="drawer-summary"><div><span>Subtotal</span><strong>{formatPrice(subtotal)}</strong></div><div><span>Shipping</span><strong>{formatPrice(shipping)}</strong></div><div className="total"><span>Total</span><strong>{formatPrice(total)}</strong></div><button className="button button-dark checkout-button">Continue to checkout <ArrowUpRight size={16} /></button><small>Secure checkout · Shipping calculated at ₹99 per order</small></div></> : <div className="empty-cart"><ShoppingBag size={32} /><p>Your future favourites are waiting.</p><button className="button button-dark" onClick={() => setCartOpen(false)}>Keep browsing</button></div>}</aside></div>}
-    </div>
-  )
+    {cartOpen && <div className="overlay" onClick={() => setCartOpen(false)}><aside className="cart-drawer" onClick={(event) => event.stopPropagation()}><div className="drawer-head"><div><p className="eyebrow">Your cart</p><h2>{count ? `${count} ${count === 1 ? 'item' : 'items'}` : 'Your cart is empty'}</h2></div><button onClick={() => setCartOpen(false)} aria-label="Close cart"><X size={20} /></button></div>{cart.length ? <><div className="drawer-items">{cart.map((item) => <div className="drawer-item" key={`${item.id}-${item.variant}`}><img src={item.image} alt="" /><div><strong>{item.name}</strong>{item.variant && <small>{item.variant}</small>}<span>{formatPrice(item.price)}</span><div className="quantity"><button onClick={() => change(item, -1)} aria-label="Decrease quantity"><Minus size={13} /></button><b>{item.quantity}</b><button onClick={() => change(item, 1)} aria-label="Increase quantity"><Plus size={13} /></button></div></div></div>)}</div><div className="summary"><p><span>Subtotal</span><strong>{formatPrice(subtotal)}</strong></p><p><span>Shipping</span><strong>{formatPrice(shipping)}</strong></p><p className="total"><span>Total</span><strong>{formatPrice(total)}</strong></p><button className="primary-button full" onClick={() => { setCartOpen(false); setCheckoutOpen(true) }}>Checkout <ArrowRight size={15} /></button></div></> : <div className="empty"><ShoppingBag size={30} /><p>Good things are waiting.</p><button className="primary-button" onClick={() => setCartOpen(false)}>Keep shopping</button></div>}</aside></div>}
+    {checkoutOpen && <Checkout cart={cart} subtotal={subtotal} shipping={shipping} total={total} onClose={() => setCheckoutOpen(false)} />}
+  </div>
 }
 
-export default NavAirStorefront
+function Checkout({ cart, subtotal, shipping, total, onClose }: { cart: CartItem[]; subtotal: number; shipping: number; total: number; onClose: () => void }) { const [form, setForm] = useState({ fullName: '', email: '', phone: '', address: '', landmark: '', city: '', state: '', pincode: '' }); const [status, setStatus] = useState(''); const update = (key: string, value: string) => setForm({ ...form, [key]: value }); async function submit(event: React.FormEvent) { event.preventDefault(); setStatus('Submitting…'); try { const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000'}/api/orders/create`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...form, mobile: form.phone, product: cart.map((item) => `${item.name}${item.variant ? ` (${item.variant})` : ''} x${item.quantity}`).join(', '), color: cart.find((item) => item.variant)?.variant || '', price: total }) }); if (!response.ok) throw new Error('Order failed'); setStatus('Order received. We will be in touch shortly.'); } catch { setStatus('We could not submit the order right now. Please try again.'); } } return <div className="overlay"><div className="checkout"><button className="close-checkout" onClick={onClose} aria-label="Close checkout"><X size={20} /></button><div className="checkout-summary"><p className="eyebrow">NAV AIR checkout</p><h2>Almost<br /><em>yours.</em></h2>{cart.map((item) => <div className="checkout-item" key={`${item.id}-${item.variant}`}><img src={item.image} alt="" /><span>{item.name}{item.variant && ` · ${item.variant}`}<small>Qty {item.quantity}</small></span><strong>{formatPrice(item.price * item.quantity)}</strong></div>)}<p className="line"><span>Subtotal</span><strong>{formatPrice(subtotal)}</strong></p><p className="line"><span>Shipping</span><strong>{formatPrice(shipping)}</strong></p><p className="line grand"><span>Total</span><strong>{formatPrice(total)}</strong></p></div><form onSubmit={submit}><p className="eyebrow">Delivery details</p><div className="form-grid">{[['fullName','Full name'],['email','Email'],['phone','Phone'],['address','Address'],['landmark','Landmark (optional)'],['city','City'],['state','State'],['pincode','PIN code']].map(([key, label]) => <label key={key} className={key === 'address' || key === 'landmark' ? 'wide' : ''}>{label}<input required={key !== 'landmark'} value={form[key as keyof typeof form]} onChange={(event) => update(key, event.target.value)} /></label>)}</div><button className="primary-button full" type="submit">Place order <ArrowRight size={15} /></button>{status && <p className="form-status">{status}</p>}<small className="secure-note">Standard shipping · ₹99 · No payment is collected here.</small></form></div></div> }
+
+export { products, variants }
