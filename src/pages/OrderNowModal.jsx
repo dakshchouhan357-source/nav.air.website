@@ -2,7 +2,6 @@ import { useState } from "react";
 import {
   X,
   CheckCircle,
-  AlertCircle,
 } from "@phosphor-icons/react";
 import { toast } from "sonner";
 
